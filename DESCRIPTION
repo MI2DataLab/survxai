@@ -1,5 +1,5 @@
 Package: survxai
-Title: Visuazliation of the local and global survival models explanations
+Title: Visualization of the Local and Global Survival Model Explanations
 Version: 0.1.0
 Authors@R: c(
   person("Alicja", "Gosiewska", email = "alicja.gosiewska@gmail.com", role = c("aut","cre")),
@@ -13,4 +13,6 @@ Encoding: UTF-8
 LazyData: true
 RoxygenNote: 6.0.1
 Suggests: testthat,
-    covr
+    covr,
+    rms,
+    randomForestSRC
