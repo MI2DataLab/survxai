@@ -1,2 +1,5 @@
 ^.*\.Rproj$
 ^\.Rproj\.user$
+^codecov\.yml$
+.travis.yml
+_pkgdown.yaml
