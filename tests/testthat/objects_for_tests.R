@@ -10,7 +10,7 @@ predict_times <- function(model, new_observation, times=1){
   return(prob)
 }
 
-cph_model <- cph(Surv(days/365, status)~., data=pbc[1:300,], surv=TRUE)
+cph_model <- cph(Surv(days/365, status)~., data=pbc[1:300,], surv=TRUE, x = TRUE, y=TRUE)
 
 surve_cph <- surv_explain(model = cph_model,
                   data = pbc, time = pbc$days/365, status = pbc$status,
