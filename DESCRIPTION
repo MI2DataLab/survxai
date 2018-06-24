@@ -12,7 +12,10 @@ License: GPL
 Encoding: UTF-8
 LazyData: true
 RoxygenNote: 6.0.1
-Imports: breakDown
+Imports: breakDown, 
+	ggplot2,
+	gridExtra, 
+	tidyr
 Suggests: testthat,
     covr,
     rms,

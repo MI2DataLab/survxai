@@ -16,4 +16,12 @@ surve_cph <- surv_explain(model = cph_model,
                   data = pbc, time = pbc$days/365, status = pbc$status,
                   predict_function = predict_times)
 
+surve_cph_null_data <- surv_explain(model = cph_model, time = pbc$days/365, status = pbc$status,
+                                    predict_function = predict_times)
+
 broken_list <- surv_breakdown(surve_cph, pbc[1,], times = c(1,2))
+
+plot_explainer <- plot(surve_cph)
+
+plot_curves <- plot(broken_list)
+plot_curves_and_table <- plot(broken_list, table=T)
