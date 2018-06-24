@@ -2,9 +2,11 @@
 
 S3method(plot,surv_breakdown)
 S3method(plot,surv_explainer)
+S3method(plot,surv_variable_response)
 export(surv_breakdown)
 export(surv_explain)
 export(surv_explain.default)
+export(surv_variable_response)
 import(ggplot2)
 importFrom(breakDown,broken)
 importFrom(gridExtra,grid.arrange)
