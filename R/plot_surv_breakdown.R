@@ -14,7 +14,7 @@
 #' @export
 
 plot.surv_breakdown <- function(x, table = FALSE, ...){
-  pred <- pred_model <- pred_new <- prob <- time <- NULL 
+  pred <- pred_model <- pred_new <- prob <- time <- start<- stop <- NULL 
   
   
   new_pred <- function(model, data){

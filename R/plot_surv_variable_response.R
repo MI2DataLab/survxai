@@ -6,6 +6,7 @@
 #' @param ... other arguments
 #'
 #' @import ggplot2
+#' @importFrom stats aggregate quantile 
 #'
 #' @method plot surv_variable_response
 #' @export
