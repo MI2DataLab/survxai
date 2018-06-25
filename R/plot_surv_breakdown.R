@@ -32,9 +32,34 @@ plot.surv_breakdown <- function(x, table = FALSE, ...){
   df <- data.frame(time = times, pred_model = predicted_values_model, pred_new = predicted_values_new)
   df <- gather(df, pred, prob, pred_model:pred_new)
   
-  break_plot <- ggplot(df, aes(time, prob, colour = pred)) + geom_line() + theme_bw()
+  
+  break_plot <- ggplot() + geom_line(data = df, aes(time, prob, colour = pred)) + theme_bw()
+  
+  # for(i in x$times){
+  #   
+  #   df_broken <- x$broken_list[[i]]
+  #   class(df_broken) <- "data.frame"
+  #   
+  #   
+  #   df_cummulative <- data.frame(start = df_broken$cummulative[-nrow(df_broken)], end = df_broken$cummulative[-1], sign = df_broken$sign[-1], variable = df_broken$variable[-1])
+  #   df_cummulative <- df_cummulative[-nrow(df_cummulative),]
+  #   df_cummulative$x <- x$times[i] + (0.2 * as.numeric(as.character(df_cummulative$sign)))
+  #   
+  #   break_plot <- break_plot + geom_segment(data = df_cummulative, aes(xend = x, yend = end, x = x, y = start, col = sign), lineend = "butt", size = 5)+ 
+  #     geom_segment(data = df_cummulative, aes(x = x-0.01, y = end, xend = x+0.01, yend = end, col="black"))#+
+  #     #geom_label(data = df_cummulative, aes(label=str_wrap(variable,12), x = x+((max(x)-min(x))/4), col = sign, y=(start + end)/2), size=2)
+  # }
+  
+  df_lines <- sapply(x$broken_list, function(x) x$cummulative[c(1,length(x$cummulative))])
+  df_lines <- as.data.frame(t(df_lines))
+  colnames(df_lines) <- c("start", "stop")
+  df_lines$time <- x$times
 
-  times_broken <- as.numeric(substr(names(x$broken_list), 6, 6))
+  break_plot <- break_plot + geom_segment(data = df_lines, aes(x = time, y = start, 
+                                                 xend = time, 
+                                                 yend = stop))
+  
+  times_broken <- x$times
   
   times <- times_broken
   df_lines <- data.frame(time = times_broken, pred_model = colMeans(new_pred(x$surv_explainer$model, x$surv_explainer$data), na.rm=T), 
@@ -46,6 +71,7 @@ plot.surv_breakdown <- function(x, table = FALSE, ...){
     colnames(df_predicted) <- names(x$broken_list)
     
     df_contributions <- as.data.frame(as.character(x$broken_list[[1]]$variable))
+    
     for(i in 1:length(x$broken_list)){
       contributions <-  x$broken_list[[i]]$contribution
       df_contributions <- cbind(df_contributions, contributions)
@@ -63,5 +89,10 @@ plot.surv_breakdown <- function(x, table = FALSE, ...){
     
     break_plot
   
+    
   }
+  
 } 
+
+#hlay = rbind(c(1,1), c(2,3))
+#grid.arrange(break_plot, plot(x$broken_list$time_1), plot(x$broken_list$time_2), layout_matrix = hlay)

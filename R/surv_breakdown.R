@@ -26,7 +26,7 @@ surv_breakdown <- function(explainer, new_observation, times = 1){
   
   names(broken_in_time) <- paste0("time_",times)
   
-  broken_list <- list(new_observation = new_observation, surv_explainer = explainer, broken_list = broken_in_time)
+  broken_list <- list(new_observation = new_observation, surv_explainer = explainer, broken_list = broken_in_time, times = times)
   class(broken_list) <- "surv_breakdown"
   return(broken_list)
 }

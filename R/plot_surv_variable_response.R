@@ -14,9 +14,17 @@ plot.surv_variable_response <- function(x, ...){
   time <- prediction <- value <- NULL
 
   class(x) <- "data.frame"
+  
+  if(is.numeric(x$value) & length(unique(x$value))>=4){
+    x$value <- cut(x$value, quantile(x$value, prob = seq(0, 1, length.out = 6)), include.lowest = TRUE)
+  }
+  
+  x <- aggregate(x[,2], list(x$value, x$time), mean)
+  colnames(x) <- c("value", "time", "prediction")
+  
   ggplot(x, aes(x = time, y = prediction, colour = as.factor(value))) +
     geom_line() +
     theme_bw() +
-    xlab("mean survival proablility")
+    ylab("mean survival probability")
 
 }

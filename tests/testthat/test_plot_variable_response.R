@@ -1,8 +1,8 @@
-context("plot_breakdown")
+context("plot_variable_response")
 
 source("objects_for_tests.R")
 
 test_that("Output", {
-  expect_is(plot_curves, "gg")
-  expect_is(plot_curves_and_table, "gtable")
+  expect_is(plot(svr_cph_group), "gg")
+  expect_is(plot(svr_cph), "gg")
 })

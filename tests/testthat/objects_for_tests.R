@@ -21,6 +21,7 @@ surve_cph_null_data <- surv_explain(model = cph_model, time = pbc$days/365, stat
 
 broken_list <- surv_breakdown(surve_cph, pbc[1,], times = c(1,2))
 svr_cph <- surv_variable_response(surve_cph, "sex")
+svr_cph_group <- surv_variable_response(surve_cph, "bili")
 
 plot_explainer <- plot(surve_cph)
 plot_curves <- plot(broken_list)
