@@ -4,29 +4,81 @@
 #'
 #' @param explainer an object of the class 'surv_explainer'
 #' @param new_observation a new observation to explain
-#' @param times numeric vector with event times.
+#' @param ... other parameters
+#' 
+#' @return An object of class surv_prediction_breakdown_explainer
 #'
 #' @importFrom breakDown broken
-#'
+#' 
+#' 
 #' @export
 
 
-surv_breakdown <- function(explainer, new_observation, times = 1){
-  broken_in_time <- list()
+prediction_breakdown <- function(explainer, observation, ...){
   
-  for(i in 1:length(times)){
-    time <- times[i]
-    new_pred <- function(model, data){
-      explainer$predict_function(model, data, time)
-    }
-    
-    broken_out <- broken(explainer$model, new_observation, explainer$data, predict.function = new_pred)
-    broken_in_time[[i]] <- broken_out
+  if (!("surv_explainer" %in% class(explainer))) stop("The prediction_breakdown() function requires an object created with explain() function form survxai package.")
+  if (is.null(explainer$data)) stop("The prediction_breakdown() function requires explainers created with specified 'data' parameter.")
+  
+  # breakDown
+  
+  time <- median(explainer$y[,1])
+  new_pred <- function(model, data){
+      explainer$predict_function(model, data, times = time)
   }
   
-  names(broken_in_time) <- paste0("time_",times)
   
-  broken_list <- list(new_observation = new_observation, surv_explainer = explainer, broken_list = broken_in_time, times = times)
-  class(broken_list) <- "surv_breakdown"
-  return(broken_list)
+  res<- broken(model = explainer$model,
+                  new_observation = observation,
+                  data = explainer$data,
+                  predict.function = new_pred,
+                  baseline = "Intercept")
+
+  class(res) <- "data.frame"
+  
+  
+  res <- res[-c(1, nrow(res)),]
+  
+  result <- data.frame(x = numeric(), y = numeric(), variable = character(), label = character(), position = numeric(), value = character())
+  times <- sort(explainer$y[,1])
+  
+  #baseline
+  prediction <- explainer$predict_function(explainer$model, explainer$data, times)
+  mean_prediction <- data.frame(x = times, y = colMeans(prediction, na.rm=T))
+  mean_prediction <- rbind(mean_prediction, c(0, 1))
+  mean_prediction$variable<- "Intercept"
+  mean_prediction$label <- explainer$label
+  mean_prediction$position <- 1
+  mean_prediction$value <- "Intercept"
+  
+  result <- rbind(result, mean_prediction)
+  
+  
+  #one observation
+  prediction <- explainer$predict_function(explainer$model, observation, times)
+  mean_prediction <- data.frame(x = times, y = prediction[1,])
+  mean_prediction <- rbind(mean_prediction, c(0, 1))
+  mean_prediction$variable<- "Observation"
+  mean_prediction$label <- explainer$label
+  mean_prediction$position <- nrow(res)+2
+  mean_prediction$value <- "observation"
+  result <- rbind(result, mean_prediction)
+  
+  tmp_data <- explainer$data
+  
+  for (i in 1:nrow(res)){
+    variable <- res[i, "variable_name"]
+    tmp_data[,as.character(variable)] <-  observation[[as.character(variable)]] 
+    prediction <- explainer$predict_function(explainer$model, tmp_data, times)
+    mean_prediction <- data.frame(x = times, y = colMeans(prediction, na.rm=T))
+    mean_prediction <- rbind(mean_prediction, c(0, 1))
+    mean_prediction$variable<- variable
+    mean_prediction$label <- explainer$label
+    mean_prediction$position <- res[i, "position"]
+    mean_prediction$value <- res[i, "variable"]
+    result <- rbind(result, mean_prediction)
+  }
+
+  class(result) <- c("surv_prediction_breakdown_explainer", "data.frame")
+  result
+  
 }

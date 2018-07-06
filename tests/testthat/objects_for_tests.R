@@ -20,16 +20,16 @@ surve_cph2 <- explain(model = cph_model2,
                      data = pbc, y = Surv(pbc$days/365, pbc$status),
                      predict_function = predict_times, label = "2")
 
-# surve_cph_null_data <- surv_explain(model = cph_model, time = pbc$days/365, status = pbc$status,
-#                                     predict_function = predict_times)
+surve_cph_null_data <- explain(model = cph_model, y = Surv(pbc$days/365, pbc$status),
+                                    predict_function = predict_times)
 
-#broken_list <- surv_breakdown(surve_cph, pbc[1,], times = c(1,2))
+broken_prediction <- prediction_breakdown(surve_cph, pbc[1,-c(1,2)])
 svr_cph <- variable_response(surve_cph, "sex")
 svr_cph2 <- variable_response(surve_cph2, "sex")
-plot(svr_cph, svr_cph2)
-# svr_cph_group <- surv_variable_response(surve_cph, "bili")
+svr_cph_group <- variable_response(surve_cph, "bili")
 
-# plot_explainer <- plot(surve_cph)
 # plot_curves <- plot(broken_list)
 # plot_curves_and_table <- plot(broken_list, table=T)
-# plot_var_resp <- plot(svr_cph)
+plot_var_resp <- plot(svr_cph)
+plot_var_resp_levels <- plot(svr_cph, svr_cph2, split = "level")
+plot_var_resp_default <- plot(svr_cph, svr_cph2)
