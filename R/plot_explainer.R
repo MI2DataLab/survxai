@@ -3,7 +3,6 @@
 #' @description Function plot for surv_explainer object visualise estimated survival curve of mean probabilities in chosen time points.
 #'
 #' @param x object of class "surv_explainer"
-#' @param times numeric vector of time points
 #' @param ... other arguments for function \code{\link[survminer]{ggsurvplot}}
 #'
 #' @import ggplot2
