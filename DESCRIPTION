@@ -14,8 +14,8 @@ LazyData: true
 RoxygenNote: 6.0.1
 Imports: breakDown, 
 	ggplot2,
-	gridExtra, 
-	tidyr
+	survival,
+	survminer
 Suggests: testthat,
     covr,
     rms,

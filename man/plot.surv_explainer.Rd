@@ -4,14 +4,14 @@
 \alias{plot.surv_explainer}
 \title{Plot for surv_explainer object}
 \usage{
-\method{plot}{surv_explainer}(x, times = 1, ...)
+\method{plot}{surv_explainer}(x, ...)
 }
 \arguments{
 \item{x}{object of class "surv_explainer"}
 
-\item{times}{numeric vector of time points}
+\item{...}{other arguments for function \code{\link[survminer]{ggsurvplot}}}
 
-\item{...}{other arguments}
+\item{times}{numeric vector of time points}
 }
 \description{
 Function plot for surv_explainer object visualise estimated survival curve of mean probabilities in chosen time points.
