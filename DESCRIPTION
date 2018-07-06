@@ -19,5 +19,7 @@ Imports: breakDown,
 Suggests: testthat,
     covr,
     rms,
-    randomForestSRC
- 
+    randomForestSRC,
+    knitr,
+    rmarkdown
+VignetteBuilder: knitr

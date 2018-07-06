@@ -83,7 +83,7 @@ plot.surv_breakdown <- function(x, table = FALSE, ...){
     
     g <- tableGrob(df_predicted, theme = ttheme_minimal())
     g_contribution <- tableGrob(df_contributions, theme = ttheme_minimal())
-    grid.arrange(break_plot, g_contribution, g, ncol = 2, widths = c(2,1), heights = c(4,1))
+    grid.arrange(break_plot, g_contribution, g, ncol = 2, widths = c(3,1), heights = c(4,1))
     
   }else{
     
