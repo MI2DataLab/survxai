@@ -9,9 +9,9 @@ prediction_breakdown(explainer, observation, ...)
 \arguments{
 \item{explainer}{an object of the class 'surv_explainer'}
 
-\item{...}{other parameters}
+\item{observation}{a new observation to explain}
 
-\item{new_observation}{a new observation to explain}
+\item{...}{other parameters}
 }
 \value{
 An object of class surv_prediction_breakdown_explainer

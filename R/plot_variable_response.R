@@ -13,6 +13,7 @@
 #' @export
 
 plot.surv_variable_response_explainer <- function(x, ..., split = "model"){
+  y <- color <- NULL
 
   df <- data.frame(x)
   dfl <- list(...)
