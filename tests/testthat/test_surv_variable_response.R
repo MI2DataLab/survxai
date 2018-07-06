@@ -8,3 +8,8 @@ test_that("Creating surv_variable_response", {
   expect_is(svr_cph, "data.frame")
 })
 
+
+test_that("Wrong input",{
+  expect_error(variable_response(surve_cph_null_data))
+  expect_error(variable_response(explainer))
+})
