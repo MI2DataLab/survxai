@@ -10,8 +10,6 @@
 \item{x}{object of class "surv_explainer"}
 
 \item{...}{other arguments for function \code{\link[survminer]{ggsurvplot}}}
-
-\item{times}{numeric vector of time points}
 }
 \description{
 Function plot for surv_explainer object visualise estimated survival curve of mean probabilities in chosen time points.
