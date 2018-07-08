@@ -20,7 +20,7 @@ cph_model <- cph(Surv(days/365, status)~., data=pbc, surv=TRUE, x = TRUE, y=TRUE
 cph_model2 <- cph(Surv(days/365, status)~sex+bili, data=pbc, surv=TRUE, x = TRUE, y=TRUE)
 
 surve_cph <- explain(model = cph_model,
-                  data = pbc, y = Surv(pbc$days/365, pbc$status),
+                  data = pbc[,-c(1,2)], y = Surv(pbc$days/365, pbc$status),
                   predict_function = predict_times)
 surve_cph2 <- explain(model = cph_model2,
                      data = pbc, y = Surv(pbc$days/365, pbc$status),
@@ -44,7 +44,7 @@ svr_cph <- variable_response(surve_cph, "sex")
 svr_cph2 <- variable_response(surve_cph2, "sex")
 svr_cph_group <- variable_response(surve_cph, "bili")
 
-#svr_rfsrc <- variable_response(surve_rf, "sex")
+#svr_rfsrc <- variable_response(surve_rf, "sex") #when we use predict function from rfsrc we have the probabilities only for 109 cases
 
 
 plot_var_resp <- plot(svr_cph)

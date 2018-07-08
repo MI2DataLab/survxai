@@ -46,7 +46,7 @@ plot.surv_variable_response_explainer <- function(x, ..., split = "model"){
          y = "mean survival probability",
          col = legend) +
     add_facet +
-    theme_bw()
+    theme_mi2()
 
 
 }

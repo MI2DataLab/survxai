@@ -29,7 +29,7 @@ plot.surv_prediction_breakdown_explainer <- function(x, ...){
         y = "mean survival probability",
         col =  "variable") +
     facet_wrap(~label) +
-    theme_bw()
+    theme_mi2()
 
 }
 
