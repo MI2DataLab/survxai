@@ -4,12 +4,15 @@
 \alias{ceteris_paribus}
 \title{Ceteris Paribus Plot}
 \usage{
-ceteris_paribus(explainer, observation, selected_variables = NULL)
+ceteris_paribus(explainer, observation, grid.points = 5,
+  selected_variables = NULL)
 }
 \arguments{
 \item{explainer}{a model to be explained, preprocessed by the 'survxai::explain' function}
 
 \item{observation}{a new observarvation for which predictions need to be explained}
+
+\item{grid.points}{grid_points number of points used for response path}
 
 \item{selected_variables}{if specified, then only these variables will be explained}
 }

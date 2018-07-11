@@ -10,12 +10,16 @@ predict_times <- function(model, data, times){
   return(prob)
 }
 
-predict_times_rf <- function(model, data, times){
-  prob <- randomForestSRC::predict.rfsrc(model, data, ntime = times)$survival
-  return(prob)
+predict_times_rf<- function(object, newdata, times, ...){
+  ptemp <- predict(object,newdata=newdata,importance="none")$survival
+  pos <- prodlim::sindex(jump.times=object$time.interest,eval.times=times)
+  p <- cbind(1,ptemp)[,pos+1,drop=FALSE]
+  if (NROW(p) != NROW(newdata) || NCOL(p) != length(times))
+    stop(paste("\nPrediction matrix has wrong dimensions:\nRequested newdata x times: ",NROW(newdata)," x ",length(times),"\nProvided prediction matrix: ",NROW(p)," x ",NCOL(p),"\n\n",sep=""))
+  p
 }
 
-rf_model <- rfsrc(Surv(days/365, status) ~ ., data = pbc, ntree = 100)
+rf_model <- rfsrc(Surv(year, status) ~ ., data = pbc[,-1], ntree = 100)
 cph_model <- cph(Surv(days/365, status)~., data=pbc, surv=TRUE, x = TRUE, y=TRUE)
 cph_model2 <- cph(Surv(days/365, status)~sex+bili, data=pbc, surv=TRUE, x = TRUE, y=TRUE)
 
@@ -43,8 +47,6 @@ broken_prediction2 <- prediction_breakdown(surve_cph2, pbc[1,-c(1,2)])
 svr_cph <- variable_response(surve_cph, "sex")
 svr_cph2 <- variable_response(surve_cph2, "sex")
 svr_cph_group <- variable_response(surve_cph, "bili")
-
-#svr_rfsrc <- variable_response(surve_rf, "sex") #when we use predict function from rfsrc we have the probabilities only for 109 cases
 
 
 plot_var_resp <- plot(svr_cph)
