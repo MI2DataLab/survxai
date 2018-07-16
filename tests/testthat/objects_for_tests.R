@@ -11,6 +11,9 @@ predict_times <- function(model, data, times){
 }
 
 predict_times_rf<- function(object, newdata, times, ...){
+  f <- sapply(new_data, is.integer)
+  cols <- names(which(f))
+  object$xvar[cols] <- lapply(object$xvar[cols], as.integer)
   ptemp <- predict(object,newdata=newdata,importance="none")$survival
   pos <- prodlim::sindex(jump.times=object$time.interest,eval.times=times)
   p <- cbind(1,ptemp)[,pos+1,drop=FALSE]

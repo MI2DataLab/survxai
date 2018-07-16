@@ -19,3 +19,20 @@ An object of class surv_prediction_breakdown_explainer
 \description{
 Function \code{surv_breakdown} is an extension of a broken function from breakDown package.
 }
+\examples{
+\dontrun{
+library(survxai)
+library(rms) 
+library(randomForestSRC)
+data(pbc, package = "randomForestSRC")
+pbc <- pbc[complete.cases(pbc),]
+predict_times <- function(model, data, times){ 
+                  prob <- rms::survest(model, data, times = times)$surv
+                  return(prob)
+                  }
+cph_model <- cph(Surv(days/365, status)~., data=pbc, surv=TRUE, x = TRUE, y=TRUE)
+surve_cph <- explain(model = cph_model, data = pbc[,-c(1,2)], y = Surv(pbc$days/365, pbc$status), 
+             predict_function = predict_times)
+broken_prediction <- prediction_breakdown(surve_cph, pbc[1,-c(1,2)])
+}
+}
