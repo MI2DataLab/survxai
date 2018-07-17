@@ -72,6 +72,7 @@ explain.default <- function(model, data = NULL, y, predict_function = yhat, link
                     label = label)
   surv_explainer <- c(surv_explainer, list(...))
   class(surv_explainer) <- "surv_explainer"
+  attr(surv_explainer, "formula") <- deparse(substitute(y))
   surv_explainer
 }
 
