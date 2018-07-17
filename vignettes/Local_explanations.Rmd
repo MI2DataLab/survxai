@@ -20,16 +20,18 @@ knitr::opts_chunk$set(echo = TRUE,
 ```
 
 # Introduction
-Package *survxai* contains functions for creating a unified representation of a survival models, which can be further processed by various survival explainers.
-The analyses carried out using this package can be divided into two parts: local analyses of new observations and global analyses showing the structures of survival models.
-Methods and functions in  *survxai* package are based on *DALEX* package (see: https://github.com/pbiecek/DALEX). 
+Package *survxai* contains functions for creating a unified representation of a survival models. Such representations can be further processed by various survival explainers. Tools implemented in *survxai* help to understand how input variables are used in the model and what impact do they have on final model prediction.
+
+The analyses carried out using this package can be divided into two parts: local analyses of new observations and global analyses showing the structures of survival models. This vignette describes local explanations.
+
+Methods and functions in  *survxai* package are based on [*DALEX* package](https://github.com/pbiecek/DALEX). 
 
 # Use case - data
 
 ## Data set
 In our use case we will use the data from the Mayo Clinic trial in primary biliary cirrhosis (PBC) of the liver conducted between 1974 and 1984. A total of 424 PBC patients, referred to Mayo Clinic during that ten-year interval, met eligibility criteria for the randomized placebo controlled trial of the drug D-penicillamine. The
 first 312 cases in the data set participated in the randomized trial and contain largely complete data.
-The `pbc` data is included in the *randomForestSRC* package.
+The `pbc` data is included in the [*randomForestSRC* package](https://cran.r-project.org/web/packages/randomForestSRC/index.html).
 ```{r dataset}
 data(pbc, package = "randomForestSRC")
 pbc <- pbc[complete.cases(pbc),]
@@ -47,24 +49,21 @@ pbc$stage <- as.factor(pbc$stage)
 
 
 ## Models
-We will now create two models of survival: Cox proportional hazards model and random forest survival model, which we would like to explain using the functions from the package *survxai*.
+We will create Cox proportional hazards model.
 ```{r, models}
 set.seed(1024)
-library(randomForestSRC)
 library(rms)
 library(survxai)
-pbc$year <- pbc$days/365
-rf_model <- rfsrc(Surv(year, status)~., data  = pbc[,-1], ntree = 100)
-cph_model <- cph(Surv(days/365, status)~., data = pbc[,-20], surv = TRUE, x = TRUE, y=TRUE)
+cph_model <- cph(Surv(days/365, status)~., data = pbc, surv = TRUE, x = TRUE, y=TRUE)
 ```
 
 # Local explanations
-Package *survxai* allows us to understand the models of survival analysis. In this section we will focus on the local explanations - the explanations for chosen new observations.
+In this section we will focus on the local explanations - the explanations for chosen new observations.
 
 ## Explainers
-Firstly we have to create some survival explainers - an object to wrap-up the black-box model with meta-data that unifies model interfacing.
+First, we have to create survival explainers - objects to wrap-up the black-box model with meta-data. Explainers unify model interfacing.
 
-For survival explainers we have to define custom predict function which takes three arguments: model, data and vector with time points.
+We have to define custom predict function which takes three arguments: model, data and vector with time points. Predict funcions may vary depending on the model. Examples for some models are in [Explainations of different survival models vignette]().
 ```{r, explainer}
 
 predict_times <- function(model, data, times){
@@ -72,58 +71,64 @@ predict_times <- function(model, data, times){
   return(prob)
 }
 
-predict_times_rf<- function(object, newdata, times, ...){
-  f <- sapply(newdata, is.integer)
-  cols <- names(which(f))
-  object$xvar[cols] <- lapply(object$xvar[cols], as.integer)
-  ptemp <- predict(object,newdata=newdata,importance="none")$survival
-  pos <- prodlim::sindex(jump.times=object$time.interest,eval.times=times)
-  p <- cbind(1,ptemp)[,pos+1,drop=FALSE]
-  if (NROW(p) != NROW(newdata) || NCOL(p) != length(times))
-    stop(paste("\nPrediction matrix has wrong dimensions:\nRequested newdata x times: ",NROW(newdata)," x ",length(times),"\nProvided prediction matrix: ",NROW(p)," x ",NCOL(p),"\n\n",sep=""))
-  p
-}
-
 surve_cph <- explain(model = cph_model,
-                  data = pbc[,-c(1,2,20)], y = Surv(pbc$days/365, pbc$status),
+                  data = pbc[,-c(1,2)], y = Surv(pbc$days/365, pbc$status),
                   predict_function = predict_times)
-
-surve_rf <- explain(model = rf_model,
-                    data = pbc[,-c(1,2,20)], y = Surv(pbc$year, pbc$status),
-                    predict_function = predict_times_rf)
 
 ```
 
 ## Ceteris paribus
-Ceteris Paribus Plots (What-If Plots) are designed to present model responses around a single point in the feature space. For example around a single prediction for an interesting observation.
+Ceteris Paribus Plots (What-If Plots) are designed to present model responses around a single point in the feature space.
 For more details for generalised models of machine learning see: https://github.com/pbiecek/ceterisParibus.
+
+Ceteris Paribus Plots for survival models are survival curves around one observation. Each curve represent observation with different value of chosen variable. For factor variables curves covers all possible values, for numeric variables values are divided into quantiles.
+
+Ceteris Paribus Plot illustrates how will the survival curve change along with the changing variable.
+
+Below, we plot Ceteris Paribus for one observation.
+
+```{r, single observation}
+single_observation <- pbc[1,-c(1,2)]
+single_observation
+```
+
 ```{r, ceteris paribus}
-cp_cph <- ceteris_paribus(surve_cph, pbc[1,-c(1,2,20)])
-cp_rf <- ceteris_paribus(surve_rf, pbc[1,-c(1,2,20)])
+cp_cph <- ceteris_paribus(surve_cph, single_observation)
 
 head(cp_cph)
 ```
 
-After creating the `surv_ceteris_paribus` object we can visualize it in a very convinient way using the generic `plot()` function.
+After creating the `surv_ceteris_paribus` object we can visualize it in a very convinient way using the generic `plot()` function. Black line represent prediction of original observation.
 
 ```{r}
 plot(cp_cph)
-plot(cp_rf)
 ```
+
+We can see that there are  differences for stages. Next, we will plot Ceteris Paribus for sigle variable `stage`.
+
+```{r}
+plot(cp_cph, selected_variable = "stage")
+```
+
+We see a trend that a lower `stage` means a higher probability of survival for chosen observation.
+
 
 ## Prediction breakdown
 Break Down Plot presents variable contributions in final predictions.
 For more details for generalised models of machine learning see: https://github.com/pbiecek/breakDown.
-```{r, prediction breakdown}
-broken_prediction_cph <- prediction_breakdown(surve_cph, pbc[1,-c(1,2,20)])
-broken_prediction_rf <- prediction_breakdown(surve_rf, pbc[1,-c(1,2,20)])
 
-head(broken_prediction_cph)
+Break Down Plots for survival models compare differences in predictions for median of time. 
+
+```{r, prediction breakdown}
+broken_prediction_cph <- prediction_breakdown(surve_cph, pbc[1,-c(1,2)])
 ```
 
 After creating the `surv_prediction_breakdown` object we can visualize it in a very convinient way using the generic `plot()` function.
 
 ```{r}
 plot(broken_prediction_cph)
-plot(broken_prediction_rf)
 ```
+
+This plot helps to understand the factors that drive survival probability for a single observation.
+
+
