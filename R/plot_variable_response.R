@@ -64,7 +64,10 @@ plot.surv_variable_response_explainer <- function(x, ..., split = "model"){
          y = "mean survival probability",
          col = legend) +
     add_facet +
-    theme_mi2()
+    theme_mi2()+
+    scale_y_continuous(breaks = seq(0,1,0.1),
+                       labels = paste(seq(0,100,10),"%"),
+                       name = "survival probability")
 
 
 }
