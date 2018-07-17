@@ -9,7 +9,7 @@ output:
     number_sections: true
 vignette: >
   %\VignetteEngine{knitr::knitr}
-  %\VignetteIndexEntry{Introduction into model audit}
+  %\VignetteIndexEntry{Survival models - local explanations}
   %\usepackage[UTF-8]{inputenc}
 ---
 
