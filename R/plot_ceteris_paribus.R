@@ -1,8 +1,9 @@
 #' @title Plot for ceteris_paribus object
 #'
-#' @description Function plot for ceteris_paribus object visualise estimated survival curve of mean probabilities in chosen time points.
+#' @description Function plot for ceteris_paribus object visualise estimated survival curve of mean probabilities in chosen time points. Black lines on each plot correspond to survival curve for our new observation specified in the \code{ceteris_paribus} function.
 #'
 #' @param x object of class "surv_ceteris_paribus_explainer"
+#' @param selected_variable g
 #' @param ... other arguments
 #'
 #' @import ggplot2
@@ -26,13 +27,17 @@
 #' @method plot surv_ceteris_paribus_explainer
 #' @export
 
-plot.surv_ceteris_paribus_explainer <- function(x, ...) {
-  #na razie dziala dla jednego obiektu ceteris paribus
+plot.surv_ceteris_paribus_explainer <- function(x, selected_variable = NULL, ...) {
   y_hat <- new_x <- time <- NULL
   dfl <- c(list(x), list(...))
   
   all_responses <- do.call(rbind, dfl)
   class(all_responses) <- "data.frame"
+  
+  
+  if(!is.null(selected_variable) && !(selected_variable %in% factor(all_responses$vname))){
+    stop(paste0("Selected variable ", selected_variable, "not present in surv_ceteris_paribus object."))
+  }
   
   all_predictions <- lapply(dfl, function(tmp) {
     pred <- attr(tmp, "prediction")
@@ -52,15 +57,21 @@ plot.surv_ceteris_paribus_explainer <- function(x, ...) {
   all_predictions$time_2 <- times$prediction
   colnames(all_predictions)[1] <- "y_hat_2"
   
-  df <- data.frame(vname = all_responses$vname, new_x = all_responses$new_x)
-  df <- unique(df)
+  if(!is.null(selected_variable)){
+    all_responses <- all_responses[which(all_responses$vname == selected_variable),]
+    legend <- unique(all_responses$vname)
+    add_theme <- labs(col = legend)
+    facet <- NULL
+  }else{
+    add_theme <- theme(legend.position = "none")
+    facet <- facet_wrap(~vname)
+  }
   
   pl <- ggplot(all_responses, aes(x = time, y = y_hat, col = factor(new_x)))+
-    geom_step()#+
-    #geom_text(data = df, aes(label=factor(new_x)), vjust = "inward", hjust = "inward")
+    geom_step()+
+    geom_step(data = all_predictions, aes(x = time_2, y = y_hat_2), col="black")
   
-  pl + facet_wrap(~vname)+
+  pl + facet +
     theme_mi2()+
-    theme(legend.position = "none")
-  #zaznaczyc na kazdym  malym wykresie nasza obserwacje i dopisac do linii wartosc zamiast legendy
+    add_theme
 }
