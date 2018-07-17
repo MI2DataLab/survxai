@@ -30,6 +30,6 @@
 
 plot.surv_explainer <- function(x, ...){
   fit <- survfit(x$model, data = x$data)
-  ggsurvplot(fit, ...)
+  ggsurvplot(fit, data = x$data,...)
 
 }

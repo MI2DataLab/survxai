@@ -15,7 +15,8 @@ RoxygenNote: 6.0.1
 Imports: breakDown, 
 	ggplot2,
 	survival,
-	survminer
+	survminer, 
+	scales
 Suggests: testthat,
     covr,
     rms,

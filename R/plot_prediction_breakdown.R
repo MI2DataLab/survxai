@@ -24,10 +24,12 @@
 #' plot(broken_prediction)
 #' }
 #' @method plot surv_prediction_breakdown_explainer
+#' 
+#' @importFrom scales seq_gradient_pal
 #' @export
 
 plot.surv_prediction_breakdown_explainer <- function(x, ...){
-  y <- col <- label <- value <- NULL
+  y <- col <- label <- value <- position <- legend <-  NULL
 
   df <- data.frame(x)
   dfl <- list(...)
@@ -49,7 +51,7 @@ plot.surv_prediction_breakdown_explainer <- function(x, ...){
   df$legend <- factor(df$legend, levels = unique(df$legend[order(df$position)]))
   
   #colors
-  cc <- scales::seq_gradient_pal("#010059","#e0f6fb")(seq(0,1,length.out=length(unique(df$legend))))
+  cc <- seq_gradient_pal("#010059","#e0f6fb")(seq(0,1,length.out=length(unique(df$legend))))
   
   #labels 
   median_time <- median(unique(df$x))

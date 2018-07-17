@@ -28,7 +28,7 @@
 #' @export
 
 plot.surv_ceteris_paribus_explainer <- function(x, selected_variable = NULL, ...) {
-  y_hat <- new_x <- time <- NULL
+  y_hat <- new_x <- time <- time_2 <- y_hat_2 <- NULL
   dfl <- c(list(x), list(...))
 
   all_responses <- do.call(rbind, dfl)

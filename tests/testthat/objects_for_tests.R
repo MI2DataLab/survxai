@@ -4,6 +4,12 @@ library(randomForestSRC)
 
 data(pbc, package = "randomForestSRC")
 pbc <- pbc[complete.cases(pbc),]
+pbc$sex <- as.factor(pbc$sex)
+
+pbc <- pbc[1:100,]
+
+pbc2 <- pbc
+pbc2 <- tibble::as_tibble(pbc2)
 
 predict_times <- function(model, data, times){
   prob <- rms::survest(model, data, times = times)$surv
@@ -32,6 +38,11 @@ surve_cph <- explain(model = cph_model,
 surve_cph2 <- explain(model = cph_model2,
                      data = pbc, y = Surv(pbc$days/365, pbc$status),
                      predict_function = predict_times, label = "2")
+
+surve_cph_tbl <- explain(model = cph_model2,
+                         data = pbc2, y = Surv(pbc2$days/365, pbc2$status),
+                         predict_function = predict_times, label = "2")
+
 surve_rf <- explain(model = rf_model,
                     data = pbc, y = Surv(pbc$days/365, pbc$status),
                     predict_function = predict_times_rf)
