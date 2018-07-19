@@ -11,8 +11,8 @@ pbc <- pbc[1:100,]
 pbc2 <- pbc
 pbc2 <- tibble::as_tibble(pbc2)
 
-predict_times <- function(model, data, times){
-  prob <- rms::survest(model, data, times = times)$surv
+predict_times <- function(object, newdata, times){
+  prob <- rms::survest(object, newdata, times = times)$surv
   return(prob)
 }
 
