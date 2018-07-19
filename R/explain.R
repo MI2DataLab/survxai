@@ -9,7 +9,7 @@
 #' @param model object - a survival model to be explained
 #' @param data data.frame or matrix - data that will be used by survival explainers. If not provided then will be extracted from the model
 #' @param y objeect of class surv contains event status and times
-#' @param predict_function function that takes three arguments: model, new data, vector with times, and returns numeric vector or matrix with predictions.
+#' @param predict_function function that takes three arguments: model, new data, vector with times, and returns numeric vector or matrix with predictions. If not passed, function \code{\link[pec]{predictSurvProb}} is used.
 #' @param link function - a transformation/link function that shall be applied to raw model predictions
 #' @param ... other parameters
 #' @param label character - the name of the survival model. By default it's extracted from the 'class' attribute of the model.
@@ -32,20 +32,20 @@
 #' @rdname explain
 #' @importFrom stats predict model.frame
 #' @importFrom utils head tail
-#' 
-#' @examples 
+#'
+#' @examples
 #' \dontrun{
 #' library(survxai)
-#' library(rms) 
+#' library(rms)
 #' library(randomForestSRC)
 #' data(pbc, package = "randomForestSRC")
 #' pbc <- pbc[complete.cases(pbc),]
-#' predict_times <- function(model, data, times){ 
+#' predict_times <- function(model, data, times){
 #'                   prob <- rms::survest(model, data, times = times)$surv
 #'                   return(prob)
 #'                   }
 #' cph_model <- cph(Surv(days/365, status)~., data=pbc, surv=TRUE, x = TRUE, y=TRUE)
-#' surve_cph <- explain(model = cph_model, data = pbc[,-c(1,2)], y = Surv(pbc$days/365, pbc$status), 
+#' surve_cph <- explain(model = cph_model, data = pbc[,-c(1,2)], y = Surv(pbc$days/365, pbc$status),
 #'              predict_function = predict_times)
 #' }
 #' @export
@@ -80,6 +80,6 @@ explain.default <- function(model, data = NULL, y, predict_function = yhat, link
 #' @rdname explain
 explain <- explain.default
 
-yhat <- function(X.model, newdata, ...) {
-    predict(X.model, newdata, ...)
+yhat <- function(X.model, newdata, times) {
+    predictSurvProb(X.model, newdata, times)
 }
