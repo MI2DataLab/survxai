@@ -25,6 +25,7 @@ Function \code{model_performance} calculates the residuals and model performance
 \examples{
 \dontrun{
    library(survxai)
+   library(rms)
    library(randomForestSRC)
    data(pbc, package = "randomForestSRC")
    pbc <- pbc[complete.cases(pbc),]

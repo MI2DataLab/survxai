@@ -12,6 +12,7 @@
 #' @examples
 #' \dontrun{
 #'    library(survxai)
+#'    library(rms)
 #'    library(randomForestSRC)
 #'    data(pbc, package = "randomForestSRC")
 #'    pbc <- pbc[complete.cases(pbc),]
@@ -22,7 +23,8 @@
 #'
 #' @references Ulla B. Mogensen, Hemant Ishwaran, Thomas A. Gerds (2012). Evaluating Random Forests for Survival Analysis Using Prediction Error Curves. Journal of Statistical Software, 50(11), 1-23. URL http://www.jstatsoft.org/v50/i11/.
 #'
-#' @importFrom pec pec
+#' @import pec
+#' @importFrom prodlim Hist
 #' @importFrom stats as.formula
 #'
 #' @export
