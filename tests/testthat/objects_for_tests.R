@@ -1,6 +1,8 @@
 library(survxai)
 library(rms)
 library(randomForestSRC)
+library(prodlim) #dlaczego nie widzi w importach?
+
 
 data(pbc, package = "randomForestSRC")
 pbc <- pbc[complete.cases(pbc),]
@@ -62,9 +64,11 @@ svr_cph <- variable_response(surve_cph, "sex")
 svr_cph2 <- variable_response(surve_cph2, "sex")
 svr_cph_group <- variable_response(surve_cph, "bili")
 cp_cph <- ceteris_paribus(surve_cph, pbc[1,-c(1,2)])
+mp_cph <- model_performance(surve_cph, data = pbc, reference_formula = Surv(days/365, status)~1)
 
 plot_var_resp <- plot(svr_cph)
 plot_var_resp_levels <- plot(svr_cph, svr_cph2, split = "level")
 plot_var_resp_default <- plot(svr_cph, svr_cph2)
 plot_cp <- plot(cp_cph)
+plot_mp <- plot(mp_cph)
 

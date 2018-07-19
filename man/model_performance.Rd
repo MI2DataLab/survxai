@@ -31,7 +31,7 @@ Function \code{model_performance} calculates the residuals and model performance
    pbc <- pbc[complete.cases(pbc),]
    cph_model <- cph(Surv(days/365, status)~., data=pbc, surv=TRUE, x = TRUE, y=TRUE)
    surve_cph <- explain(model = cph_model, data = pbc[,-c(1,2)], y = Surv(pbc$days/365, pbc$status))
-   mp_cph <- model_performance(surve_cph, data = pbc, reference_formula = Surv(days/365, status)~1
+   mp_cph <- model_performance(surve_cph, data = pbc, reference_formula = Surv(days/365, status)~1)
 }
 
 }

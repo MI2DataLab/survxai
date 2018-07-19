@@ -24,6 +24,5 @@ Suggests: testthat,
     rms,
     randomForestSRC,
     knitr,
-    prodlim,
     rmarkdown
 VignetteBuilder: knitr
