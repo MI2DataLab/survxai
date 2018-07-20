@@ -36,17 +36,14 @@ model_performance <- function(explainer, type = "BS", data = NULL, reference_for
     reference_formula <- as.formula(paste0(attributes(explainer)$formula,"~ 1"))
     message("Reference formula is taken from model object. May cause errors. Providing custom formula is recommended.")
   }
-
-
+  
   switch(type,
          BS = {
-           tryCatch({
+           p <- tryCatch({
              p <- pec(explainer$model, data = data, splitMethod = "none", formula = reference_formula)
            },  error = function(e) {
-             predictSurvProb.custom_model <- explainer$predict_function
-             custom_model <- explainer$model
-             class(custom_model) <- c(class(custom_model), "custom_model")
-             p <- pec(custom_model, data = data, splitMethod = "none", formula = reference_formula)
+             p <- pec(explainer, data = data, splitMethod = "none", formula = reference_formula)
+             return(p)
            })
            res <- data.frame(time = p$time, err = p$AppErr[[2]], err_ref = p$AppErr[[1]], label = explainer$label)
            class(res) <- c("surv_model_performance_explainer", "data.frame", "BS")

@@ -83,3 +83,10 @@ explain <- explain.default
 yhat <- function(X.model, newdata, times) {
     predictSurvProb(X.model, newdata, times)
 }
+
+
+#' @method predictSurvProb surv_explainer
+#' @export
+predictSurvProb.surv_explainer <- function(object, newdata, times, ...) {
+  object$predict_function(object$model, newdata, times)
+}

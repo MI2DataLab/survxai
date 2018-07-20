@@ -5,6 +5,7 @@ source("objects_for_tests.R")
 test_that("Creating surv_model_performance", {
   expect_is(mp_cph, "surv_model_performance_explainer")
   expect_is(mp_cph, "BS")
+  expect_is(mp_cph_artificial, "surv_model_performance_explainer")
 })
 
 test_that("Wrong input",{
