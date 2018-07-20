@@ -15,10 +15,10 @@ RoxygenNote: 6.0.1
 Imports: breakDown, 
 	ggplot2,
 	pec,
-	prodlim,
 	survival,
 	survminer, 
 	scales
+Depends: prodlim
 Suggests: testthat,
     covr,
     rms,

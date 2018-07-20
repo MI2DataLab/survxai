@@ -44,6 +44,7 @@ plot.surv_variable_response_explainer <- function(x, ..., split = "model"){
 
   if (is.numeric(df$value) & length(unique(df$value))>=4) {
     df$value <- cut(df$value, quantile(df$value, prob = seq(0, 1, length.out = 6)), include.lowest = TRUE)
+    df <- aggregate(y~., data = df, mean)
   }
 
   if (split == "level") {

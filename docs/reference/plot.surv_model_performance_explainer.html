@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Plot for ceteris_paribus object — plot.surv_ceteris_paribus_explainer • survxai</title>
+<title>Plot for surv_model_performance object — plot.surv_model_performance_explainer • survxai</title>
 
 <!-- jquery -->
 <script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script>
@@ -48,7 +48,7 @@
 	  <a class = "navbar-mi2logo" href="http://mi2.mini.pw.edu.pl/">
         <img src = "https://github.com/mi2-warsaw/MI2template/blob/master/inst/pkgdown/assets/MI2logo.jpg?raw=true" alt = "MI2" height = 46 title = "MI2">
 	  </a>
-      <a class="navbar-brand navbar-mi2" href="../index.html">Plot for ceteris_paribus object</a>
+      <a class="navbar-brand navbar-mi2" href="../index.html">Plot for surv_model_performance object</a>
     </div>
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="navbar-mi2 nav navbar-nav">
@@ -94,27 +94,26 @@
       <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Plot for ceteris_paribus object</h1>
+    <h1>Plot for surv_model_performance object</h1>
     </div>
 
     
-    <p>Function plot for ceteris_paribus object visualise estimated survival curve of mean probabilities in chosen time points. Black lines on each plot correspond to survival curve for our new observation specified in the <code>ceteris_paribus</code> function.</p>
+    <p>Function plot for surv_model_perfomance object.</p>
     
 
-    <pre class="usage"><span class='co'># S3 method for surv_ceteris_paribus_explainer</span>
-<span class='fu'>plot</span>(<span class='no'>x</span>, <span class='kw'>selected_variable</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='no'>...</span>)</pre>
+    <pre class="usage"><span class='co'># S3 method for surv_model_performance_explainer</span>
+<span class='fu'>plot</span>(<span class='no'>x</span>, <span class='kw'>reference</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='no'>...</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a> Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>x</th>
-      <td><p>object of class "surv_ceteris_paribus_explainer"</p></td>
+      <td><p>object of class "surv_model_performance"</p></td>
     </tr>
     <tr>
-      <th>selected_variable</th>
-      <td><p>g</p></td>
+      <th>reference</th>
+      <td><p>Logical. If TRUE reference level will be plotted.</p></td>
     </tr>
     <tr>
       <th>...</th>
@@ -125,21 +124,17 @@
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><span class='co'># NOT RUN {</span>
-<span class='fu'>library</span>(<span class='no'>survxai</span>)
-<span class='fu'>library</span>(<span class='no'>rms</span>)
-<span class='fu'>library</span>(<span class='no'>randomForestSRC</span>)
-<span class='fu'>data</span>(<span class='no'>pbc</span>, <span class='kw'>package</span> <span class='kw'>=</span> <span class='st'>"randomForestSRC"</span>)
-<span class='no'>pbc</span> <span class='kw'>&lt;-</span> <span class='no'>pbc</span>[<span class='fu'>complete.cases</span>(<span class='no'>pbc</span>),]
-<span class='no'>predict_times</span> <span class='kw'>&lt;-</span> <span class='kw'>function</span>(<span class='no'>model</span>, <span class='no'>data</span>, <span class='no'>times</span>){
-                  <span class='no'>prob</span> <span class='kw'>&lt;-</span> <span class='kw pkg'>rms</span><span class='kw ns'>::</span><span class='fu'><a href='http://www.rdocumentation.org/packages/rms/topics/survest.cph'>survest</a></span>(<span class='no'>model</span>, <span class='no'>data</span>, <span class='kw'>times</span> <span class='kw'>=</span> <span class='no'>times</span>)$<span class='no'>surv</span>
-                  <span class='fu'>return</span>(<span class='no'>prob</span>)
-                  }
-<span class='no'>cph_model</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='http://www.rdocumentation.org/packages/rms/topics/cph'>cph</a></span>(<span class='fu'>Surv</span>(<span class='no'>days</span>/<span class='fl'>365</span>, <span class='no'>status</span>)~<span class='no'>.</span>, <span class='kw'>data</span><span class='kw'>=</span><span class='no'>pbc</span>, <span class='kw'>surv</span><span class='kw'>=</span><span class='fl'>TRUE</span>, <span class='kw'>x</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>y</span><span class='kw'>=</span><span class='fl'>TRUE</span>)
-<span class='no'>surve_cph</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='explain.html'>explain</a></span>(<span class='kw'>model</span> <span class='kw'>=</span> <span class='no'>cph_model</span>, <span class='kw'>data</span> <span class='kw'>=</span> <span class='no'>pbc</span>[,-<span class='fu'>c</span>(<span class='fl'>1</span>,<span class='fl'>2</span>)], <span class='kw'>y</span> <span class='kw'>=</span> <span class='fu'>Surv</span>(<span class='no'>pbc</span>$<span class='no'>days</span>/<span class='fl'>365</span>, <span class='no'>pbc</span>$<span class='no'>status</span>),
-             <span class='kw'>predict_function</span> <span class='kw'>=</span> <span class='no'>predict_times</span>)
-<span class='no'>cp_cph</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='ceteris_paribus.html'>ceteris_paribus</a></span>(<span class='no'>surve_cph</span>, <span class='no'>pbc</span>[<span class='fl'>1</span>,-<span class='fu'>c</span>(<span class='fl'>1</span>,<span class='fl'>2</span>)])
-<span class='fu'>plot</span>(<span class='no'>cp_cph</span>)
-<span class='co'># }</span></pre>
+   <span class='fu'>library</span>(<span class='no'>survxai</span>)
+   <span class='fu'>library</span>(<span class='no'>randomForestSRC</span>)
+   <span class='fu'>library</span>(<span class='no'>rms</span>)
+   <span class='fu'>data</span>(<span class='no'>pbc</span>, <span class='kw'>package</span> <span class='kw'>=</span> <span class='st'>"randomForestSRC"</span>)
+   <span class='no'>pbc</span> <span class='kw'>&lt;-</span> <span class='no'>pbc</span>[<span class='fu'>complete.cases</span>(<span class='no'>pbc</span>),]
+   <span class='no'>cph_model</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='http://www.rdocumentation.org/packages/rms/topics/cph'>cph</a></span>(<span class='fu'>Surv</span>(<span class='no'>days</span>/<span class='fl'>365</span>, <span class='no'>status</span>)~<span class='no'>.</span>, <span class='kw'>data</span><span class='kw'>=</span><span class='no'>pbc</span>, <span class='kw'>surv</span><span class='kw'>=</span><span class='fl'>TRUE</span>, <span class='kw'>x</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>y</span><span class='kw'>=</span><span class='fl'>TRUE</span>)
+   <span class='no'>surve_cph</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='explain.html'>explain</a></span>(<span class='kw'>model</span> <span class='kw'>=</span> <span class='no'>cph_model</span>, <span class='kw'>data</span> <span class='kw'>=</span> <span class='no'>pbc</span>[,-<span class='fu'>c</span>(<span class='fl'>1</span>,<span class='fl'>2</span>)], <span class='kw'>y</span> <span class='kw'>=</span> <span class='fu'>Surv</span>(<span class='no'>pbc</span>$<span class='no'>days</span>/<span class='fl'>365</span>, <span class='no'>pbc</span>$<span class='no'>status</span>))
+   <span class='no'>mp_cph</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='model_performance.html'>model_performance</a></span>(<span class='no'>surve_cph</span>, <span class='kw'>data</span> <span class='kw'>=</span> <span class='no'>pbc</span>, <span class='kw'>reference_formula</span> <span class='kw'>=</span> <span class='fu'>Surv</span>(<span class='no'>days</span>/<span class='fl'>365</span>, <span class='no'>status</span>)~<span class='fl'>1</span>)
+   <span class='fu'>plot</span>(<span class='no'>mp_cph</span>)
+<span class='co'># }</span><div class='input'>
+</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>

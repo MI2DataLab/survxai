@@ -5,7 +5,7 @@
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Survival models - local explanations • survxai</title>
+<title>Survival models - global explanations • survxai</title>
 <!-- jquery --><script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script><!-- Bootstrap --><link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script><!-- Font Awesome icons --><link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-T8Gy5hrqNKT+hzMclPo118YTQO6cYprQmhrYwIiQ/3axmI1hQomh7Ud2hPOy8SP1" crossorigin="anonymous">
 <!-- pkgdown --><link href="../pkgdown.css" rel="stylesheet">
@@ -70,13 +70,13 @@
       </header><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
-      <h1>Survival models - local explanations</h1>
-                        <h4 class="author">Aleksandra Grudziaz</h4>
+      <h1>Survival models - global explanations</h1>
+                        <h4 class="author">Alicja Gosiewska</h4>
             
             <h4 class="date">2018-07-20</h4>
       
       
-      <div class="hidden name"><code>Local_explanations.Rmd</code></div>
+      <div class="hidden name"><code>Global_explanations.Rmd</code></div>
 
     </div>
 
@@ -128,13 +128,13 @@ pbc<span class="op">$</span>stage &lt;-<span class="st"> </span><span class="kw"
 
 pbc_smaller &lt;-<span class="st"> </span>pbc[,<span class="kw">c</span>(<span class="st">"days"</span>, <span class="st">"status"</span>, <span class="st">"treatment"</span>, <span class="st">"sex"</span>, <span class="st">"age"</span>, <span class="st">"bili"</span>, <span class="st">"stage"</span>)]
 
-cph_model &lt;-<span class="st"> </span><span class="kw">cph</span>(<span class="kw">Surv</span>(days<span class="op">/</span><span class="dv">365</span>, status)<span class="op">~</span>. , <span class="dt">data =</span> pbc_smaller, <span class="dt">surv =</span> <span class="ot">TRUE</span>, <span class="dt">x =</span> <span class="ot">TRUE</span>, <span class="dt">y=</span><span class="ot">TRUE</span>)</code></pre></div>
+cph_model &lt;-<span class="st"> </span><span class="kw">cph</span>(<span class="kw">Surv</span>(days<span class="op">/</span><span class="dv">365</span>, status)<span class="op">~</span>., <span class="dt">data =</span> pbc_smaller, <span class="dt">surv =</span> <span class="ot">TRUE</span>, <span class="dt">x =</span> <span class="ot">TRUE</span>, <span class="dt">y=</span><span class="ot">TRUE</span>)</code></pre></div>
 </div>
 </div>
-<div id="local-explanations" class="section level1">
+<div id="global-explanations" class="section level1">
 <h1 class="hasAnchor">
-<a href="#local-explanations" class="anchor"></a>Local explanations</h1>
-<p>In this section we will focus on the local explanations - the explanations for chosen new observations.</p>
+<a href="#global-explanations" class="anchor"></a>Global explanations</h1>
+<p>In this section we will focus on explanations of the global and conditional model structure.</p>
 <div id="explainers" class="section level2">
 <h2 class="hasAnchor">
 <a href="#explainers" class="anchor"></a>Explainers</h2>
@@ -146,55 +146,32 @@ cph_model &lt;-<span class="st"> </span><span class="kw">cph</span>(<span class=
 }
 
 surve_cph &lt;-<span class="st"> </span><span class="kw"><a href="../reference/explain.html">explain</a></span>(<span class="dt">model =</span> cph_model,
-                  <span class="dt">data =</span> pbc_smaller[,<span class="op">-</span><span class="kw">c</span>(<span class="dv">1</span>,<span class="dv">2</span>)], <span class="dt">y =</span> <span class="kw">Surv</span>(pbc_smaller<span class="op">$</span>days<span class="op">/</span><span class="dv">365</span>, pbc_smaller<span class="op">$</span>status),
-                  <span class="dt">predict_function =</span> predict_times)</code></pre></div>
+                     <span class="dt">data =</span> pbc_smaller[,<span class="op">-</span><span class="kw">c</span>(<span class="dv">1</span>,<span class="dv">2</span>)], <span class="dt">y =</span> <span class="kw">Surv</span>(pbc_smaller<span class="op">$</span>days<span class="op">/</span><span class="dv">365</span>, pbc_smaller<span class="op">$</span>status),
+                     <span class="dt">predict_function =</span> predict_times)</code></pre></div>
 </div>
-<div id="ceteris-paribus" class="section level2">
+<div id="model-performance" class="section level2">
 <h2 class="hasAnchor">
-<a href="#ceteris-paribus" class="anchor"></a>Ceteris paribus</h2>
-<p>Ceteris Paribus Plots (What-If Plots) are designed to present model responses around a single point in the feature space. For more details for generalised models of machine learning see: <a href="https://github.com/pbiecek/ceterisParibus" class="uri">https://github.com/pbiecek/ceterisParibus</a>.</p>
-<p>Ceteris Paribus Plots for survival models are survival curves around one observation. Each curve represent observation with different value of chosen variable. For factor variables curves covers all possible values, for numeric variables values are divided into quantiles.</p>
-<p>Ceteris Paribus Plot illustrates how will the survival curve change along with the changing variable.</p>
-<p>Below, we plot Ceteris Paribus for one observation.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">single_observation &lt;-<span class="st"> </span>pbc_smaller[<span class="dv">1</span>,<span class="op">-</span><span class="kw">c</span>(<span class="dv">1</span>,<span class="dv">2</span>)]
-single_observation</code></pre></div>
-<pre><code>##   treatment sex   age bili stage
-## 1         1   1 21464 14.5     4</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">cp_cph &lt;-<span class="st"> </span><span class="kw"><a href="../reference/ceteris_paribus.html">ceteris_paribus</a></span>(surve_cph, single_observation)
+<a href="#model-performance" class="anchor"></a>Model performance</h2>
+<p>currently, in the <em>survxai</em> package is implemented only the <code>BS</code> type of model performance. In this metod for each time point we compute the prediction error for our model and the reference model, defined by the <code>reference_formula</code> argument.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">mp_cph &lt;-<span class="st"> </span><span class="kw"><a href="../reference/model_performance.html">model_performance</a></span>(surve_cph, <span class="dt">data =</span> pbc_smaller, <span class="dt">reference_formula =</span> <span class="kw">Surv</span>(days<span class="op">/</span><span class="dv">365</span>, status)<span class="op">~</span><span class="dv">1</span>)</code></pre></div>
+<p>After creating the <code>surv_model_prediction</code> object we can visualize it in a very convinient way using the generic <code>plot()</code> function. On our plot there are prediction error curves for model from the explainer and reference model. For more details about these curves see: <a href="https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4194196/">Mogensen, 2012</a></p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">plot</span>(mp_cph)</code></pre></div>
+<p><img src="Global_explanations_files/figure-html/unnamed-chunk-3-1.png" width="700"></p>
+</div>
+<div id="variable-response" class="section level2">
+<h2 class="hasAnchor">
+<a href="#variable-response" class="anchor"></a>Variable response</h2>
+<p>Variable response explainers are designed to better understand the relation between a variable and a model output. These types of explainers are inspired among others by <em>pdp</em> package <a href="https://journal.r-project.org/archive/2017/RJ-2017-016/index.html">Greenwell, 2017</a>.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">vr_cph_sex &lt;-<span class="st"> </span><span class="kw"><a href="../reference/variable_response.html">variable_response</a></span>(surve_cph, <span class="st">"sex"</span>)
 
-<span class="kw">head</span>(cp_cph)</code></pre></div>
-<pre><code>##       y_hat new_x     vname   x_quant quant relative_quant label      time
-## 1 0.9789502     1 treatment 0.4927536     0     -0.4927536 coxph 0.1123288
-## 2 0.9574511     1 treatment 0.4927536     0     -0.4927536 coxph 0.1397260
-## 3 0.9360096     1 treatment 0.4927536     0     -0.4927536 coxph 0.1945205
-## 4 0.9147630     1 treatment 0.4927536     0     -0.4927536 coxph 0.2109589
-## 5 0.8929362     1 treatment 0.4927536     0     -0.4927536 coxph 0.3013699
-## 6 0.8715713     1 treatment 0.4927536     0     -0.4927536 coxph 0.3589041
-##     class
-## 1 numeric
-## 2 numeric
-## 3 numeric
-## 4 numeric
-## 5 numeric
-## 6 numeric</code></pre>
-<p>After creating the <code>surv_ceteris_paribus</code> object we can visualize it in a very convinient way using the generic <code>plot()</code> function. Black line represent prediction of original observation.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">plot</span>(cp_cph)</code></pre></div>
-<p><img src="Local_explanations_files/figure-html/unnamed-chunk-2-1.png" width="700"></p>
-<p>We can see that there are differences for stages. Next, we will plot Ceteris Paribus for sigle variable <code>stage</code>.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">plot</span>(cp_cph, <span class="dt">selected_variable =</span> <span class="st">"stage"</span>)</code></pre></div>
-<p><img src="Local_explanations_files/figure-html/unnamed-chunk-3-1.png" width="700"></p>
-<p>We see a trend that a lower <code>stage</code> means a higher probability of survival for chosen observation.</p>
-</div>
-<div id="prediction-breakdown" class="section level2">
-<h2 class="hasAnchor">
-<a href="#prediction-breakdown" class="anchor"></a>Prediction breakdown</h2>
-<p>Break Down Plot presents variable contributions in final predictions. For more details for generalised models of machine learning see: <a href="https://github.com/pbiecek/breakDown" class="uri">https://github.com/pbiecek/breakDown</a>.</p>
-<p>Break Down Plots for survival models compare differences in predictions for median of time.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">broken_prediction_cph &lt;-<span class="st"> </span><span class="kw"><a href="../reference/prediction_breakdown.html">prediction_breakdown</a></span>(surve_cph, pbc_smaller[<span class="dv">1</span>,<span class="op">-</span><span class="kw">c</span>(<span class="dv">1</span>,<span class="dv">2</span>)])</code></pre></div>
-<p>After creating the <code>surv_prediction_breakdown</code> object we can visualize it in a very convinient way using the generic <code>plot()</code> function.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">plot</span>(broken_prediction_cph)</code></pre></div>
-<p><img src="Local_explanations_files/figure-html/unnamed-chunk-4-1.png" width="700"></p>
-<p>This plot helps to understand the factors that drive survival probability for a single observation.</p>
+vr_cph_bili &lt;-<span class="st"> </span><span class="kw"><a href="../reference/variable_response.html">variable_response</a></span>(surve_cph, <span class="st">"bili"</span>)</code></pre></div>
+<p>After creating the <code>surv_variable_response</code> objects we can visualize them in a very convinient way using the generic <code>plot()</code> function.</p>
+<p>Variable response plots for survival models are survival curves conditioned by one variable. Each curve represent different value of chosen variable. For factor variables curves covers all possible values, for numeric variables values are divided into quantiles.</p>
+<p>Variable response plot illustrates how will the mean survival curve change along with the changing variable value.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">plot</span>(vr_cph_sex)</code></pre></div>
+<p><img src="Global_explanations_files/figure-html/unnamed-chunk-5-1.png" width="700"></p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">plot</span>(vr_cph_bili)</code></pre></div>
+<p><img src="Global_explanations_files/figure-html/unnamed-chunk-6-1.png" width="700"></p>
 </div>
 </div>
   </div>
@@ -212,10 +189,10 @@ single_observation</code></pre></div>
       </ul>
 </li>
       <li>
-<a href="#local-explanations">Local explanations</a><ul class="nav nav-pills nav-stacked">
+<a href="#global-explanations">Global explanations</a><ul class="nav nav-pills nav-stacked">
 <li><a href="#explainers">Explainers</a></li>
-      <li><a href="#ceteris-paribus">Ceteris paribus</a></li>
-      <li><a href="#prediction-breakdown">Prediction breakdown</a></li>
+      <li><a href="#model-performance">Model performance</a></li>
+      <li><a href="#variable-response">Variable response</a></li>
       </ul>
 </li>
       </ul>

@@ -69,6 +69,12 @@
   </a>
   <ul class="dropdown-menu" role="menu">
     <li>
+      <a href="../articles/Custom_predict_for_survival_models.html">Custom predict function for survival models</a>
+    </li>
+    <li>
+      <a href="../articles/Global_explanations.html">Survival models - global explanations</a>
+    </li>
+    <li>
       <a href="../articles/Local_explanations.html">Survival models - local explanations</a>
     </li>
   </ul>
@@ -121,7 +127,7 @@ But some survival explainers may require that others will be provided too.</p>
     </tr>
     <tr>
       <th>predict_function</th>
-      <td><p>function that takes three arguments: model, new data, vector with times, and returns numeric vector or matrix with predictions.</p></td>
+      <td><p>function that takes three arguments: model, new data, vector with times, and returns numeric vector or matrix with predictions. If not passed, function <code><a href='http://www.rdocumentation.org/packages/pec/topics/predictSurvProb'>predictSurvProb</a></code> is used.</p></td>
     </tr>
     <tr>
       <th>link</th>

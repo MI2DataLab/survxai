@@ -1,6 +1,6 @@
 ---
-title: "Survival models - local explanations"
-author: "Aleksandra Grudziaz"
+title: "Survival models - global explanations"
+author: "Alicja Gosiewska"
 date: "`r Sys.Date()`"
 output: 
   html_document:
@@ -9,10 +9,10 @@ output:
     number_sections: true
 vignette: >
   %\VignetteEngine{knitr::knitr}
-  %\VignetteIndexEntry{Survival models - local explanations}
+  %\VignetteIndexEntry{Survival models - global explanations}
   %\usepackage[UTF-8]{inputenc}
 ---
-
+  
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE,
                       message = FALSE,
@@ -57,11 +57,11 @@ library(survxai)
 
 pbc_smaller <- pbc[,c("days", "status", "treatment", "sex", "age", "bili", "stage")]
 
-cph_model <- cph(Surv(days/365, status)~. , data = pbc_smaller, surv = TRUE, x = TRUE, y=TRUE)
+cph_model <- cph(Surv(days/365, status)~., data = pbc_smaller, surv = TRUE, x = TRUE, y=TRUE)
 ```
 
-# Local explanations
-In this section we will focus on the local explanations - the explanations for chosen new observations.
+# Global explanations
+In this section we will focus on explanations of the global and conditional model structure.
 
 ## Explainers
 First, we have to create survival explainers - objects to wrap-up the black-box model with meta-data. Explainers unify model interfacing.
@@ -75,63 +75,46 @@ predict_times <- function(model, data, times){
 }
 
 surve_cph <- explain(model = cph_model,
-                  data = pbc_smaller[,-c(1,2)], y = Surv(pbc_smaller$days/365, pbc_smaller$status),
-                  predict_function = predict_times)
+                     data = pbc_smaller[,-c(1,2)], y = Surv(pbc_smaller$days/365, pbc_smaller$status),
+                     predict_function = predict_times)
 
 ```
 
-## Ceteris paribus
-Ceteris Paribus Plots (What-If Plots) are designed to present model responses around a single point in the feature space.
-For more details for generalised models of machine learning see: https://github.com/pbiecek/ceterisParibus.
-
-Ceteris Paribus Plots for survival models are survival curves around one observation. Each curve represent observation with different value of chosen variable. For factor variables curves covers all possible values, for numeric variables values are divided into quantiles.
-
-Ceteris Paribus Plot illustrates how will the survival curve change along with the changing variable.
-
-Below, we plot Ceteris Paribus for one observation.
-
-```{r, single observation}
-single_observation <- pbc_smaller[1,-c(1,2)]
-single_observation
+## Model performance
+currently, in the *survxai* package is implemented only the `BS` type of model performance.
+In this metod for each time point we compute the prediction error for our model and the reference model, defined by the `reference_formula` argument.
+```{r}
+mp_cph <- model_performance(surve_cph, data = pbc_smaller, reference_formula = Surv(days/365, status)~1)
 ```
 
-```{r, ceteris paribus}
-cp_cph <- ceteris_paribus(surve_cph, single_observation)
-
-head(cp_cph)
-```
-
-After creating the `surv_ceteris_paribus` object we can visualize it in a very convinient way using the generic `plot()` function. Black line represent prediction of original observation.
+After creating the `surv_model_prediction` object we can visualize it in a very convinient way using the generic `plot()` function. 
+On our plot there are prediction error curves for model from the explainer and reference model.
+For more details about these curves see: [Mogensen, 2012](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4194196/)
 
 ```{r}
-plot(cp_cph)
+plot(mp_cph)
 ```
 
-We can see that there are  differences for stages. Next, we will plot Ceteris Paribus for sigle variable `stage`.
+
+## Variable response
+Variable response explainers are designed to better understand the relation between a variable and a model output.
+These types of explainers are inspired among others by *pdp* package [Greenwell, 2017](https://journal.r-project.org/archive/2017/RJ-2017-016/index.html).
+```{r}
+vr_cph_sex <- variable_response(surve_cph, "sex")
+
+vr_cph_bili <- variable_response(surve_cph, "bili")
+```
+
+
+After creating the `surv_variable_response` objects we can visualize them in a very convinient way using the generic `plot()` function.
+
+Variable response plots for survival models are survival curves conditioned by one variable. Each curve represent different value of chosen variable. For factor variables curves covers all possible values, for numeric variables values are divided into quantiles.
+
+Variable response plot illustrates how will the mean survival curve change along with the changing variable value.
+```{r}
+plot(vr_cph_sex)
+```
 
 ```{r}
-plot(cp_cph, selected_variable = "stage")
+plot(vr_cph_bili)
 ```
-
-We see a trend that a lower `stage` means a higher probability of survival for chosen observation.
-
-
-## Prediction breakdown
-Break Down Plot presents variable contributions in final predictions.
-For more details for generalised models of machine learning see: https://github.com/pbiecek/breakDown.
-
-Break Down Plots for survival models compare differences in predictions for median of time. 
-
-```{r, prediction breakdown}
-broken_prediction_cph <- prediction_breakdown(surve_cph, pbc_smaller[1,-c(1,2)])
-```
-
-After creating the `surv_prediction_breakdown` object we can visualize it in a very convinient way using the generic `plot()` function.
-
-```{r}
-plot(broken_prediction_cph)
-```
-
-This plot helps to understand the factors that drive survival probability for a single observation.
-
-
