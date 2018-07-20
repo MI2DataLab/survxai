@@ -1,0 +1,95 @@
+---
+title: "Custom predict function for survival models"
+author: "Alicja Gosiewska, Aleksandra Grudziąż"
+date: "`r Sys.Date()`"
+output: 
+  html_document:
+    toc: true
+    toc_float: true
+    number_sections: true
+vignette: >
+  %\VignetteEngine{knitr::knitr}
+  %\VignetteIndexEntry{Custom predict function for survival models}
+  %\usepackage[UTF-8]{inputenc}
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE,
+                      message = FALSE,
+                      warning = FALSE)
+```
+
+# Introduction
+
+This vignette contains example predict functions for survival models. Some functions are already implemented. Therefore, for some models there is no need to specify predict function.
+
+```{r dataset}
+data(pbc, package = "randomForestSRC")
+pbc <- pbc[complete.cases(pbc),]
+pbc$sex <- as.factor(pbc$sex)
+pbc$stage <- as.factor(pbc$stage)
+```
+
+
+# Implemented Models
+
+Currently implemented model classes. Objects listed below don't need specified predict function.
+
+* `aalen`
+* `riskRegression`
+* `cox.aalen`
+* `cph`
+* `coxph`
+* `matrix`
+* `selectCox`
+* `pecCforest`
+* `prodlim`
+* `psm`
+* `survfit`
+* `pecRpart`
+* `pecCtree`
+
+```{r, models}
+set.seed(1024)
+library(rms)
+library(survxai)
+cph_model <- cph(Surv(days/365, status)~., data = pbc, surv = TRUE, x = TRUE, y=TRUE)
+
+surve_cph <- explain(model = cph_model,
+                     data = pbc[,-c(1,2)], y = Surv(pbc$days/365, pbc$status))
+```
+
+# RandomForestSRC
+
+Predict function for class `RandomForestSRC` is not implemented. Therefore, custom predict function should be provided.
+
+```{r}
+library(prodlim)
+library(randomForestSRC)
+
+predict_times_rf <- function(object, newdata, times, ...){
+  f <- sapply(newdata, is.integer)
+  cols <- names(which(f))
+  object$xvar[cols] <- lapply(object$xvar[cols], as.integer)
+  ptemp <- predict(object,newdata=newdata,importance="none")$survival
+  pos <- prodlim::sindex(jump.times=object$time.interest,eval.times=times)
+  p <- cbind(1,ptemp)[,pos+1,drop=FALSE]
+  return(p)
+}
+```
+
+```{r}
+pbc$year <- pbc$days/365
+rf_model <- rfsrc(Surv(year, status)~., data = pbc[,-1])
+
+surve_rf <- explain(model = rf_model,
+                    data = pbc[,-c(1,2,20)], y = Surv(pbc$year, pbc$status),
+                    predict_function = predict_times_rf)
+```
+
+
+
+
+
+
+
