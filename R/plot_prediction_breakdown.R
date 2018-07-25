@@ -46,6 +46,12 @@ plot.surv_prediction_breakdown_explainer <- function(x, ...){
     add_facet <- facet_wrap(~label)
   }
 
+  if(!is.null(attributes(x)$prob)){
+    line <- geom_hline(yintercept = attributes(x)$prob)
+  }else{
+    line <- geom_vline(xintercept = attributes(x)$time)
+  }
+
   df$legend <- paste0(df$position,": ", df$value)
   broken_cumm <- attributes(x)$contribution
   broken_cumm$contribution <- round(broken_cumm$contribution, digits = 2)
@@ -77,6 +83,7 @@ plot.surv_prediction_breakdown_explainer <- function(x, ...){
     add_facet +
     theme_mi2()+
     scale_colour_manual(values=cc)+
+    line+
     scale_y_continuous(breaks = seq(0,1,0.1),
                        labels = paste(seq(0,100,10),"%"),
                        name = "survival probability")
