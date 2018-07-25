@@ -51,10 +51,11 @@ prediction_breakdown <- function(explainer, observation, ...){
 
   class(res) <- "data.frame"
 
-
+  
+  result <- data.frame(x = numeric(), y = numeric(), variable = character(), label = character(), position = numeric(), value = character())
   res <- res[-c(1, nrow(res)),]
 
-  result <- data.frame(x = numeric(), y = numeric(), variable = character(), label = character(), position = numeric(), value = character())
+ 
   times <- sort(explainer$y[,1])
 
   #baseline
@@ -93,6 +94,9 @@ prediction_breakdown <- function(explainer, observation, ...){
     mean_prediction$value <- res[i, "variable"]
     result <- rbind(result, mean_prediction)
   }
+  
+  res <- res[,c("contribution", "variable")]
+  attr(result, "contribution") <- res
 
   class(result) <- c("surv_prediction_breakdown_explainer", "data.frame")
   result

@@ -42,11 +42,12 @@ model_performance <- function(explainer, type = "BS", data = NULL, reference_for
            p <- tryCatch({
              p <- pec(explainer$model, data = data, splitMethod = "none", formula = reference_formula)
            },  error = function(e) {
-             p <- pec(explainer, data = data, splitMethod = "none", formula = reference_formula)
+             p <- pec(explainer, data = data, splitMethod = "none", formula = reference_formula, reference = FALSE)
              return(p)
            })
            res <- data.frame(time = p$time, err = p$AppErr[[2]], err_ref = p$AppErr[[1]], label = explainer$label)
            class(res) <- c("surv_model_performance_explainer", "data.frame", "BS")
+           attr(res, "type") <- type
            return(res)
          },
          stop("Currently only 'BS' method is implemented"))

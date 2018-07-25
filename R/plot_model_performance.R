@@ -28,6 +28,10 @@ plot.surv_model_performance_explainer <- function(x, reference = TRUE, ...){
   time <- err <- label <- NULL
 
   df <- data.frame(x)
+  type <- attributes(x)$type
+  if(type == "BS"){
+    type <- "Brier Score"
+  }
 
   if(reference == TRUE) {
     df_ref <- data.frame(time = df$time, err = df$err_ref, err_ref = df$err_ref)
@@ -46,7 +50,7 @@ plot.surv_model_performance_explainer <- function(x, reference = TRUE, ...){
 
   ggplot(df, aes(x = time, y = err, color = label)) +
     geom_step() +
-    labs(title = "Prediction Error Curve",
+    labs(title = paste("Prediction Error Curve for", type,"method"),         
          x = "time",
          y = "prediction error") +
     theme_mi2()+
