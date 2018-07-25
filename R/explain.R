@@ -8,7 +8,8 @@
 #'
 #' @param model object - a survival model to be explained
 #' @param data data.frame or matrix - data that will be used by survival explainers. If not provided then will be extracted from the model
-#' @param y objeect of class surv contains event status and times
+#' @param y object of class surv contains event status and times
+#' @param times optional argument, the vector of time points on which we want to predict survival probability 
 #' @param predict_function function that takes three arguments: model, new data, vector with times, and returns numeric vector or matrix with predictions. If not passed, function \code{\link[pec]{predictSurvProb}} is used.
 #' @param link function - a transformation/link function that shall be applied to raw model predictions
 #' @param ... other parameters
@@ -50,7 +51,7 @@
 #' }
 #' @export
 
-explain.default <- function(model, data = NULL, y, predict_function = yhat, link = I, ..., label = tail(class(model), 1)) {
+explain.default <- function(model, data = NULL, y, times = NULL, predict_function = yhat, link = I, ..., label = tail(class(model), 1)) {
   if (is.null(data)) {
     possible_data <- try(model.frame(model), silent = TRUE)
     if (class(possible_data) != "try-error") {
@@ -62,10 +63,17 @@ explain.default <- function(model, data = NULL, y, predict_function = yhat, link
   if ("tbl" %in% class(data)) {
     data <- as.data.frame(data)
   }
+  
+  if(!is.null(times)){
+    times <- times
+  }else{
+    times <- y[,1]
+  }
 
   surv_explainer <- list(model = model,
                     data = data,
                     y = y,
+                    times = times,
                     predict_function = predict_function,
                     link = link,
                     class = class(model),

@@ -44,7 +44,7 @@ variable_response <- function(explainer, variable, type = "pdp", trans = explain
 
 
 surv_partial <- function(explainer, variable){
-  times <- sort(explainer$y[,1])
+  times <- sort(explainer$times)
   tmp_data <- explainer$data
   values <- unique(explainer$data[,variable])
 

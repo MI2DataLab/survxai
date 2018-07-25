@@ -5,18 +5,20 @@
 \alias{explain}
 \title{Create Survival Model Explainer}
 \usage{
-explain.default(model, data = NULL, y, predict_function = yhat, link = I,
-  ..., label = tail(class(model), 1))
+explain.default(model, data = NULL, y, times = NULL,
+  predict_function = yhat, link = I, ..., label = tail(class(model), 1))
 
-explain(model, data = NULL, y, predict_function = yhat, link = I, ...,
-  label = tail(class(model), 1))
+explain(model, data = NULL, y, times = NULL, predict_function = yhat,
+  link = I, ..., label = tail(class(model), 1))
 }
 \arguments{
 \item{model}{object - a survival model to be explained}
 
 \item{data}{data.frame or matrix - data that will be used by survival explainers. If not provided then will be extracted from the model}
 
-\item{y}{objeect of class surv contains event status and times}
+\item{y}{object of class surv contains event status and times}
+
+\item{times}{optional argument, the vector of time points on which we want to predict survival probability}
 
 \item{predict_function}{function that takes three arguments: model, new data, vector with times, and returns numeric vector or matrix with predictions. If not passed, function \code{\link[pec]{predictSurvProb}} is used.}
 

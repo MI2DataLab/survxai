@@ -45,7 +45,8 @@ ceteris_paribus <- function(explainer, observation, grid.points = 5, selected_va
   if (!is.null(selected_variables)) {
     names_to_present <- intersect(names_to_present, selected_variables)
   }
-  times <- explainer$y[,1]
+  times <- explainer$times
+  
   times <- sort(times)
   
   responses <- lapply(names_to_present, function(vname) {
