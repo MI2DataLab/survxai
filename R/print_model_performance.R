@@ -12,24 +12,25 @@ print.surv_model_performance_explainer <- function(x, times = NULL, ...) {
   }else{
     times_to_set <- times
   }
+
+  x <- as.data.frame(x)
   x$time <- floor(x$time)
-  
+
   x <- x[which(x$time %in% times_to_set),]
-  
+
   x <- x[!duplicated(x$time),]
   rownames(x) <- NULL
   colnames(x)[2] <- "prediction error"
   x$`prediction error` <- x$`prediction error` * 100
   x$`prediction error` <- round(x$`prediction error`, digits = 2)
   x$`prediction error` <- paste0("~ ", x$`prediction error`, "%")
-  x <- as.data.frame(x)
-  
+
   type <- attributes(x)$type
   if(type == "BS"){
     type <- "Brier Score"
   }
-  
-  
+
+
   cat(paste("Model performance for", type, "method."))
   cat("\n")
   x[,c("time","prediction error")]

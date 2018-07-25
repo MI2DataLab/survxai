@@ -11,19 +11,19 @@
 #' @importFrom breakDown broken
 #' @importFrom stats median
 #'
-#' @examples 
+#' @examples
 #' \dontrun{
 #' library(survxai)
-#' library(rms) 
+#' library(rms)
 #' library(randomForestSRC)
 #' data(pbc, package = "randomForestSRC")
 #' pbc <- pbc[complete.cases(pbc),]
-#' predict_times <- function(model, data, times){ 
+#' predict_times <- function(model, data, times){
 #'                   prob <- rms::survest(model, data, times = times)$surv
 #'                   return(prob)
 #'                   }
 #' cph_model <- cph(Surv(days/365, status)~., data=pbc, surv=TRUE, x = TRUE, y=TRUE)
-#' surve_cph <- explain(model = cph_model, data = pbc[,-c(1,2)], y = Surv(pbc$days/365, pbc$status), 
+#' surve_cph <- explain(model = cph_model, data = pbc[,-c(1,2)], y = Surv(pbc$days/365, pbc$status),
 #'              predict_function = predict_times)
 #' broken_prediction <- prediction_breakdown(surve_cph, pbc[1,-c(1,2)])
 #' }
@@ -37,7 +37,7 @@ prediction_breakdown <- function(explainer, observation, ...){
 
   # breakDown
 
-  time <- median(explainer$y[,1])
+  time <- median(explainer$times)
   new_pred <- function(model, data){
       explainer$predict_function(model, data, times = time)
   }
@@ -51,12 +51,12 @@ prediction_breakdown <- function(explainer, observation, ...){
 
   class(res) <- "data.frame"
 
-  
+
   result <- data.frame(x = numeric(), y = numeric(), variable = character(), label = character(), position = numeric(), value = character())
   res <- res[-c(1, nrow(res)),]
 
- 
-  times <- sort(explainer$y[,1])
+
+  times <- sort(explainer$times)
 
   #baseline
   prediction <- explainer$predict_function(explainer$model, explainer$data, times)
@@ -94,7 +94,7 @@ prediction_breakdown <- function(explainer, observation, ...){
     mean_prediction$value <- res[i, "variable"]
     result <- rbind(result, mean_prediction)
   }
-  
+
   res <- res[,c("contribution", "variable")]
   attr(result, "contribution") <- res
 
