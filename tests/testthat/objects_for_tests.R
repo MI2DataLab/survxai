@@ -63,7 +63,7 @@ surve_cph_tbl <- explain(model = cph_model2,
 
 surve_rf <- explain(model = rf_model,
                     data = pbc, y = Surv(pbc$days/365, pbc$status),
-                    predict_function = predict_times_rf)
+                    predict_function = predict_times_rf, label = "rf")
 
 surve_cph_null_data <- explain(model = cph_model, y = Surv(pbc$days/365, pbc$status),
                                     predict_function = predict_times)
@@ -80,9 +80,11 @@ svr_cph <- variable_response(surve_cph, "sex")
 svr_cph2 <- variable_response(surve_cph2, "sex")
 svr_cph_group <- variable_response(surve_cph, "bili")
 cp_cph <- ceteris_paribus(surve_cph, pbc[1,-c(1,2)])
-mp_cph <- model_performance(surve_cph, data = pbc, reference_formula = Surv(days/365, status)~1)
+mp_cph <- model_performance(surve_cph, data = pbc)
 mp_cph_artificial <- model_performance(surve_cph_artificial, data = pbc,
                                        reference_formula = Surv(days/365, status)~1)
+
+mp_rf <- model_performance(surve_rf, data = pbc)
 
 
 plot_var_resp <- plot(svr_cph)

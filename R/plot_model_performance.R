@@ -24,19 +24,13 @@
 #' @method plot surv_model_performance_explainer
 #' @export
 
-plot.surv_model_performance_explainer <- function(x, reference = TRUE, ...){
+plot.surv_model_performance_explainer <- function(x, ...){
   time <- err <- label <- NULL
 
   df <- data.frame(x)
   type <- attributes(x)$type
   if(type == "BS"){
     type <- "Brier Score"
-  }
-
-  if(reference == TRUE) {
-    df_ref <- data.frame(time = df$time, err = df$err_ref, err_ref = df$err_ref)
-    df_ref$label <- "reference"
-    df <- rbind(df, df_ref)
   }
 
   dfl <- list(...)

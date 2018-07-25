@@ -4,8 +4,7 @@
 \alias{model_performance}
 \title{Model performance for survival models}
 \usage{
-model_performance(explainer, type = "BS", data = NULL,
-  reference_formula = NULL, ...)
+model_performance(explainer, type = "BS", data = NULL, ...)
 }
 \arguments{
 \item{explainer}{an object of the class 'surv_explainer'.}
@@ -14,8 +13,6 @@ model_performance(explainer, type = "BS", data = NULL,
 Currently following options are implemented: 'BS' for Expected Brier Score.}
 
 \item{data}{data with time and status.}
-
-\item{reference_formula}{A survival formula as obtained either with prodlim::Hist or survival::Surv. The left hand side is used to find the status response variable in data. For right censored data, the right hand side of the formula is used to specify conditional censoring models. As in \code{\link[pec]{pec}}.}
 
 \item{...}{other parameters}
 }

@@ -6,7 +6,6 @@
 #' @param type character - type of the response to be calculated.
 #' Currently following options are implemented: 'BS' for Expected Brier Score.
 #' @param data data with time and status.
-#' @param reference_formula A survival formula as obtained either with prodlim::Hist or survival::Surv. The left hand side is used to find the status response variable in data. For right censored data, the right hand side of the formula is used to specify conditional censoring models. As in \code{\link[pec]{pec}}.
 #' @param ... other parameters
 #'
 #' @examples
@@ -29,13 +28,12 @@
 #'
 #' @export
 
-model_performance <- function(explainer, type = "BS", data = NULL, reference_formula = NULL, ...){
+model_performance <- function(explainer, type = "BS", data = NULL,...){
   if (!("surv_explainer" %in% class(explainer))) stop("The model_performance() function requires an object created with explain() function from survxai package.")
   if (is.null(data)) stop("The model_performance() function requires parameter 'data'. This data.frame should contain also time and status")
-  if (is.null(reference_formula)) {
-    reference_formula <- as.formula(paste0(attributes(explainer)$formula,"~ 1"))
-    message("Reference formula is taken from model object. May cause errors. Providing custom formula is recommended.")
-  }
+  reference_formula <- eval(explainer$model$call[[2]])
+  reference_formula[3] <- 1
+    
 
   switch(type,
          BS = {
