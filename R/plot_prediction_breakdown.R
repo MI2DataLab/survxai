@@ -7,24 +7,24 @@
 #'
 #' @import ggplot2
 #' @examples
-#' \dontrun{ 
+#' \dontrun{
 #' library(survxai)
-#' library(rms) 
+#' library(rms)
 #' library(randomForestSRC)
 #' data(pbc, package = "randomForestSRC")
 #' pbc <- pbc[complete.cases(pbc),]
-#' predict_times <- function(model, data, times){ 
+#' predict_times <- function(model, data, times){
 #'                   prob <- rms::survest(model, data, times = times)$surv
 #'                   return(prob)
 #'                   }
 #' cph_model <- cph(Surv(days/365, status)~., data=pbc, surv=TRUE, x = TRUE, y=TRUE)
-#' surve_cph <- explain(model = cph_model, data = pbc[,-c(1,2)], y = Surv(pbc$days/365, pbc$status), 
+#' surve_cph <- explain(model = cph_model, data = pbc[,-c(1,2)], y = Surv(pbc$days/365, pbc$status),
 #'              predict_function = predict_times)
 #' broken_prediction <- prediction_breakdown(surve_cph, pbc[1,-c(1,2)])
 #' plot(broken_prediction)
 #' }
 #' @method plot surv_prediction_breakdown_explainer
-#' 
+#'
 #' @importFrom scales seq_gradient_pal
 #' @export
 
@@ -39,25 +39,34 @@ plot.surv_prediction_breakdown_explainer <- function(x, ...){
       df <- rbind(df, resp)
     }
   }
-  
+
   if(length(dfl)==0){
     add_facet <- NULL
   }else{
     add_facet <- facet_wrap(~label)
   }
-  
+
   df$legend <- paste0(df$position,": ", df$value)
-  
+  broken_cumm <- attributes(x)$contribution
+  broken_cumm$contribution <- round(broken_cumm$contribution, digits = 2)
+  broken_cumm$contribution <- paste0("(", broken_cumm$contribution, ")")
+  broken_cumm$variable <- as.character(broken_cumm$variable)
+  broken_cumm <- rbind(broken_cumm, c("", "Intercept"))
+  broken_cumm <- rbind(broken_cumm, c("", "Observation"))
+
+  df <- merge(df, broken_cumm, by = "variable")
+  df$legend <- paste(df$legend, df$contribution)
   df$legend <- factor(df$legend, levels = unique(df$legend[order(df$position)]))
-  
+
   #colors
   cc <- seq_gradient_pal("#010059","#e0f6fb")(seq(0,1,length.out=length(unique(df$legend))))
-  
-  #labels 
+
+  #labels
   median_time <- median(unique(df$x))
   median <- which.min(abs(unique(df$x) - median_time))
   median <- unique(df$x)[median]
-  
+
+
   ggplot(df, aes(x=x, y=y, col = factor(legend)))+
     geom_step()+
     geom_text(data = df[df$x == median,], aes(label = position), color = "black", show.legend = FALSE, hjust = 0, vjust = 0)+
@@ -71,7 +80,7 @@ plot.surv_prediction_breakdown_explainer <- function(x, ...){
     scale_y_continuous(breaks = seq(0,1,0.1),
                        labels = paste(seq(0,100,10),"%"),
                        name = "survival probability")
-    
+
 
 }
 

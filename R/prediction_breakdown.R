@@ -77,7 +77,7 @@ prediction_breakdown <- function(explainer, observation, ...){
   mean_prediction$variable<- "Observation"
   mean_prediction$label <- explainer$label
   mean_prediction$position <- nrow(res)+2
-  mean_prediction$value <- "observation"
+  mean_prediction$value <- "Observation"
   result <- rbind(result, mean_prediction)
 
   tmp_data <- explainer$data
@@ -95,7 +95,8 @@ prediction_breakdown <- function(explainer, observation, ...){
     result <- rbind(result, mean_prediction)
   }
 
-  res <- res[,c("contribution", "variable")]
+  res <- res[,c("contribution", "variable_name")]
+  colnames(res)[2] <- "variable"
   attr(result, "contribution") <- res
 
   class(result) <- c("surv_prediction_breakdown_explainer", "data.frame")

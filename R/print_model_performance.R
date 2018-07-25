@@ -33,5 +33,5 @@ print.surv_model_performance_explainer <- function(x, times = NULL, ...) {
 
   cat(paste("Model performance for", type, "method."))
   cat("\n")
-  x[,c("time","prediction error")]
+  print(x[,c("time","prediction error")])
 }
