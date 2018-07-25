@@ -4,12 +4,16 @@
 \alias{prediction_breakdown}
 \title{BreakDown for survival models}
 \usage{
-prediction_breakdown(explainer, observation, ...)
+prediction_breakdown(explainer, observation, time = NULL, prob = NULL, ...)
 }
 \arguments{
 \item{explainer}{an object of the class 'surv_explainer'}
 
 \item{observation}{a new observation to explain}
+
+\item{time}{time point at which variable contributions are computed. If NULL median time is taken.}
+
+\item{prob}{survival probability at which variable contributions are computed}
 
 \item{...}{other parameters}
 }
