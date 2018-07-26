@@ -4,12 +4,10 @@
 \alias{plot.surv_model_performance_explainer}
 \title{Plot for surv_model_performance object}
 \usage{
-\method{plot}{surv_model_performance_explainer}(x, reference = TRUE, ...)
+\method{plot}{surv_model_performance_explainer}(x, ...)
 }
 \arguments{
 \item{x}{object of class "surv_model_performance"}
-
-\item{reference}{Logical. If TRUE reference level will be plotted.}
 
 \item{...}{other arguments}
 }

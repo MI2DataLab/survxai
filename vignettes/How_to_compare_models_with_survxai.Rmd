@@ -1,0 +1,203 @@
+---
+title: "How to compare models with survxai"
+author: "Alicja Gosiewska"
+date: "`r Sys.Date()`"
+output: 
+  html_document:
+    toc: true
+    toc_float: true
+    number_sections: true
+vignette: >
+  %\VignetteEngine{knitr::knitr}
+  %\VignetteIndexEntry{How to compare models with survxai}
+  %\usepackage[UTF-8]{inputenc}
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE,
+                      message = FALSE,
+                      warning = FALSE)
+```
+
+
+
+# Introduction
+Package *survxai* contains functions for creating a unified representation of a survival models. Such representations can be further processed by various survival explainers. Tools implemented in *survxai* help to understand how input variables are used in the model and what impact do they have on final model prediction.
+
+The analyses carried out using this package can be divided into two parts: local analyses of new observations and global analyses showing the structures of survival models. This vignette describes local explanations.
+
+Methods and functions in  *survxai* package are based on [*DALEX* package](https://github.com/pbiecek/DALEX). 
+
+# Use case - data
+
+## Data set
+In use case we use the data from the Mayo Clinic trial in primary biliary cirrhosis (PBC) of the liver conducted between 1974 and 1984. A total of 424 PBC patients, referred to Mayo Clinic during that ten-year interval, met eligibility criteria for the randomized placebo controlled trial of the drug D-penicillamine. First 312 cases in the data set participated in the randomized trial and contain largely complete data.
+The `pbc` data is included in the [*randomForestSRC* package](https://cran.r-project.org/web/packages/randomForestSRC/index.html).
+
+In this vignette we base models on five variables from `pec` data set: `age`, `treatment`, `status`, `sex` and `bili`. For this purpouse we create a new data set `pbc_smaller`. We also change `days` for `years`.
+
+```{r dataset}
+data(pbc, package = "randomForestSRC")
+pbc <- pbc[complete.cases(pbc),]
+pbc_smaller <- pbc[,c("status", "treatment", "sex", "age", "bili", "stage")]
+pbc_smaller$years <- pbc$days/365
+head(pbc_smaller)
+```
+
+Original data set contains only the numerical variables. 
+For this usecase we convert variables `sex` and `stage` to factor variables.
+
+```{r}
+pbc_smaller$sex <- as.factor(pbc_smaller$sex)
+pbc_smaller$stage <- as.factor(pbc_smaller$stage)
+```
+
+
+## Models
+
+We create 3 models: Cox Proportional Hazards Model, Random Forests for Survival, and Parametric Survival Regression Model.
+
+
+### Cox Proportional Hazards Model
+
+Cox proportional hazards model based on five variables from our data set: `age`, `treatment`, `status`, `sex` and `bili`.
+
+```{r, models}
+library(rms)
+
+cph_model <- cph(Surv(years, status)~., data = pbc_smaller, surv = TRUE, x = TRUE, y=TRUE)
+```
+
+### Random Forests for Survival
+
+```{r}
+library(randomForestSRC)
+set.seed(1994)
+rf_model <- rfsrc(Surv(years, status)~., data = pbc_smaller)
+```
+
+### Parametric Survival Regression Model
+
+```{r}
+library(survival)
+reg_model <- survreg(Surv(years, status)~., data = pbc_smaller)
+```
+
+# Explanation
+
+First, we have to create survival explainers - objects to wrap-up the black-box model with meta-data. Explainers unify model interfacing.
+
+Some models require custom predict function. Examples are in [Explainations of different survival models vignette](https://mi2datalab.github.io/survxai/articles/Custom_predict_for_survival_models.html).
+
+```{r}
+library(survxai)
+
+surve_cph <- explain(model = cph_model,
+                     data = pbc_smaller[,-c(1,7)], 
+                     y = Surv(pbc_smaller$years, pbc_smaller$status))
+
+surve_rf <- explain(model = rf_model,
+                     data = pbc_smaller[,-c(1,7)], 
+                     y = Surv(pbc_smaller$years, pbc_smaller$status))
+
+surve_reg <- explain(model = reg_model,
+                     data = pbc_smaller[,-c(1,7)], 
+                     y = Surv(pbc_smaller$years, pbc_smaller$status))
+# TO DO: add predict function for survreg
+
+```
+
+
+## Global explanations
+
+### Model performance
+
+```{r}
+mp_cph <- model_performance(surve_cph, 
+                            data = pbc_smaller)
+mp_rf <- model_performance(surve_rf, 
+                            data = pbc_smaller)
+# mp_reg <- model_performance(surve_reg, 
+#                             data = pbc_smaller)
+```
+
+```{r}
+plot(mp_cph, mp_rf)
+```
+
+
+### Variable response
+
+#### Factor variable
+```{r}
+vr_cph_sex <- variable_response(surve_cph, "sex")
+# TO DO fix rf
+# vr_rf_sex <- variable_response(surve_rf, "sex")
+# vr_reg_sex <- variable_response(surve_reg, "sex")
+```
+
+```{r}
+plot(vr_cph_sex)
+```
+
+
+#### Continuous variable
+```{r}
+vr_cph_bili <- variable_response(surve_cph, "bili")
+vr_rf_bili <- variable_response(surve_rf, "bili")
+# vr_ref_bili <- variable_response(surve_reg, "bili")
+```
+
+```{r}
+plot(vr_cph_bili, vr_rf_bili)
+```
+
+
+## Local explanations
+
+
+```{r}
+single_observation <- pbc_smaller[1,-c(1,7)]
+single_observation
+```
+
+
+### Ceteris paribus
+
+```{r}
+cp_cph <- ceteris_paribus(surve_cph, single_observation)
+cp_rf <- ceteris_paribus(surve_rf, single_observation)
+#reg_cph <- ceteris_paribus(surve_reg, single_observation)
+
+```
+
+```{r}
+# TODO poprawić, bo nie działa
+# plot(cp_cph, cp_rf)
+```
+
+
+### Prediction breakdown
+
+```{r}
+broken_prediction_cph <- prediction_breakdown(surve_cph, single_observation)
+broken_prediction_rf <- prediction_breakdown(surve_rf, single_observation)
+# broken_prediction_reg <- prediction_breakdown(surve_reg, single_observation)
+```
+
+```{r}
+plot(broken_prediction_cph, broken_prediction_rf)
+```
+
+
+
+
+```{r}
+broken_prediction_cph <- prediction_breakdown(surve_cph, single_observation, prob = 0.8)
+broken_prediction_rf <- prediction_breakdown(surve_rf, single_observation, prob = 0.8)
+# broken_prediction_reg <- prediction_breakdown(surve_reg, single_observation)
+```
+
+```{r}
+plot(broken_prediction_cph, broken_prediction_rf)
+```

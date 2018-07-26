@@ -11,7 +11,7 @@
 #' @return An object of class surv_prediction_breakdown_explainer
 #'
 #' @importFrom breakDown broken
-#' @importFrom stats median
+#' @importFrom stats weighted.mean na.omit median
 #'
 #' @examples
 #' \dontrun{

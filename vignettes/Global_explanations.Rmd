@@ -48,7 +48,7 @@ pbc$stage <- as.factor(pbc$stage)
 ```
 
 
-## Models
+## Model
 We will create Cox proportional hazards model based on five variables from our data set: `age`, `treatment`, `status`, `sex` and `bili`.
 ```{r, models}
 set.seed(1024)
@@ -61,22 +61,17 @@ cph_model <- cph(Surv(days/365, status)~., data = pbc_smaller, surv = TRUE, x = 
 ```
 
 # Global explanations
-In this section we will focus on explanations of the global and conditional model structure.
+In this section we focus on explanations of the global and conditional model structure.
 
 ## Explainers
 First, we have to create survival explainers - objects to wrap-up the black-box model with meta-data. Explainers unify model interfacing.
 
-We have to define custom predict function which takes three arguments: model, data and vector with time points. Predict funcions may vary depending on the model. Examples for some models are in [Explainations of different survival models vignette]().
+Some models require custom predict function. Examples are in [Explainations of different survival models vignette](https://mi2datalab.github.io/survxai/articles/Custom_predict_for_survival_models.html).
 ```{r, explainer}
 
-predict_times <- function(model, data, times){
-  prob <- rms::survest(model, data, times = times)$surv
-  return(prob)
-}
-
 surve_cph <- explain(model = cph_model,
-                     data = pbc_smaller[,-c(1,2)], y = Surv(pbc_smaller$days/365, pbc_smaller$status),
-                     predict_function = predict_times)
+                     data = pbc_smaller[,-c(1,2)], 
+                     y = Surv(pbc_smaller$days/365, pbc_smaller$status))
 
 ```
 

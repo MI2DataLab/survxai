@@ -43,7 +43,7 @@ plot.surv_prediction_breakdown_explainer <- function(x, ...){
   if(length(dfl)==0){
     add_facet <- NULL
   }else{
-    add_facet <- facet_wrap(~label)
+    add_facet <- facet_wrap(~label, ncol = 1)
   }
 
   if(!is.null(attributes(x)$prob)){

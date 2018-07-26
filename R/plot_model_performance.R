@@ -3,7 +3,6 @@
 #' @description Function plot for surv_model_perfomance object.
 #'
 #' @param x object of class "surv_model_performance"
-#' @param reference Logical. If TRUE reference level will be plotted.
 #' @param ... other arguments
 #'
 #' @import ggplot2
@@ -44,7 +43,7 @@ plot.surv_model_performance_explainer <- function(x, ...){
 
   ggplot(df, aes(x = time, y = err, color = label)) +
     geom_step() +
-    labs(title = paste("Prediction Error Curve for", type,"method"),         
+    labs(title = paste("Prediction Error Curve for", type,"method"),
          x = "time",
          y = "prediction error") +
     theme_mi2()+
