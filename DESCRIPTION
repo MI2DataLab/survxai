@@ -3,7 +3,8 @@ Title: Visualization of the Local and Global Survival Model Explanations
 Version: 0.1.0
 Authors@R: c(
   person("Alicja", "Gosiewska", email = "alicja.gosiewska@gmail.com", role = c("aut","cre")),
-  person("Aleksandra", "Grudziaz", email = "aleksandra.grudziaz@gmail.com", role = c("aut"))
+  person("Aleksandra", "Grudziaz", email = "aleksandra.grudziaz@gmail.com", role = c("aut")),
+  person("Przemyslaw", "Biecek", email = "przemyslaw.biecek@gmail.com@gmail.com", role = c("aut", "ths"))
   )
 Description: Survival models may have very different structures. This package contains functions 
   for creating a unified representation of a survival models, which can be further processed by various 
