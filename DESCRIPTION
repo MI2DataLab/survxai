@@ -16,14 +16,15 @@ RoxygenNote: 6.0.1
 Imports: breakDown, 
 	ggplot2,
 	pec,
+	scales,
 	survival,
-	survminer, 
-	scales
+	survminer
 Depends: prodlim
-Suggests: testthat,
+Suggests: CFC,
     covr,
-    rms,
-    randomForestSRC,
     knitr,
-    rmarkdown
+    randomForestSRC,
+    rmarkdown,
+    rms,
+    testthat
 VignetteBuilder: knitr

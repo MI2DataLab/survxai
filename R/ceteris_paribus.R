@@ -1,4 +1,6 @@
-#' Ceteris Paribus Plot
+#' Ceteris Paribus
+#' 
+#' @description The \code{ceteris_paribus()} function computes the predictions for the neighbour of our chosen observation. The neighbour is defined as the observations with changed value of one of the variable.
 #'
 #' @param explainer a model to be explained, preprocessed by the 'survxai::explain' function
 #' @param observation a new observarvation for which predictions need to be explained
@@ -39,7 +41,6 @@ ceteris_paribus <- function(explainer, observation, grid.points = 5, selected_va
   data <- base::as.data.frame(explainer$data)
   model <- explainer$model
   predict_function <- explainer$predict_function
-  #var_to_present <- which(sapply(data, is.numeric))
   names_to_present <- colnames(data)
   
   if (!is.null(selected_variables)) {

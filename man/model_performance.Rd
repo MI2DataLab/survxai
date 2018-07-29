@@ -15,7 +15,12 @@ Currently following options are implemented: 'BS' for Expected Brier Score.}
 \item{...}{other parameters}
 }
 \description{
-Function \code{model_performance} calculates the residuals and model performance measures.
+Function \code{model_performance} calculates the prediction error for chosen survival model.
+}
+\details{
+For \code{type = "BS"} prediction error is the time dependent estimates of the population average Brier score. 
+At a given time point t, the Brier score for a single observation is the squared difference between observed survival status 
+and a model based prediction of surviving time t.
 }
 \examples{
 \dontrun{
@@ -26,7 +31,7 @@ Function \code{model_performance} calculates the residuals and model performance
    pbc <- pbc[complete.cases(pbc),]
    cph_model <- cph(Surv(days/365, status)~., data=pbc, surv=TRUE, x = TRUE, y=TRUE)
    surve_cph <- explain(model = cph_model, data = pbc[,-c(1,2)], y = Surv(pbc$days/365, pbc$status))
-   mp_cph <- model_performance(surve_cph, data = pbc, reference_formula = Surv(days/365, status)~1)
+   mp_cph <- model_performance(surve_cph)
 }
 
 }

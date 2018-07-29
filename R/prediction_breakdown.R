@@ -1,6 +1,7 @@
 #' @title BreakDown for survival models
 #'
-#' @description Function \code{surv_breakdown} is an extension of a broken function from breakDown package.
+#' @description Function \code{surv_breakdown} is an extension of a broken function from breakDown package. It computes the contribution in prediction for the varaibles in the model.
+#' The contribution is defined as the difference between survival probabilities for model with added specific value of variable and with the random levels of this variable.
 #'
 #' @param explainer an object of the class 'surv_explainer'
 #' @param observation a new observation to explain

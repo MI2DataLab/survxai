@@ -2,7 +2,7 @@
 % Please edit documentation in R/ceteris_paribus.R
 \name{ceteris_paribus}
 \alias{ceteris_paribus}
-\title{Ceteris Paribus Plot}
+\title{Ceteris Paribus}
 \usage{
 ceteris_paribus(explainer, observation, grid.points = 5,
   selected_variables = NULL)
@@ -21,7 +21,7 @@ An object of the class surv_ceteris_paribus_explainer.
 It's a data frame with calculated average responses.
 }
 \description{
-Ceteris Paribus Plot
+The \code{ceteris_paribus()} function computes the predictions for the neighbour of our chosen observation. The neighbour is defined as the observations with changed value of one of the variable.
 }
 \examples{
 \dontrun{

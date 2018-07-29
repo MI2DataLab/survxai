@@ -21,7 +21,8 @@ prediction_breakdown(explainer, observation, time = NULL, prob = NULL, ...)
 An object of class surv_prediction_breakdown_explainer
 }
 \description{
-Function \code{surv_breakdown} is an extension of a broken function from breakDown package.
+Function \code{surv_breakdown} is an extension of a broken function from breakDown package. It computes the contribution in prediction for the varaibles in the model.
+The contribution is defined as the difference between survival probabilities for model with added specific value of variable and with the random levels of this variable.
 }
 \examples{
 \dontrun{
