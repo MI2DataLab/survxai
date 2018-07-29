@@ -162,6 +162,7 @@ vr_cph_sex <- variable_response(surve_cph, "sex")
 vr_rf_sex <- variable_response(surve_rf, "sex")
 vr_reg_sex <- variable_response(surve_reg, "sex")
 ```
+
 We visualize our explainers on one plot.
 ```{r}
 plot(vr_cph_sex, vr_rf_sex, vr_reg_sex)
@@ -169,7 +170,7 @@ plot(vr_cph_sex, vr_rf_sex, vr_reg_sex)
 We see that in all models patients with `sex=1` have higher probability of survival.
 
 #### Continuous variable
-We can also compute the `pdp` plots for the numeric variable.
+We can also compute the `pdp` plots for numeric variables.
 In this case we divide values of our variable `bili` into 6 intervals.
 ```{r}
 vr_cph_bili <- variable_response(surve_cph, "bili")
@@ -192,7 +193,7 @@ single_observation
 
 
 ### Ceteris paribus
-
+Ceteris Paribus Plots for survival models are survival curves around one observation. Each curve represent observation with different value of chosen variable. For factor variables curves covers all possible values, for numeric variables values are divided into quantiles.
 ```{r}
 cp_cph <- ceteris_paribus(surve_cph, single_observation)
 cp_rf <- ceteris_paribus(surve_rf, single_observation)
@@ -206,22 +207,28 @@ plot(cp_rf)
 plot(cp_reg)
 ```
 
+On the plots above we see that for variables `bili` and `sex` coxph and survreg model have simmilar performance, but randomForest model has different predictions for survival probability.
 
 ### Prediction breakdown
-
+Break Down Plots for survival models compare, by default, differences in predictions for median of time. We can change the time of computing the contributions for each variable using `time` parameter. 
 ```{r}
 broken_prediction_cph <- prediction_breakdown(surve_cph, single_observation)
 broken_prediction_rf <- prediction_breakdown(surve_rf, single_observation)
 broken_prediction_reg <- prediction_breakdown(surve_reg, single_observation)
 ```
 
+
 ```{r}
-plot(broken_prediction_cph, broken_prediction_rf, broken_prediction_reg)
+plot(broken_prediction_cph)
+plot(broken_prediction_rf)
+plot(broken_prediction_reg)
 ```
 
+This plots helps to understand the factors that drive survival probability for a single observation.
 
+For all models variable `bili` is the variable with the largest contribution. But the second variable is different randomForest (`age`) and coxph, survreg (`stage`). 
 
-
+Also we can compute the variables contribution for chosen survival probability value.
 ```{r}
 broken_prediction_cph <- prediction_breakdown(surve_cph, single_observation, prob = 0.8)
 broken_prediction_rf <- prediction_breakdown(surve_rf, single_observation, prob = 0.8)
@@ -229,5 +236,9 @@ broken_prediction_reg <- prediction_breakdown(surve_reg, single_observation, pro
 ```
 
 ```{r}
-plot(broken_prediction_cph, broken_prediction_rf)
+plot(broken_prediction_cph)
+plot(broken_prediction_rf)
+plot(broken_prediction_reg)
 ```
+
+We can compare this models on one plot, but for the transparency of the charts we have drawn them separately.
