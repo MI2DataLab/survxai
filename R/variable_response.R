@@ -8,20 +8,20 @@
 #' Currently following options are implemented: 'pdp' for Partial Dependency.
 #' @param trans function - a transformation/link function that shall be applied to raw model predictions. This will be inherited from the explainer.
 #' @param ... other parameters
-#' 
+#'
 #' @examples
-#' \dontrun{ 
+#' \dontrun{
 #' library(survxai)
-#' library(rms) 
+#' library(rms)
 #' library(randomForestSRC)
 #' data(pbc, package = "randomForestSRC")
 #' pbc <- pbc[complete.cases(pbc),]
-#' predict_times <- function(model, data, times){ 
+#' predict_times <- function(model, data, times){
 #'                   prob <- rms::survest(model, data, times = times)$surv
 #'                   return(prob)
 #'                   }
 #' cph_model <- cph(Surv(days/365, status)~., data=pbc, surv=TRUE, x = TRUE, y=TRUE)
-#' surve_cph <- explain(model = cph_model, data = pbc[,-c(1,2)], y = Surv(pbc$days/365, pbc$status), 
+#' surve_cph <- explain(model = cph_model, data = pbc[,-c(1,2)], y = Surv(pbc$days/365, pbc$status),
 #'              predict_function = predict_times)
 #' svr_cph <- variable_response(surve_cph, "sex")
 #' }
@@ -50,7 +50,8 @@ surv_partial <- function(explainer, variable){
 
   partial_data <- data.frame(x = numeric(), y = numeric(), value = character())
 
-  for(val in values){
+  for(i in 1:length(values)){
+    val <- values[i]
     tmp_data[,variable] <- val
     prediction <- explainer$predict_function(explainer$model, tmp_data, times)
     mean_prediction <- data.frame(x = times, y = colMeans(prediction, na.rm=T))

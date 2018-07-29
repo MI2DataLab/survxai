@@ -96,7 +96,8 @@ surve_cph <- explain(model = cph_model,
                      data = pbc_smaller[,-c(1,7)], 
                      y = Surv(pbc_smaller$years, pbc_smaller$status))
 
-surve_rf <- explain(model = rf_model,
+surve_rf <- explain(model = rf_model, 
+                     label = "rf",
                      data = pbc_smaller[,-c(1,7)], 
                      y = Surv(pbc_smaller$years, pbc_smaller$status))
 
@@ -132,12 +133,12 @@ plot(mp_cph, mp_rf)
 ```{r}
 vr_cph_sex <- variable_response(surve_cph, "sex")
 # TO DO fix rf
-# vr_rf_sex <- variable_response(surve_rf, "sex")
+vr_rf_sex <- variable_response(surve_rf, "sex")
 # vr_reg_sex <- variable_response(surve_reg, "sex")
 ```
 
 ```{r}
-plot(vr_cph_sex)
+plot(vr_cph_sex, vr_rf_sex)
 ```
 
 
