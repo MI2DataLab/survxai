@@ -75,6 +75,7 @@ class(explainer)  <- "explainer"
 
 
 broken_prediction <- prediction_breakdown(surve_cph, pbc[1,-c(1,2)])
+broken_prediction_prob <- prediction_breakdown(surve_cph, pbc[1,-c(1,2)], prob = 0.9)
 broken_prediction2 <- prediction_breakdown(surve_cph2, pbc[1,-c(1,2)])
 svr_cph <- variable_response(surve_cph, "sex")
 svr_cph2 <- variable_response(surve_cph2, "sex")
