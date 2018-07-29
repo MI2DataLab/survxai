@@ -100,10 +100,26 @@ surve_rf <- explain(model = rf_model,
                      label = "rf",
                      data = pbc_smaller[,-c(1,7)], 
                      y = Surv(pbc_smaller$years, pbc_smaller$status))
+```
+
+```{r}
+library(CFC)
+
+custom_predict <- function(model, newdata, times){
+  times <- sort(times)
+  model$x <- newdata
+  res <- matrix(ncol = length(times), nrow = nrow(newdata))
+  for(i in 1:nrow(newdata)) {
+    res[i,] <- cfc.survreg.survprob(t = times, args = reg1, n = i)    
+  }
+  return(as.data.frame(res))
+}
 
 surve_reg <- explain(model = reg_model,
                      data = pbc_smaller[,-c(1,7)], 
-                     y = Surv(pbc_smaller$years, pbc_smaller$status))
+                     y = Surv(pbc_smaller$years, pbc_smaller$status),
+                     predict_function = custom_predict
+                     )
 # TO DO: add predict function for survreg
 
 ```
@@ -118,12 +134,12 @@ mp_cph <- model_performance(surve_cph,
                             data = pbc_smaller)
 mp_rf <- model_performance(surve_rf, 
                             data = pbc_smaller)
-# mp_reg <- model_performance(surve_reg, 
-#                             data = pbc_smaller)
+mp_reg <- model_performance(surve_reg, 
+                             data = pbc_smaller)
 ```
 
 ```{r}
-plot(mp_cph, mp_rf)
+plot(mp_cph, mp_rf, mp_reg)
 ```
 
 
@@ -132,13 +148,12 @@ plot(mp_cph, mp_rf)
 #### Factor variable
 ```{r}
 vr_cph_sex <- variable_response(surve_cph, "sex")
-# TO DO fix rf
 vr_rf_sex <- variable_response(surve_rf, "sex")
-# vr_reg_sex <- variable_response(surve_reg, "sex")
+vr_reg_sex <- variable_response(surve_reg, "sex")
 ```
 
 ```{r}
-plot(vr_cph_sex, vr_rf_sex)
+plot(vr_cph_sex, vr_rf_sex, vr_reg_sex)
 ```
 
 
@@ -146,7 +161,7 @@ plot(vr_cph_sex, vr_rf_sex)
 ```{r}
 vr_cph_bili <- variable_response(surve_cph, "bili")
 vr_rf_bili <- variable_response(surve_rf, "bili")
-# vr_ref_bili <- variable_response(surve_reg, "bili")
+vr_reg_bili <- variable_response(surve_reg, "bili")
 ```
 
 ```{r}
@@ -168,13 +183,14 @@ single_observation
 ```{r}
 cp_cph <- ceteris_paribus(surve_cph, single_observation)
 cp_rf <- ceteris_paribus(surve_rf, single_observation)
-#reg_cph <- ceteris_paribus(surve_reg, single_observation)
+cp_reg <- ceteris_paribus(surve_reg, single_observation)
 
 ```
 
 ```{r}
-# TODO poprawić, bo nie działa
-# plot(cp_cph, cp_rf)
+plot(cp_cph)
+plot(cp_rf)
+plot(cp_reg)
 ```
 
 
@@ -183,11 +199,11 @@ cp_rf <- ceteris_paribus(surve_rf, single_observation)
 ```{r}
 broken_prediction_cph <- prediction_breakdown(surve_cph, single_observation)
 broken_prediction_rf <- prediction_breakdown(surve_rf, single_observation)
-# broken_prediction_reg <- prediction_breakdown(surve_reg, single_observation)
+broken_prediction_reg <- prediction_breakdown(surve_reg, single_observation)
 ```
 
 ```{r}
-plot(broken_prediction_cph, broken_prediction_rf)
+plot(broken_prediction_cph, broken_prediction_rf, broken_prediction_reg)
 ```
 
 
