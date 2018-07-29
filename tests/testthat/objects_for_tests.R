@@ -80,11 +80,10 @@ svr_cph <- variable_response(surve_cph, "sex")
 svr_cph2 <- variable_response(surve_cph2, "sex")
 svr_cph_group <- variable_response(surve_cph, "bili")
 cp_cph <- ceteris_paribus(surve_cph, pbc[1,-c(1,2)])
-mp_cph <- model_performance(surve_cph, data = pbc)
-mp_cph_artificial <- model_performance(surve_cph_artificial, data = pbc,
-                                       reference_formula = Surv(days/365, status)~1)
+mp_cph <- model_performance(surve_cph)
+mp_cph_artificial <- model_performance(surve_cph_artificial)
 
-mp_rf <- model_performance(surve_rf, data = pbc)
+mp_rf <- model_performance(surve_rf)
 
 
 plot_var_resp <- plot(svr_cph)

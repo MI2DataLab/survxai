@@ -4,15 +4,13 @@
 \alias{model_performance}
 \title{Model performance for survival models}
 \usage{
-model_performance(explainer, type = "BS", data = NULL, ...)
+model_performance(explainer, type = "BS", ...)
 }
 \arguments{
 \item{explainer}{an object of the class 'surv_explainer'.}
 
 \item{type}{character - type of the response to be calculated.
 Currently following options are implemented: 'BS' for Expected Brier Score.}
-
-\item{data}{data with time and status.}
 
 \item{...}{other parameters}
 }

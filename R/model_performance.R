@@ -1,12 +1,16 @@
 #' @title Model performance for survival models
 #'
-#' @description Function \code{model_performance} calculates the residuals and model performance measures.
-#'
+#' @description Function \code{model_performance} calculates the prediction error for chosen survival model. 
+#' 
 #' @param explainer an object of the class 'surv_explainer'.
 #' @param type character - type of the response to be calculated.
 #' Currently following options are implemented: 'BS' for Expected Brier Score.
-#' @param data data with time and status.
 #' @param ... other parameters
+#' 
+#' @details 
+#' For \code{type = "BS"} prediction error is the time dependent estimates of the population average Brier score. 
+#' At a given time point t, the Brier score for a single observation is the squared difference between observed survival status 
+#' and a model based prediction of surviving time t.
 #'
 #' @examples
 #' \dontrun{
@@ -17,7 +21,7 @@
 #'    pbc <- pbc[complete.cases(pbc),]
 #'    cph_model <- cph(Surv(days/365, status)~., data=pbc, surv=TRUE, x = TRUE, y=TRUE)
 #'    surve_cph <- explain(model = cph_model, data = pbc[,-c(1,2)], y = Surv(pbc$days/365, pbc$status))
-#'    mp_cph <- model_performance(surve_cph, data = pbc, reference_formula = Surv(days/365, status)~1)
+#'    mp_cph <- model_performance(surve_cph)
 #' }
 #'
 #' @references Ulla B. Mogensen, Hemant Ishwaran, Thomas A. Gerds (2012). Evaluating Random Forests for Survival Analysis Using Prediction Error Curves. Journal of Statistical Software, 50(11), 1-23. URL http://www.jstatsoft.org/v50/i11/.
@@ -28,12 +32,14 @@
 #'
 #' @export
 
-model_performance <- function(explainer, type = "BS", data = NULL,...){
+model_performance <- function(explainer, type = "BS",...){
   if (!("surv_explainer" %in% class(explainer))) stop("The model_performance() function requires an object created with explain() function from survxai package.")
-  if (is.null(data)) stop("The model_performance() function requires parameter 'data'. This data.frame should contain also time and status")
   reference_formula <- eval(explainer$model$call[[2]])
   reference_formula[3] <- 1
-    
+  
+  surv_vars <- all.vars(explainer$model$call[[2]][[2]])
+  data <- cbind(explainer$y[,1], explainer$y[,2], explainer$data)
+  colnames(data)[1:2] <- surv_vars
 
   switch(type,
          BS = {

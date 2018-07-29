@@ -80,7 +80,7 @@ rf_model <- rfsrc(Surv(years, status)~., data = pbc_smaller)
 
 ```{r}
 library(survival)
-reg_model <- survreg(Surv(years, status)~., data = pbc_smaller)
+reg_model <- survreg(Surv(years, status)~., data = pbc_smaller, x = TRUE)
 ```
 
 # Explanation
@@ -107,12 +107,17 @@ library(CFC)
 
 custom_predict <- function(model, newdata, times){
   times <- sort(times)
-  model$x <- newdata
+  vars <- all.vars(model$call[[2]][[2]])
+  n_vars <- which(colnames(newdata) %in% vars)
+  if(length(n_vars)>0){
+    newdata <- newdata[,-c(n_vars)]
+  }
+  model$x <- model.matrix(~., newdata)
   res <- matrix(ncol = length(times), nrow = nrow(newdata))
   for(i in 1:nrow(newdata)) {
-    res[i,] <- cfc.survreg.survprob(t = times, args = reg1, n = i)    
+    res[i,] <- cfc.survreg.survprob(t = times, args = model, n = i)    
   }
-  return(as.data.frame(res))
+  return(res)
 }
 
 surve_reg <- explain(model = reg_model,
@@ -130,12 +135,9 @@ surve_reg <- explain(model = reg_model,
 ### Model performance
 
 ```{r}
-mp_cph <- model_performance(surve_cph, 
-                            data = pbc_smaller)
-mp_rf <- model_performance(surve_rf, 
-                            data = pbc_smaller)
-mp_reg <- model_performance(surve_reg, 
-                             data = pbc_smaller)
+mp_cph <- model_performance(surve_cph)
+mp_rf <- model_performance(surve_rf)
+mp_reg <- model_performance(surve_reg)
 ```
 
 ```{r}
@@ -165,7 +167,7 @@ vr_reg_bili <- variable_response(surve_reg, "bili")
 ```
 
 ```{r}
-plot(vr_cph_bili, vr_rf_bili)
+plot(vr_cph_bili, vr_rf_bili, vr_reg_bili)
 ```
 
 
@@ -212,7 +214,7 @@ plot(broken_prediction_cph, broken_prediction_rf, broken_prediction_reg)
 ```{r}
 broken_prediction_cph <- prediction_breakdown(surve_cph, single_observation, prob = 0.8)
 broken_prediction_rf <- prediction_breakdown(surve_rf, single_observation, prob = 0.8)
-# broken_prediction_reg <- prediction_breakdown(surve_reg, single_observation)
+broken_prediction_reg <- prediction_breakdown(surve_reg, single_observation, prob = 0.8)
 ```
 
 ```{r}
