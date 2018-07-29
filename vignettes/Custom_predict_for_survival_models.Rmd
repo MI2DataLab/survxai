@@ -67,7 +67,7 @@ Predict function for class `RandomForestSRC` is not implemented. Therefore, cust
 library(prodlim)
 library(randomForestSRC)
 
-predict_times_rf <- function(object, newdata, times, ...){
+predict_rf <- function(object, newdata, times, ...){
   f <- sapply(newdata, is.integer)
   cols <- names(which(f))
   object$xvar[cols] <- lapply(object$xvar[cols], as.integer)
@@ -84,12 +84,41 @@ rf_model <- rfsrc(Surv(year, status)~., data = pbc[,-1])
 
 surve_rf <- explain(model = rf_model,
                     data = pbc[,-c(1,2,20)], y = Surv(pbc$year, pbc$status),
-                    predict_function = predict_times_rf)
+                    predict_function = predict_rf)
 ```
 
 
 
+# survreg
 
+```{r}
+library(survival)
+
+predict_reg <- function(model, newdata, times){
+  times <- sort(times)
+  vars <- all.vars(model$call[[2]][[2]])
+  n_vars <- which(colnames(newdata) %in% vars)
+  if(length(n_vars)>0){
+    newdata <- newdata[,-c(n_vars)]
+  }
+  model$x <- model.matrix(~., newdata)
+  res <- matrix(ncol = length(times), nrow = nrow(newdata))
+  for(i in 1:nrow(newdata)) {
+    res[i,] <- cfc.survreg.survprob(t = times, args = model, n = i)    
+  }
+  return(res)
+}
+
+```
+
+```{r}
+reg_model <- survreg(Surv(year, status)~., data = pbc[,-1], x = TRUE)
+
+surve_reg <- explain(model = rf_model,
+                    data = pbc[,-c(1,2,20)], 
+                    y = Surv(pbc$year, pbc$status),
+                    predict_function = predict_reg)
+```
 
 
 
