@@ -89,6 +89,7 @@ First, we have to create survival explainers - objects to wrap-up the black-box 
 
 Some models require custom predict function. Examples are in [Explainations of different survival models vignette](https://mi2datalab.github.io/survxai/articles/Custom_predict_for_survival_models.html).
 
+For `coxph()` and `rfsrc()` functions we have implemented prediction functions.
 ```{r}
 library(survxai)
 
@@ -102,6 +103,8 @@ surve_rf <- explain(model = rf_model,
                      y = Surv(pbc_smaller$years, pbc_smaller$status))
 ```
 
+For model created by `survreg()` function we have to add specific custom predict function. 
+We add this function to explainer by `predict_function` parameter.
 ```{r}
 library(CFC)
 
@@ -123,43 +126,51 @@ custom_predict <- function(model, newdata, times){
 surve_reg <- explain(model = reg_model,
                      data = pbc_smaller[,-c(1,7)], 
                      y = Surv(pbc_smaller$years, pbc_smaller$status),
-                     predict_function = custom_predict
-                     )
-# TO DO: add predict function for survreg
+                     predict_function = custom_predict)
 
 ```
 
 
 ## Global explanations
+At the beginning we are dealing with global explanations. We focus on explanations of the global and conditional model structure.
 
 ### Model performance
-
+Currently, in the *survxai* package is implemented only the `BS` type of model performance.
+In this metod for each time point we compute the prediction error for our model.
+We compute `model_performance()` explainers for all three models created above.
 ```{r}
 mp_cph <- model_performance(surve_cph)
 mp_rf <- model_performance(surve_rf)
 mp_reg <- model_performance(surve_reg)
 ```
 
+We can plot all three models using generic `plot()` function.
 ```{r}
 plot(mp_cph, mp_rf, mp_reg)
 ```
 
+On the plot we see that the Cox Proportional Hazards Model and Parametric Survival Regression Model have simmilar performance - prediction errors for these models are almost the same. For the Survival Random Forest Model we have the smallest prediction errors.
 
 ### Variable response
+Variable response explainers are designed to better understand the relation between a variable and a model output.
+We compute `variable_response()` explainers for all three models created above.
 
 #### Factor variable
+Firstly we compute these type of explainers for the factor variable `sex`.
 ```{r}
 vr_cph_sex <- variable_response(surve_cph, "sex")
 vr_rf_sex <- variable_response(surve_rf, "sex")
 vr_reg_sex <- variable_response(surve_reg, "sex")
 ```
-
+We visualize our explainers on one plot.
 ```{r}
 plot(vr_cph_sex, vr_rf_sex, vr_reg_sex)
 ```
-
+We see that in all models patients with `sex=1` have higher probability of survival.
 
 #### Continuous variable
+We can also compute the `pdp` plots for the numeric variable.
+In this case we divide values of our variable `bili` into 6 intervals.
 ```{r}
 vr_cph_bili <- variable_response(surve_cph, "bili")
 vr_rf_bili <- variable_response(surve_rf, "bili")
@@ -172,7 +183,7 @@ plot(vr_cph_bili, vr_rf_bili, vr_reg_bili)
 
 
 ## Local explanations
-
+The next step in our analysis of machine learning models are local explanations - the explanations for one, new observation.
 
 ```{r}
 single_observation <- pbc_smaller[1,-c(1,7)]

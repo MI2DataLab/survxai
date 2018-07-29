@@ -76,14 +76,14 @@ surve_cph <- explain(model = cph_model,
 ```
 
 ## Model performance
-currently, in the *survxai* package is implemented only the `BS` type of model performance.
-In this metod for each time point we compute the prediction error for our model and the reference model, defined by the `reference_formula` argument.
+Currently, in the *survxai* package is implemented only the `BS` type of model performance.
+In this metod for each time point we compute the prediction error for our model.
 ```{r}
-mp_cph <- model_performance(surve_cph, data = pbc_smaller, reference_formula = Surv(days/365, status)~1)
+mp_cph <- model_performance(surve_cph)
 ```
 
 After creating the `surv_model_prediction` object we can visualize it in a very convinient way using the generic `plot()` function. 
-On our plot there are prediction error curves for model from the explainer and reference model.
+On our plot there are prediction error curves for model from the explainer.
 For more details about these curves see: [Mogensen, 2012](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4194196/)
 
 ```{r}
