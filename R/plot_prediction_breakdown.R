@@ -42,8 +42,10 @@ plot.surv_prediction_breakdown_explainer <- function(x, ...){
 
   if(length(dfl)==0){
     add_facet <- NULL
+    legend <- NULL
   }else{
     add_facet <- facet_wrap(~label, ncol = 1)
+    legend <- theme(legend.position = "none")
   }
 
   if(!is.null(attributes(x)$prob)){
@@ -72,7 +74,6 @@ plot.surv_prediction_breakdown_explainer <- function(x, ...){
   median <- which.min(abs(unique(df$x) - median_time))
   median <- unique(df$x)[median]
 
-
   ggplot(df, aes(x=x, y=y, col = factor(legend)))+
     geom_step()+
     geom_text(data = df[df$x == median,], aes(label = position), color = "black", show.legend = FALSE, hjust = 0, vjust = 0)+
@@ -86,7 +87,8 @@ plot.surv_prediction_breakdown_explainer <- function(x, ...){
     line+
     scale_y_continuous(breaks = seq(0,1,0.1),
                        labels = paste(seq(0,100,10),"%"),
-                       name = "survival probability")
+                       name = "survival probability")+
+    legend
 
 
 }

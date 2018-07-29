@@ -60,10 +60,13 @@ plot.surv_ceteris_paribus_explainer <- function(x, ..., selected_variable = NULL
   if(!is.null(selected_variable)){
     all_responses <- all_responses[which(all_responses$vname == selected_variable),]
     legend <- unique(all_responses$vname)
-    add_theme <- labs(col = legend)
+    add_theme <- labs(col = legend,
+                      title = paste("Ceteris paribus plot for", unique(x$label),"model."))
     facet <- NULL
+    title <- NULL
   }else{
     add_theme <- theme(legend.position = "none")
+    title <- ggtitle(paste("Ceteris paribus plot for", unique(x$label),"model."))
     facet <- facet_wrap(~vname)
   }
 
@@ -76,5 +79,6 @@ plot.surv_ceteris_paribus_explainer <- function(x, ..., selected_variable = NULL
 
   pl + facet +
     theme_mi2()+
-    add_theme
+    add_theme+
+    title
 }
