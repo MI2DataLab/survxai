@@ -53,6 +53,9 @@
       <a href="../articles/Global_explanations.html">Survival models - global explanations</a>
     </li>
     <li>
+      <a href="../articles/How_to_compare_models_with_survxai.html">How to compare models with survxai</a>
+    </li>
+    <li>
       <a href="../articles/Local_explanations.html">Survival models - local explanations</a>
     </li>
   </ul>
@@ -73,7 +76,7 @@
       <h1>Custom predict function for survival models</h1>
                         <h4 class="author">Alicja Gosiewska, Aleksandra Grudziąż</h4>
             
-            <h4 class="date">2018-07-20</h4>
+            <h4 class="date">2018-07-29</h4>
       
       
       <div class="hidden name"><code>Custom_predict_for_survival_models.Rmd</code></div>
@@ -121,11 +124,11 @@ surve_cph &lt;-<span class="st"> </span><span class="kw"><a href="../reference/e
 <div id="randomforestsrc" class="section level1">
 <h1 class="hasAnchor">
 <a href="#randomforestsrc" class="anchor"></a>RandomForestSRC</h1>
-<p>Predict function for class <code>RandomForestSRC</code> is not implemented. Therefore, custom predict function should be provided.</p>
+<p>Predict function for class <code>rfsrc</code> is not implemented. Therefore, custom predict function should be provided.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(prodlim)
 <span class="kw">library</span>(randomForestSRC)
 
-predict_times_rf &lt;-<span class="st"> </span><span class="cf">function</span>(object, newdata, times, ...){
+predict_rf &lt;-<span class="st"> </span><span class="cf">function</span>(object, newdata, times, ...){
   f &lt;-<span class="st"> </span><span class="kw">sapply</span>(newdata, is.integer)
   cols &lt;-<span class="st"> </span><span class="kw">names</span>(<span class="kw">which</span>(f))
   object<span class="op">$</span>xvar[cols] &lt;-<span class="st"> </span><span class="kw">lapply</span>(object<span class="op">$</span>xvar[cols], as.integer)
@@ -139,7 +142,34 @@ rf_model &lt;-<span class="st"> </span><span class="kw">rfsrc</span>(<span class
 
 surve_rf &lt;-<span class="st"> </span><span class="kw"><a href="../reference/explain.html">explain</a></span>(<span class="dt">model =</span> rf_model,
                     <span class="dt">data =</span> pbc[,<span class="op">-</span><span class="kw">c</span>(<span class="dv">1</span>,<span class="dv">2</span>,<span class="dv">20</span>)], <span class="dt">y =</span> <span class="kw">Surv</span>(pbc<span class="op">$</span>year, pbc<span class="op">$</span>status),
-                    <span class="dt">predict_function =</span> predict_times_rf)</code></pre></div>
+                    <span class="dt">predict_function =</span> predict_rf)</code></pre></div>
+</div>
+<div id="survreg" class="section level1">
+<h1 class="hasAnchor">
+<a href="#survreg" class="anchor"></a>survreg</h1>
+<p>Predict function for class <code>survreg</code> is not implemented. Therefore, custom predict function should be provided.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(survival)
+
+predict_reg &lt;-<span class="st"> </span><span class="cf">function</span>(model, newdata, times){
+  times &lt;-<span class="st"> </span><span class="kw">sort</span>(times)
+  vars &lt;-<span class="st"> </span><span class="kw">all.vars</span>(model<span class="op">$</span>call[[<span class="dv">2</span>]][[<span class="dv">2</span>]])
+  n_vars &lt;-<span class="st"> </span><span class="kw">which</span>(<span class="kw">colnames</span>(newdata) <span class="op">%in%</span><span class="st"> </span>vars)
+  <span class="cf">if</span>(<span class="kw">length</span>(n_vars)<span class="op">&gt;</span><span class="dv">0</span>){
+    newdata &lt;-<span class="st"> </span>newdata[,<span class="op">-</span><span class="kw">c</span>(n_vars)]
+  }
+  model<span class="op">$</span>x &lt;-<span class="st"> </span><span class="kw">model.matrix</span>(<span class="op">~</span>., newdata)
+  res &lt;-<span class="st"> </span><span class="kw">matrix</span>(<span class="dt">ncol =</span> <span class="kw">length</span>(times), <span class="dt">nrow =</span> <span class="kw">nrow</span>(newdata))
+  <span class="cf">for</span>(i <span class="cf">in</span> <span class="dv">1</span><span class="op">:</span><span class="kw">nrow</span>(newdata)) {
+    res[i,] &lt;-<span class="st"> </span><span class="kw">cfc.survreg.survprob</span>(<span class="dt">t =</span> times, <span class="dt">args =</span> model, <span class="dt">n =</span> i)    
+  }
+  <span class="kw">return</span>(res)
+}</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">reg_model &lt;-<span class="st"> </span><span class="kw">survreg</span>(<span class="kw">Surv</span>(year, status)<span class="op">~</span>., <span class="dt">data =</span> pbc[,<span class="op">-</span><span class="dv">1</span>], <span class="dt">x =</span> <span class="ot">TRUE</span>)
+
+surve_reg &lt;-<span class="st"> </span><span class="kw"><a href="../reference/explain.html">explain</a></span>(<span class="dt">model =</span> rf_model,
+                    <span class="dt">data =</span> pbc[,<span class="op">-</span><span class="kw">c</span>(<span class="dv">1</span>,<span class="dv">2</span>,<span class="dv">20</span>)], 
+                    <span class="dt">y =</span> <span class="kw">Surv</span>(pbc<span class="op">$</span>year, pbc<span class="op">$</span>status),
+                    <span class="dt">predict_function =</span> predict_reg)</code></pre></div>
 </div>
   </div>
 
@@ -151,6 +181,7 @@ surve_rf &lt;-<span class="st"> </span><span class="kw"><a href="../reference/ex
 <li><a href="#introduction">Introduction</a></li>
       <li><a href="#implemented-models">Implemented Models</a></li>
       <li><a href="#randomforestsrc">RandomForestSRC</a></li>
+      <li><a href="#survreg">survreg</a></li>
       </ul>
 </div>
       </div>
@@ -159,7 +190,7 @@ surve_rf &lt;-<span class="st"> </span><span class="kw"><a href="../reference/ex
 
 
       <footer><div class="copyright">
-  <p>Developed by Alicja Gosiewska, Aleksandra Grudziaz.</p>
+  <p>Developed by Alicja Gosiewska, Aleksandra Grudziaz, Przemyslaw Biecek.</p>
 </div>
 
 <div class="pkgdown">

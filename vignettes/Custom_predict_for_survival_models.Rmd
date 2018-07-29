@@ -61,7 +61,7 @@ surve_cph <- explain(model = cph_model,
 
 # RandomForestSRC
 
-Predict function for class `RandomForestSRC` is not implemented. Therefore, custom predict function should be provided.
+Predict function for class `rfsrc` is not implemented. Therefore, custom predict function should be provided.
 
 ```{r}
 library(prodlim)
@@ -90,6 +90,10 @@ surve_rf <- explain(model = rf_model,
 
 
 # survreg
+
+
+Predict function for class `survreg` is not implemented. Therefore, custom predict function should be provided.
+
 
 ```{r}
 library(survival)

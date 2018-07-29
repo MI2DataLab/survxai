@@ -75,6 +75,9 @@
       <a href="../articles/Global_explanations.html">Survival models - global explanations</a>
     </li>
     <li>
+      <a href="../articles/How_to_compare_models_with_survxai.html">How to compare models with survxai</a>
+    </li>
+    <li>
       <a href="../articles/Local_explanations.html">Survival models - local explanations</a>
     </li>
   </ul>
@@ -98,11 +101,10 @@
     </div>
 
     
-    <p>Function <code>model_performance</code> calculates the residuals and model performance measures.</p>
+    <p>Function <code>model_performance</code> calculates the prediction error for chosen survival model.</p>
     
 
-    <pre class="usage"><span class='fu'>model_performance</span>(<span class='no'>explainer</span>, <span class='kw'>type</span> <span class='kw'>=</span> <span class='st'>"BS"</span>, <span class='kw'>data</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>reference_formula</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='no'>...</span>)</pre>
+    <pre class="usage"><span class='fu'>model_performance</span>(<span class='no'>explainer</span>, <span class='kw'>type</span> <span class='kw'>=</span> <span class='st'>"BS"</span>, <span class='no'>...</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a> Arguments</h2>
     <table class="ref-arguments">
@@ -117,18 +119,16 @@
 Currently following options are implemented: 'BS' for Expected Brier Score.</p></td>
     </tr>
     <tr>
-      <th>data</th>
-      <td><p>data with time and status.</p></td>
-    </tr>
-    <tr>
-      <th>reference_formula</th>
-      <td><p>A survival formula as obtained either with prodlim::Hist or survival::Surv. The left hand side is used to find the status response variable in data. For right censored data, the right hand side of the formula is used to specify conditional censoring models. As in <code><a href='http://www.rdocumentation.org/packages/pec/topics/pec'>pec</a></code>.</p></td>
-    </tr>
-    <tr>
       <th>...</th>
       <td><p>other parameters</p></td>
     </tr>
     </table>
+    
+    <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
+
+    <p>For <code>type = "BS"</code> prediction error is the time dependent estimates of the population average Brier score. 
+At a given time point t, the Brier score for a single observation is the squared difference between observed survival status 
+and a model based prediction of surviving time t.</p>
     
     <h2 class="hasAnchor" id="references"><a class="anchor" href="#references"></a>References</h2>
 
@@ -144,7 +144,7 @@ Currently following options are implemented: 'BS' for Expected Brier Score.</p><
    <span class='no'>pbc</span> <span class='kw'>&lt;-</span> <span class='no'>pbc</span>[<span class='fu'>complete.cases</span>(<span class='no'>pbc</span>),]
    <span class='no'>cph_model</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='http://www.rdocumentation.org/packages/rms/topics/cph'>cph</a></span>(<span class='fu'>Surv</span>(<span class='no'>days</span>/<span class='fl'>365</span>, <span class='no'>status</span>)~<span class='no'>.</span>, <span class='kw'>data</span><span class='kw'>=</span><span class='no'>pbc</span>, <span class='kw'>surv</span><span class='kw'>=</span><span class='fl'>TRUE</span>, <span class='kw'>x</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>y</span><span class='kw'>=</span><span class='fl'>TRUE</span>)
    <span class='no'>surve_cph</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='explain.html'>explain</a></span>(<span class='kw'>model</span> <span class='kw'>=</span> <span class='no'>cph_model</span>, <span class='kw'>data</span> <span class='kw'>=</span> <span class='no'>pbc</span>[,-<span class='fu'>c</span>(<span class='fl'>1</span>,<span class='fl'>2</span>)], <span class='kw'>y</span> <span class='kw'>=</span> <span class='fu'>Surv</span>(<span class='no'>pbc</span>$<span class='no'>days</span>/<span class='fl'>365</span>, <span class='no'>pbc</span>$<span class='no'>status</span>))
-   <span class='no'>mp_cph</span> <span class='kw'>&lt;-</span> <span class='fu'>model_performance</span>(<span class='no'>surve_cph</span>, <span class='kw'>data</span> <span class='kw'>=</span> <span class='no'>pbc</span>, <span class='kw'>reference_formula</span> <span class='kw'>=</span> <span class='fu'>Surv</span>(<span class='no'>days</span>/<span class='fl'>365</span>, <span class='no'>status</span>)~<span class='fl'>1</span>)
+   <span class='no'>mp_cph</span> <span class='kw'>&lt;-</span> <span class='fu'>model_performance</span>(<span class='no'>surve_cph</span>)
 <span class='co'># }</span><div class='input'>
 </div></pre>
   </div>
@@ -153,6 +153,8 @@ Currently following options are implemented: 'BS' for Expected Brier Score.</p><
     <ul class="nav nav-pills nav-stacked">
       <li><a href="#arguments">Arguments</a></li>
       
+      <li><a href="#details">Details</a></li>
+
       <li><a href="#references">References</a></li>
       
       <li><a href="#examples">Examples</a></li>
@@ -163,7 +165,7 @@ Currently following options are implemented: 'BS' for Expected Brier Score.</p><
 
       <footer>
       <div class="copyright">
-  <p>Developed by Alicja Gosiewska, Aleksandra Grudziaz.</p>
+  <p>Developed by Alicja Gosiewska, Aleksandra Grudziaz, Przemyslaw Biecek.</p>
 </div>
 
 <div class="pkgdown">

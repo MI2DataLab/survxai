@@ -2,7 +2,8 @@ pandoc: 1.19.2.1
 pkgdown: 1.1.0
 pkgdown_sha: ~
 articles:
-  Custom_predict_for_survival_models: ../../../Github/survxai/vignettes/Custom_predict_for_survival_models.html
-  Global_explanations: ../../../Github/survxai/vignettes/Global_explanations.html
-  Local_explanations: ../../../Github/survxai/vignettes/Local_explanations.html
+  Custom_predict_for_survival_models: Custom_predict_for_survival_models.html
+  Global_explanations: Global_explanations.html
+  How_to_compare_models_with_survxai: How_to_compare_models_with_survxai.html
+  Local_explanations: Local_explanations.html
 

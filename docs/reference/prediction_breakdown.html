@@ -75,6 +75,9 @@
       <a href="../articles/Global_explanations.html">Survival models - global explanations</a>
     </li>
     <li>
+      <a href="../articles/How_to_compare_models_with_survxai.html">How to compare models with survxai</a>
+    </li>
+    <li>
       <a href="../articles/Local_explanations.html">Survival models - local explanations</a>
     </li>
   </ul>
@@ -98,10 +101,11 @@
     </div>
 
     
-    <p>Function <code>surv_breakdown</code> is an extension of a broken function from breakDown package.</p>
+    <p>Function <code>surv_breakdown</code> is an extension of a broken function from breakDown package. It computes the contribution in prediction for the varaibles in the model.
+The contribution is defined as the difference between survival probabilities for model with added specific value of variable and with the random levels of this variable.</p>
     
 
-    <pre class="usage"><span class='fu'>prediction_breakdown</span>(<span class='no'>explainer</span>, <span class='no'>observation</span>, <span class='no'>...</span>)</pre>
+    <pre class="usage"><span class='fu'>prediction_breakdown</span>(<span class='no'>explainer</span>, <span class='no'>observation</span>, <span class='kw'>time</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>prob</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='no'>...</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a> Arguments</h2>
     <table class="ref-arguments">
@@ -113,6 +117,14 @@
     <tr>
       <th>observation</th>
       <td><p>a new observation to explain</p></td>
+    </tr>
+    <tr>
+      <th>time</th>
+      <td><p>time point at which variable contributions are computed. If NULL median time is taken.</p></td>
+    </tr>
+    <tr>
+      <th>prob</th>
+      <td><p>survival probability at which variable contributions are computed</p></td>
     </tr>
     <tr>
       <th>...</th>
@@ -157,7 +169,7 @@
 
       <footer>
       <div class="copyright">
-  <p>Developed by Alicja Gosiewska, Aleksandra Grudziaz.</p>
+  <p>Developed by Alicja Gosiewska, Aleksandra Grudziaz, Przemyslaw Biecek.</p>
 </div>
 
 <div class="pkgdown">

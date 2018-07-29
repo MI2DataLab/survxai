@@ -1,6 +1,6 @@
 ---
 title: "How to compare models with survxai"
-author: "Alicja Gosiewska"
+author: "Alicja Gosiewska, Aleksandra Grudziąż"
 date: "`r Sys.Date()`"
 output: 
   html_document:
@@ -24,17 +24,17 @@ knitr::opts_chunk$set(echo = TRUE,
 # Introduction
 Package *survxai* contains functions for creating a unified representation of a survival models. Such representations can be further processed by various survival explainers. Tools implemented in *survxai* help to understand how input variables are used in the model and what impact do they have on final model prediction.
 
-The analyses carried out using this package can be divided into two parts: local analyses of new observations and global analyses showing the structures of survival models. This vignette describes local explanations.
+The analyses carried out using this package can be divided into two parts: local analyses of new observations and global analyses showing the structures of survival models. In this vignette we present both, global and local explanations. 
 
 Methods and functions in  *survxai* package are based on [*DALEX* package](https://github.com/pbiecek/DALEX). 
 
 # Use case - data
 
 ## Data set
-In use case we use the data from the Mayo Clinic trial in primary biliary cirrhosis (PBC) of the liver conducted between 1974 and 1984. A total of 424 PBC patients, referred to Mayo Clinic during that ten-year interval, met eligibility criteria for the randomized placebo controlled trial of the drug D-penicillamine. First 312 cases in the data set participated in the randomized trial and contain largely complete data.
+We use the data from the Mayo Clinic trial in primary biliary cirrhosis (PBC) of the liver conducted between 1974 and 1984. A total of 424 PBC patients, referred to Mayo Clinic during that ten-year interval, met eligibility criteria for the randomized placebo controlled trial of the drug D-penicillamine. First 312 cases in the data set participated in the randomized trial and contain largely complete data.
 The `pbc` data is included in the [*randomForestSRC* package](https://cran.r-project.org/web/packages/randomForestSRC/index.html).
 
-In this vignette we base models on five variables from `pec` data set: `age`, `treatment`, `status`, `sex` and `bili`. For this purpouse we create a new data set `pbc_smaller`. We also change `days` for `years`.
+We base models on five variables from `pbc` data set. They are `age`, `treatment`, `stage`, `sex`, and `bili`. For this purpouse we create a new data set `pbc_smaller`. We also change `days` for `years`.
 
 ```{r dataset}
 data(pbc, package = "randomForestSRC")
@@ -44,8 +44,7 @@ pbc_smaller$years <- pbc$days/365
 head(pbc_smaller)
 ```
 
-Original data set contains only the numerical variables. 
-For this usecase we convert variables `sex` and `stage` to factor variables.
+We also convert variables `sex` and `stage` to factors.
 
 ```{r}
 pbc_smaller$sex <- as.factor(pbc_smaller$sex)
@@ -55,12 +54,12 @@ pbc_smaller$stage <- as.factor(pbc_smaller$stage)
 
 ## Models
 
-We create 3 models: Cox Proportional Hazards Model, Random Forests for Survival, and Parametric Survival Regression Model.
+In this section, we create 3 models: Cox Proportional Hazards Model, Random Forests for Survival, and Parametric Survival Regression Model.
 
 
 ### Cox Proportional Hazards Model
 
-Cox proportional hazards model based on five variables from our data set: `age`, `treatment`, `status`, `sex` and `bili`.
+Cox proportional hazards model is based on five variables: `age`, `treatment`, `stage`, `sex`, and `bili`.
 
 ```{r, models}
 library(rms)
@@ -70,6 +69,8 @@ cph_model <- cph(Surv(years, status)~., data = pbc_smaller, surv = TRUE, x = TRU
 
 ### Random Forests for Survival
 
+Random Forests for Survival is based on five variables: `age`, `treatment`, `stage`, `sex`, and `bili`.
+
 ```{r}
 library(randomForestSRC)
 set.seed(1994)
@@ -78,6 +79,8 @@ rf_model <- rfsrc(Surv(years, status)~., data = pbc_smaller)
 
 ### Parametric Survival Regression Model
 
+Parametric Survival Regression Model is based on five variables: `age`, `treatment`, `stage`, `sex`, and `bili`.
+
 ```{r}
 library(survival)
 reg_model <- survreg(Surv(years, status)~., data = pbc_smaller, x = TRUE)
@@ -85,11 +88,11 @@ reg_model <- survreg(Surv(years, status)~., data = pbc_smaller, x = TRUE)
 
 # Explanation
 
-First, we have to create survival explainers - objects to wrap-up the black-box model with meta-data. Explainers unify model interfacing.
+First, we have to create survival explainers - objects that wrap-up the black-box model with meta-data. Explainers unify model interfacing.
 
-Some models require custom predict function. Examples are in [Explainations of different survival models vignette](https://mi2datalab.github.io/survxai/articles/Custom_predict_for_survival_models.html).
+Some models require custom predict function. Examples are in [Custom predict function for survival models vignette](https://mi2datalab.github.io/survxai/articles/Custom_predict_for_survival_models.html).
 
-For `coxph()` and `rfsrc()` functions we have implemented prediction functions.
+Predict functions for `cph` and `rfsrc` objects are implemented.
 ```{r}
 library(survxai)
 
@@ -105,6 +108,7 @@ surve_rf <- explain(model = rf_model,
 
 For model created by `survreg()` function we have to add specific custom predict function. 
 We add this function to explainer by `predict_function` parameter.
+
 ```{r}
 library(CFC)
 
@@ -132,38 +136,40 @@ surve_reg <- explain(model = reg_model,
 
 
 ## Global explanations
-At the beginning we are dealing with global explanations. We focus on explanations of the global and conditional model structure.
+At the beginning, we are dealing with global explanations. We focus on explanations of the global and conditional model structure.
 
 ### Model performance
+
 Currently, in the *survxai* package is implemented only the `BS` type of model performance.
-In this metod for each time point we compute the prediction error for our model.
-We compute `model_performance()` explainers for all three models created above.
+In this metod for each time point we compute the prediction error for model.
+We compute `model_performance` explainers for all three models created above.
+
 ```{r}
 mp_cph <- model_performance(surve_cph)
 mp_rf <- model_performance(surve_rf)
 mp_reg <- model_performance(surve_reg)
 ```
 
-We can plot all three models using generic `plot()` function.
+We plot all three models using generic `plot()` function.
 ```{r}
 plot(mp_cph, mp_rf, mp_reg)
 ```
 
-On the plot we see that the Cox Proportional Hazards Model and Parametric Survival Regression Model have simmilar performance - prediction errors for these models are almost the same. For the Survival Random Forest Model we have the smallest prediction errors.
+On the plot, we see that the Cox Proportional Hazards Model and Parametric Survival Regression Model have simmilar performance - prediction errors for these models are almost the same. For the Survival Random Forest Model we have the smallest prediction errors.
 
 ### Variable response
 Variable response explainers are designed to better understand the relation between a variable and a model output.
-We compute `variable_response()` explainers for all three models created above.
+We compute `variable_response` explainers for all three models created above.
 
 #### Factor variable
-Firstly we compute these type of explainers for the factor variable `sex`.
+First, we compute explainers for the factor variable `sex`.
 ```{r}
 vr_cph_sex <- variable_response(surve_cph, "sex")
 vr_rf_sex <- variable_response(surve_rf, "sex")
 vr_reg_sex <- variable_response(surve_reg, "sex")
 ```
 
-We visualize our explainers on one plot.
+We visualize explainers on one plot.
 ```{r}
 plot(vr_cph_sex, vr_rf_sex, vr_reg_sex)
 ```
@@ -171,7 +177,7 @@ We see that in all models patients with `sex=1` have higher probability of survi
 
 #### Continuous variable
 We can also compute the `pdp` plots for numeric variables.
-In this case we divide values of our variable `bili` into 6 intervals.
+For this, we divide values of variable `bili` into 6 intervals.
 ```{r}
 vr_cph_bili <- variable_response(surve_cph, "bili")
 vr_rf_bili <- variable_response(surve_rf, "bili")
@@ -184,7 +190,7 @@ plot(vr_cph_bili, vr_rf_bili, vr_reg_bili)
 
 
 ## Local explanations
-The next step in our analysis of machine learning models are local explanations - the explanations for one, new observation.
+The next aspects of survival model analysis are local explanations - the explanations for one, new observation.
 
 ```{r}
 single_observation <- pbc_smaller[1,-c(1,7)]
@@ -207,7 +213,7 @@ plot(cp_rf)
 plot(cp_reg)
 ```
 
-On the plots above we see that for variables `bili` and `sex` coxph and survreg model have simmilar performance, but randomForest model has different predictions for survival probability.
+On the plots above we see that for variables `bili` and `sex` `coxph` and `survreg` model have simmilar performance, but `randomForest` model has different predictions of survival probability.
 
 ### Prediction breakdown
 Break Down Plots for survival models compare, by default, differences in predictions for median of time. We can change the time of computing the contributions for each variable using `time` parameter. 
@@ -228,7 +234,7 @@ This plots helps to understand the factors that drive survival probability for a
 
 For all models variable `bili` is the variable with the largest contribution. But the second variable is different randomForest (`age`) and coxph, survreg (`stage`). 
 
-Also we can compute the variables contribution for chosen survival probability value.
+We can also compute the variables contribution for chosen survival probability value.
 ```{r}
 broken_prediction_cph <- prediction_breakdown(surve_cph, single_observation, prob = 0.8)
 broken_prediction_rf <- prediction_breakdown(surve_rf, single_observation, prob = 0.8)

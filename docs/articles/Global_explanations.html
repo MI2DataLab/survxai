@@ -53,6 +53,9 @@
       <a href="../articles/Global_explanations.html">Survival models - global explanations</a>
     </li>
     <li>
+      <a href="../articles/How_to_compare_models_with_survxai.html">How to compare models with survxai</a>
+    </li>
+    <li>
       <a href="../articles/Local_explanations.html">Survival models - local explanations</a>
     </li>
   </ul>
@@ -73,7 +76,7 @@
       <h1>Survival models - global explanations</h1>
                         <h4 class="author">Alicja Gosiewska</h4>
             
-            <h4 class="date">2018-07-20</h4>
+            <h4 class="date">2018-07-29</h4>
       
       
       <div class="hidden name"><code>Global_explanations.Rmd</code></div>
@@ -118,9 +121,9 @@ pbc &lt;-<span class="st"> </span>pbc[<span class="kw">complete.cases</span>(pbc
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">pbc<span class="op">$</span>sex &lt;-<span class="st"> </span><span class="kw">as.factor</span>(pbc<span class="op">$</span>sex)
 pbc<span class="op">$</span>stage &lt;-<span class="st"> </span><span class="kw">as.factor</span>(pbc<span class="op">$</span>stage)</code></pre></div>
 </div>
-<div id="models" class="section level2">
+<div id="model" class="section level2">
 <h2 class="hasAnchor">
-<a href="#models" class="anchor"></a>Models</h2>
+<a href="#model" class="anchor"></a>Model</h2>
 <p>We will create Cox proportional hazards model based on five variables from our data set: <code>age</code>, <code>treatment</code>, <code>status</code>, <code>sex</code> and <code>bili</code>.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">set.seed</span>(<span class="dv">1024</span>)
 <span class="kw">library</span>(rms)
@@ -134,27 +137,22 @@ cph_model &lt;-<span class="st"> </span><span class="kw">cph</span>(<span class=
 <div id="global-explanations" class="section level1">
 <h1 class="hasAnchor">
 <a href="#global-explanations" class="anchor"></a>Global explanations</h1>
-<p>In this section we will focus on explanations of the global and conditional model structure.</p>
+<p>In this section we focus on explanations of the global and conditional model structure.</p>
 <div id="explainers" class="section level2">
 <h2 class="hasAnchor">
 <a href="#explainers" class="anchor"></a>Explainers</h2>
 <p>First, we have to create survival explainers - objects to wrap-up the black-box model with meta-data. Explainers unify model interfacing.</p>
-<p>We have to define custom predict function which takes three arguments: model, data and vector with time points. Predict funcions may vary depending on the model. Examples for some models are in <a href="">Explainations of different survival models vignette</a>.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">predict_times &lt;-<span class="st"> </span><span class="cf">function</span>(model, data, times){
-  prob &lt;-<span class="st"> </span>rms<span class="op">::</span><span class="kw"><a href="http://www.rdocumentation.org/packages/rms/topics/survest.cph">survest</a></span>(model, data, <span class="dt">times =</span> times)<span class="op">$</span>surv
-  <span class="kw">return</span>(prob)
-}
-
-surve_cph &lt;-<span class="st"> </span><span class="kw"><a href="../reference/explain.html">explain</a></span>(<span class="dt">model =</span> cph_model,
-                     <span class="dt">data =</span> pbc_smaller[,<span class="op">-</span><span class="kw">c</span>(<span class="dv">1</span>,<span class="dv">2</span>)], <span class="dt">y =</span> <span class="kw">Surv</span>(pbc_smaller<span class="op">$</span>days<span class="op">/</span><span class="dv">365</span>, pbc_smaller<span class="op">$</span>status),
-                     <span class="dt">predict_function =</span> predict_times)</code></pre></div>
+<p>Some models require custom predict function. Examples are in <a href="https://mi2datalab.github.io/survxai/articles/Custom_predict_for_survival_models.html">Explainations of different survival models vignette</a>.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">surve_cph &lt;-<span class="st"> </span><span class="kw"><a href="../reference/explain.html">explain</a></span>(<span class="dt">model =</span> cph_model,
+                     <span class="dt">data =</span> pbc_smaller[,<span class="op">-</span><span class="kw">c</span>(<span class="dv">1</span>,<span class="dv">2</span>)], 
+                     <span class="dt">y =</span> <span class="kw">Surv</span>(pbc_smaller<span class="op">$</span>days<span class="op">/</span><span class="dv">365</span>, pbc_smaller<span class="op">$</span>status))</code></pre></div>
 </div>
 <div id="model-performance" class="section level2">
 <h2 class="hasAnchor">
 <a href="#model-performance" class="anchor"></a>Model performance</h2>
-<p>currently, in the <em>survxai</em> package is implemented only the <code>BS</code> type of model performance. In this metod for each time point we compute the prediction error for our model and the reference model, defined by the <code>reference_formula</code> argument.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">mp_cph &lt;-<span class="st"> </span><span class="kw"><a href="../reference/model_performance.html">model_performance</a></span>(surve_cph, <span class="dt">data =</span> pbc_smaller, <span class="dt">reference_formula =</span> <span class="kw">Surv</span>(days<span class="op">/</span><span class="dv">365</span>, status)<span class="op">~</span><span class="dv">1</span>)</code></pre></div>
-<p>After creating the <code>surv_model_prediction</code> object we can visualize it in a very convinient way using the generic <code>plot()</code> function. On our plot there are prediction error curves for model from the explainer and reference model. For more details about these curves see: <a href="https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4194196/">Mogensen, 2012</a></p>
+<p>Currently, in the <em>survxai</em> package is implemented only the <code>BS</code> type of model performance. In this metod for each time point we compute the prediction error for our model.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">mp_cph &lt;-<span class="st"> </span><span class="kw"><a href="../reference/model_performance.html">model_performance</a></span>(surve_cph)</code></pre></div>
+<p>After creating the <code>surv_model_prediction</code> object we can visualize it in a very convinient way using the generic <code>plot()</code> function. On our plot there are prediction error curves for model from the explainer. For more details about these curves see: <a href="https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4194196/">Mogensen, 2012</a></p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">plot</span>(mp_cph)</code></pre></div>
 <p><img src="Global_explanations_files/figure-html/unnamed-chunk-3-1.png" width="700"></p>
 </div>
@@ -185,7 +183,7 @@ vr_cph_bili &lt;-<span class="st"> </span><span class="kw"><a href="../reference
       <li>
 <a href="#use-case---data">Use case - data</a><ul class="nav nav-pills nav-stacked">
 <li><a href="#data-set">Data set</a></li>
-      <li><a href="#models">Models</a></li>
+      <li><a href="#model">Model</a></li>
       </ul>
 </li>
       <li>
@@ -203,7 +201,7 @@ vr_cph_bili &lt;-<span class="st"> </span><span class="kw"><a href="../reference
 
 
       <footer><div class="copyright">
-  <p>Developed by Alicja Gosiewska, Aleksandra Grudziaz.</p>
+  <p>Developed by Alicja Gosiewska, Aleksandra Grudziaz, Przemyslaw Biecek.</p>
 </div>
 
 <div class="pkgdown">
