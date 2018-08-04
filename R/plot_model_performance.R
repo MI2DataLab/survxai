@@ -48,6 +48,7 @@ plot.surv_model_performance_explainer <- function(x, ...){
          y = "prediction error") +
     theme_mi2()+
     scale_y_continuous(breaks = seq(0,1,0.1),
+                       limits = c(0,1),
                        labels = paste(seq(0,100,10),"%"))
 
 

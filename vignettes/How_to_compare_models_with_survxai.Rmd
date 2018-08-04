@@ -1,6 +1,6 @@
 ---
 title: "How to compare models with survxai"
-author: "Alicja Gosiewska, Aleksandra Grudziąż"
+author: "Alicja Gosiewska, Aleksandra Grudziaz"
 date: "`r Sys.Date()`"
 output: 
   html_document:
@@ -175,6 +175,14 @@ plot(vr_cph_sex, vr_rf_sex, vr_reg_sex)
 ```
 We see that in all models patients with `sex=1` have higher probability of survival.
 
+In `survival_variable_response` plots we can also compare models in division into all variable levels using parameter `split = "variable"`.
+
+```{r}
+plot(vr_cph_sex, vr_rf_sex, vr_reg_sex, split = "variable")
+
+```
+
+
 #### Continuous variable
 We can also compute the `pdp` plots for numeric variables.
 For this, we divide values of variable `bili` into 6 intervals.
@@ -186,6 +194,11 @@ vr_reg_bili <- variable_response(surve_reg, "bili")
 
 ```{r}
 plot(vr_cph_bili, vr_rf_bili, vr_reg_bili)
+```
+
+As mentioned above we can split our comparison by each variable level.
+```{r, fig.height=10}
+plot(vr_cph_bili, vr_rf_bili, vr_reg_bili, split = "variable")
 ```
 
 

@@ -29,6 +29,11 @@
 
 plot.surv_ceteris_paribus_explainer <- function(x, ..., selected_variable = NULL) {
   y_hat <- new_x <- time <- time_2 <- y_hat_2 <- NULL
+  new_observation <- attributes(x)$prediction$`observation`
+  values <- as.data.frame(t(new_observation[1,]))
+  values[,1] <- as.character(values[,1])
+  new_observation_legend <- data.frame(vname = colnames(new_observation), val = paste0(colnames(new_observation), "=", values[,1]))
+  
   dfl <- c(list(x), list(...))
 
   all_responses <- do.call(rbind, dfl)
@@ -57,9 +62,11 @@ plot.surv_ceteris_paribus_explainer <- function(x, ..., selected_variable = NULL
   all_predictions$time_2 <- times$prediction
   colnames(all_predictions)[1] <- "y_hat_2"
 
+  
+  all_responses <- merge(all_responses, new_observation_legend, by="vname")
   if(!is.null(selected_variable)){
     all_responses <- all_responses[which(all_responses$vname == selected_variable),]
-    legend <- unique(all_responses$vname)
+    legend <- unique(all_responses$val)
     add_theme <- labs(col = legend,
                       title = paste("Ceteris paribus plot for", unique(x$label),"model."))
     facet <- NULL
@@ -67,13 +74,16 @@ plot.surv_ceteris_paribus_explainer <- function(x, ..., selected_variable = NULL
   }else{
     add_theme <- theme(legend.position = "none")
     title <- ggtitle(paste("Ceteris paribus plot for", unique(x$label),"model."))
-    facet <- facet_wrap(~vname)
+    facet <- facet_wrap(~val)
   }
-
+  
+  
+  
   pl <- ggplot(all_responses, aes(x = time, y = y_hat, col = factor(new_x)))+
     geom_step()+
     geom_step(data = all_predictions, aes(x = time_2, y = y_hat_2), col="black") +
     scale_y_continuous(breaks = seq(0,1,0.1),
+                       limits = c(0,1),
                        labels = paste(seq(0,100,10),"%"),
                        name = "survival probability")
 

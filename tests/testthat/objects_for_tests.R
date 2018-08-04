@@ -42,6 +42,7 @@ class(cph_model_different_class) <- "custom_model"
 surve_cph <- explain(model = cph_model,
                   data = pbc[,-c(1,2)], y = Surv(pbc$days/365, pbc$status),
                   predict_function = predict_times)
+
 surve_cph2 <- explain(model = cph_model2,
                      data = pbc, y = Surv(pbc$days/365, pbc$status),
                      predict_function = predict_times, label = "2")
@@ -88,7 +89,7 @@ mp_rf <- model_performance(surve_rf)
 
 
 plot_var_resp <- plot(svr_cph)
-plot_var_resp_levels <- plot(svr_cph, svr_cph2, split = "level")
+plot_var_resp_levels <- plot(svr_cph, svr_cph2, split = "variable")
 plot_var_resp_default <- plot(svr_cph, svr_cph2)
 plot_cp <- plot(cp_cph)
 plot_mp <- plot(mp_cph)

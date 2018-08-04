@@ -4,7 +4,7 @@
 #'
 #' @param x object of class "surv_variable_response"
 #' @param ... other arguments
-#' @param split a character, either "model" or "level". Sets the variable for faceting.
+#' @param split a character, either "model" or "variable". Sets the variable for faceting.
 #'
 #' @import ggplot2
 #' @importFrom stats aggregate quantile
@@ -47,10 +47,10 @@ plot.surv_variable_response_explainer <- function(x, ..., split = "model"){
     df <- aggregate(y~., data = df, mean)
   }
 
-  if (split == "level") {
+  if (split == "variable") {
     add_facet <- facet_wrap(~value, ncol = 1)
     df$color <- factor(df$label)
-    legend <- "label"
+    legend <- "model"
   } else {
     add_facet <- facet_wrap(~label, ncol = 1)
     df$color <- factor(df$value)
@@ -67,6 +67,7 @@ plot.surv_variable_response_explainer <- function(x, ..., split = "model"){
     add_facet +
     theme_mi2()+
     scale_y_continuous(breaks = seq(0,1,0.1),
+                       limits = c(0,1),
                        labels = paste(seq(0,100,10),"%"),
                        name = "survival probability")
 

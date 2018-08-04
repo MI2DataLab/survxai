@@ -86,6 +86,7 @@ plot.surv_prediction_breakdown_explainer <- function(x, ...){
     scale_colour_manual(values=cc)+
     line+
     scale_y_continuous(breaks = seq(0,1,0.1),
+                       limits = c(0,1),
                        labels = paste(seq(0,100,10),"%"),
                        name = "survival probability")+
     legend

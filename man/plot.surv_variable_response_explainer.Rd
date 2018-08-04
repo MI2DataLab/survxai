@@ -11,7 +11,7 @@
 
 \item{...}{other arguments}
 
-\item{split}{a character, either "model" or "level". Sets the variable for faceting.}
+\item{split}{a character, either "model" or "variable". Sets the variable for faceting.}
 }
 \description{
 Function plot for surv_variable_response object shows the expected output condition on a selected variable.
