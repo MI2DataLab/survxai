@@ -119,6 +119,8 @@ ceteris_paribus <- function(explainer, observation, grid.points = 5, selected_va
   new_y_hat <- predict_function(model, observation, times)
 
   attr(all_responses, "prediction") <- list(observation = observation, new_y_hat = new_y_hat, times = times)
+  attr(all_responses, "grid.points") <-grid.points
+  
   class(all_responses) = c("surv_ceteris_paribus_explainer", "data.frame")
   all_responses
 }

@@ -3,8 +3,10 @@
 #' @description Function plot for ceteris_paribus object visualise estimated survival curve of mean probabilities in chosen time points. Black lines on each plot correspond to survival curve for our new observation specified in the \code{ceteris_paribus} function.
 #'
 #' @param x object of class "surv_ceteris_paribus_explainer"
-#' @param selected_variable g
+#' @param selected_variable name of varaible we want to draw ceteris paribus plot
 #' @param ... other arguments
+#' @param scale type of scale of colors, either "discrete" or "gradient"
+#' @param col_scale vector containing values of low and high ends of the gradient, when "gradient" type of scale was chosen
 #'
 #' @import ggplot2
 #' @examples
@@ -27,12 +29,15 @@
 #' @method plot surv_ceteris_paribus_explainer
 #' @export
 
-plot.surv_ceteris_paribus_explainer <- function(x, ..., selected_variable = NULL) {
+plot.surv_ceteris_paribus_explainer <- function(x, ..., selected_variable = NULL, scale_type = "factor", 
+                                                col_scale=NULL) {
   y_hat <- new_x <- time <- time_2 <- y_hat_2 <- NULL
   new_observation <- attributes(x)$prediction$`observation`
   values <- as.data.frame(t(new_observation[1,]))
   values[,1] <- as.character(values[,1])
   new_observation_legend <- data.frame(vname = colnames(new_observation), val = paste0(colnames(new_observation), "=", values[,1]))
+  seq_length <- attributes(x)$grid.points
+  
   
   dfl <- c(list(x), list(...))
 
@@ -77,9 +82,38 @@ plot.surv_ceteris_paribus_explainer <- function(x, ..., selected_variable = NULL
     facet <- facet_wrap(~val)
   }
   
+  #######################
+  z <- all_responses[,c(1,3)]
+  z <- unique(z)
+  
+  vnames <- unique(z$vname)
+  z$legend <- 0
   
   
-  pl <- ggplot(all_responses, aes(x = time, y = y_hat, col = factor(new_x)))+
+  for(val in vnames){
+    number <- length(which(z$vname==val))
+    positions <- which(z$vname==val)
+    z$legend[positions] <- 1:number
+  }
+  
+  #tu dodalam do all_responses kolumne z numerem ile mamy unikalnych wartosci - czasem to tyle ile grid.points z funckji ceteris paribus ale dla faktorow moze juz byc roznie
+  all_responses <- merge(all_responses, z, by=c("vname", "new_x"))
+  
+  #############################
+  if(scale_type == "gradient"){
+    if(!is.null(col_scale)){
+      #cc <- seq_gradient_pal(col_scale[1],col_scale[2])(seq(0,1,length.out=seq_length))
+      scale <- scale_color_gradient(low = col_scale[1], high = col_scale[2])
+    }else{
+      message("Please specify the low and high ends of gradient")
+      scale <- NULL
+    }
+  }else{
+    scale <- NULL
+  }
+  #factor(new_x)
+  
+  pl <- ggplot(all_responses, aes(x = time, y = y_hat, col = as.character(as.numeric(legend))))+
     geom_step()+
     geom_step(data = all_predictions, aes(x = time_2, y = y_hat_2), col="black") +
     scale_y_continuous(breaks = seq(0,1,0.1),
@@ -87,8 +121,10 @@ plot.surv_ceteris_paribus_explainer <- function(x, ..., selected_variable = NULL
                        labels = paste(seq(0,100,10),"%"),
                        name = "survival probability")
 
-  pl + facet +
+  pl <- pl + facet +
     theme_mi2()+
     add_theme+
     title
+  
+  pl + scale
 }
