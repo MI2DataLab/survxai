@@ -3,7 +3,13 @@
 #' @description Function plot for surv_breakdown object visualise estimated survival curve of mean probabilities in chosen time points.
 #'
 #' @param x object of class "surv_prediction_breakdown_explainer"
-#' @param ... other arguments
+#' @param ... other arguments, for example additional object of class "surv_prediction_breakdown_explainer"
+#' @param numerate logical; indicating whether we want to number curves
+#' @param lines logical; indicating wheter we want to add lines on chosen time point or probability
+#' @param lines_type type of line; see http://sape.inf.usi.ch/quick-reference/ggplot2/linetype
+#' @param lines_col color of line
+#' @param col_scale vector containig two colors for gradient scale in legend
+#'
 #'
 #' @import ggplot2
 #' @examples
@@ -28,7 +34,9 @@
 #' @importFrom scales seq_gradient_pal
 #' @export
 
-plot.surv_prediction_breakdown_explainer <- function(x, ...){
+plot.surv_prediction_breakdown_explainer <- function(x, ..., numerate = TRUE, lines = TRUE, 
+                                                     lines_type = 1, lines_col = "black",
+                                                     col_scale = c("#010059","#e0f6fb")){
   y <- col <- label <- value <- position <- legend <-  NULL
 
   df <- data.frame(x)
@@ -49,9 +57,15 @@ plot.surv_prediction_breakdown_explainer <- function(x, ...){
   }
 
   if(!is.null(attributes(x)$prob)){
-    line <- geom_hline(yintercept = attributes(x)$prob)
+    line <- geom_hline(yintercept = attributes(x)$prob, color = lines_col, linetype = lines_type)
   }else{
-    line <- geom_vline(xintercept = attributes(x)$time)
+    line <- geom_vline(xintercept = attributes(x)$time, color = lines_col, linetype = lines_type)
+  }
+  
+  if(lines == TRUE){
+    line <- line
+  }else{
+    line <- NULL
   }
 
   df$legend <- paste0(df$position,": ", df$value)
@@ -67,16 +81,25 @@ plot.surv_prediction_breakdown_explainer <- function(x, ...){
   df$legend <- factor(df$legend, levels = unique(df$legend[order(df$position)]))
 
   #colors
-  cc <- seq_gradient_pal("#010059","#e0f6fb")(seq(0,1,length.out=length(unique(df$legend))))
+  cc <- seq_gradient_pal(col_scale[1],col_scale[2])(seq(0,1,length.out=length(unique(df$legend))))
 
   #labels
   median_time <- median(unique(df$x))
   median <- which.min(abs(unique(df$x) - median_time))
   median <- unique(df$x)[median]
+  
+  #to powyzej chyba usunac
+  if(numerate == TRUE){
+    numbers <- geom_text(data = df[df$x == median,], aes(label = position), color = "black", show.legend = FALSE, hjust = 0, vjust = 0, nudge_x = 0.4)
+  }else{
+    numbers <- NULL
+  }
+  
+  
 
   ggplot(df, aes(x=x, y=y, col = factor(legend)))+
     geom_step()+
-    geom_text(data = df[df$x == median,], aes(label = position), color = "black", show.legend = FALSE, hjust = 0, vjust = 0)+
+    numbers+
     labs(title = "BreakDown plot",
         x = "time",
         y = "mean survival probability",
@@ -85,6 +108,7 @@ plot.surv_prediction_breakdown_explainer <- function(x, ...){
     theme_mi2()+
     scale_colour_manual(values=cc)+
     line+
+    numbers+
     scale_y_continuous(breaks = seq(0,1,0.1),
                        limits = c(0,1),
                        labels = paste(seq(0,100,10),"%"),

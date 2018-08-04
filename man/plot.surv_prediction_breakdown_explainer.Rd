@@ -4,12 +4,24 @@
 \alias{plot.surv_prediction_breakdown_explainer}
 \title{Plot for surv_breakdown object}
 \usage{
-\method{plot}{surv_prediction_breakdown_explainer}(x, ...)
+\method{plot}{surv_prediction_breakdown_explainer}(x, ..., numerate = TRUE,
+  lines = TRUE, lines_type = 1, lines_col = "black",
+  col_scale = c("#010059", "#e0f6fb"))
 }
 \arguments{
 \item{x}{object of class "surv_prediction_breakdown_explainer"}
 
-\item{...}{other arguments}
+\item{...}{other arguments, for example additional object of class "surv_prediction_breakdown_explainer"}
+
+\item{numerate}{logical; indicating whether we want to number curves}
+
+\item{lines}{logical; indicating wheter we want to add lines on chosen time point or probability}
+
+\item{lines_type}{type of line; see http://sape.inf.usi.ch/quick-reference/ggplot2/linetype}
+
+\item{lines_col}{color of line}
+
+\item{col_scale}{vector containig two colors for gradient scale in legend}
 }
 \description{
 Function plot for surv_breakdown object visualise estimated survival curve of mean probabilities in chosen time points.
