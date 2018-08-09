@@ -104,13 +104,13 @@ head(cp_cph)
 After creating the `surv_ceteris_paribus` object we can visualize it in a very convinient way using the generic `plot()` function. Black line represent prediction of original observation.
 
 ```{r}
-plot(cp_cph)
+plot(cp_cph, scale_type = "gradient", col_scale = c("red", "blue"))
 ```
 
 We can see that there are  differences for stages. Next, we will plot Ceteris Paribus for sigle variable `stage`.
 
 ```{r}
-plot(cp_cph, selected_variable = "stage")
+plot(cp_cph, selected_variable = "stage", scale_type = "gradient", col_scale = c("red", "blue"))
 ```
 
 We see a trend that a lower `stage` means a higher probability of survival for chosen observation.
@@ -129,7 +129,7 @@ broken_prediction_cph <- prediction_breakdown(surve_cph, pbc_smaller[1,-c(1,2)])
 After creating the `surv_prediction_breakdown` object we can visualize it in a very convinient way using the generic `plot()` function.
 
 ```{r}
-plot(broken_prediction_cph)
+plot(broken_prediction_cph, col_scale = c("red", "blue"))
 ```
 
 This plot helps to understand the factors that drive survival probability for a single observation.

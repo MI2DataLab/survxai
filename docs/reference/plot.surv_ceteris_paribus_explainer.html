@@ -106,7 +106,7 @@
 
     <pre class="usage"><span class='co'># S3 method for surv_ceteris_paribus_explainer</span>
 <span class='fu'>plot</span>(<span class='no'>x</span>, <span class='no'>...</span>,
-  <span class='kw'>selected_variable</span> <span class='kw'>=</span> <span class='kw'>NULL</span>)</pre>
+  <span class='kw'>selected_variable</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>scale_type</span> <span class='kw'>=</span> <span class='st'>"factor"</span>, <span class='kw'>col_scale</span> <span class='kw'>=</span> <span class='kw'>NULL</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a> Arguments</h2>
     <table class="ref-arguments">
@@ -121,7 +121,15 @@
     </tr>
     <tr>
       <th>selected_variable</th>
-      <td><p>g</p></td>
+      <td><p>name of varaible we want to draw ceteris paribus plot</p></td>
+    </tr>
+    <tr>
+      <th>col_scale</th>
+      <td><p>vector containing values of low and high ends of the gradient, when "gradient" type of scale was chosen</p></td>
+    </tr>
+    <tr>
+      <th>scale</th>
+      <td><p>type of scale of colors, either "discrete" or "gradient"</p></td>
     </tr>
     </table>
     

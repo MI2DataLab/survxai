@@ -105,7 +105,9 @@
     
 
     <pre class="usage"><span class='co'># S3 method for surv_prediction_breakdown_explainer</span>
-<span class='fu'>plot</span>(<span class='no'>x</span>, <span class='no'>...</span>)</pre>
+<span class='fu'>plot</span>(<span class='no'>x</span>, <span class='no'>...</span>, <span class='kw'>numerate</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
+  <span class='kw'>lines</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>lines_type</span> <span class='kw'>=</span> <span class='fl'>1</span>, <span class='kw'>lines_col</span> <span class='kw'>=</span> <span class='st'>"black"</span>,
+  <span class='kw'>col_scale</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='st'>"#010059"</span>, <span class='st'>"#e0f6fb"</span>))</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a> Arguments</h2>
     <table class="ref-arguments">
@@ -116,7 +118,27 @@
     </tr>
     <tr>
       <th>...</th>
-      <td><p>other arguments</p></td>
+      <td><p>other arguments, for example additional object of class "surv_prediction_breakdown_explainer"</p></td>
+    </tr>
+    <tr>
+      <th>numerate</th>
+      <td><p>logical; indicating whether we want to number curves</p></td>
+    </tr>
+    <tr>
+      <th>lines</th>
+      <td><p>logical; indicating wheter we want to add lines on chosen time point or probability</p></td>
+    </tr>
+    <tr>
+      <th>lines_type</th>
+      <td><p>type of line; see http://sape.inf.usi.ch/quick-reference/ggplot2/linetype</p></td>
+    </tr>
+    <tr>
+      <th>lines_col</th>
+      <td><p>color of line</p></td>
+    </tr>
+    <tr>
+      <th>col_scale</th>
+      <td><p>vector containig two colors for gradient scale in legend</p></td>
     </tr>
     </table>
     

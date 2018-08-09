@@ -34,13 +34,14 @@ Methods and functions in  *survxai* package are based on [*DALEX* package](https
 We use the data from the Mayo Clinic trial in primary biliary cirrhosis (PBC) of the liver conducted between 1974 and 1984. A total of 424 PBC patients, referred to Mayo Clinic during that ten-year interval, met eligibility criteria for the randomized placebo controlled trial of the drug D-penicillamine. First 312 cases in the data set participated in the randomized trial and contain largely complete data.
 The `pbc` data is included in the [*randomForestSRC* package](https://cran.r-project.org/web/packages/randomForestSRC/index.html).
 
-We base models on five variables from `pbc` data set. They are `age`, `treatment`, `stage`, `sex`, and `bili`. For this purpouse we create a new data set `pbc_smaller`. We also change `days` for `years`.
+We base models on three variables from `pbc` data set. They are `stage`, `sex`, and `bili`. For this purpouse we create a new data set `pbc_smaller`. We also change `days` for `years`.
 
 ```{r dataset}
 data(pbc, package = "randomForestSRC")
 pbc <- pbc[complete.cases(pbc),]
-pbc_smaller <- pbc[,c("status", "treatment", "sex", "age", "bili", "stage")]
+pbc_smaller <- pbc[,c("days", "status","sex", "bili", "stage")]
 pbc_smaller$years <- pbc$days/365
+pbc_smaller <- pbc_smaller[,-1]
 head(pbc_smaller)
 ```
 
@@ -49,6 +50,16 @@ We also convert variables `sex` and `stage` to factors.
 ```{r}
 pbc_smaller$sex <- as.factor(pbc_smaller$sex)
 pbc_smaller$stage <- as.factor(pbc_smaller$stage)
+```
+
+We divide our data set into train and test sets.
+```{r}
+smp_size <- floor(0.5 * nrow(pbc_smaller))
+set.seed(123)
+train_ind <- sample(seq_len(nrow(pbc_smaller)), size = smp_size)
+
+train <- pbc_smaller[train_ind, ]
+test <- pbc_smaller[-train_ind, ]
 ```
 
 
@@ -64,7 +75,7 @@ Cox proportional hazards model is based on five variables: `age`, `treatment`, `
 ```{r, models}
 library(rms)
 
-cph_model <- cph(Surv(years, status)~., data = pbc_smaller, surv = TRUE, x = TRUE, y=TRUE)
+cph_model <- cph(Surv(years, status)~., data = train, surv = TRUE, x = TRUE, y=TRUE)
 ```
 
 ### Random Forests for Survival
@@ -74,7 +85,7 @@ Random Forests for Survival is based on five variables: `age`, `treatment`, `sta
 ```{r}
 library(randomForestSRC)
 set.seed(1994)
-rf_model <- rfsrc(Surv(years, status)~., data = pbc_smaller)
+rf_model <- rfsrc(Surv(years, status)~., data = train)
 ```
 
 ### Parametric Survival Regression Model
@@ -83,7 +94,7 @@ Parametric Survival Regression Model is based on five variables: `age`, `treatme
 
 ```{r}
 library(survival)
-reg_model <- survreg(Surv(years, status)~., data = pbc_smaller, x = TRUE)
+reg_model <- survreg(Surv(years, status)~., data = train, x = TRUE)
 ```
 
 # Explanation
@@ -97,13 +108,13 @@ Predict functions for `cph` and `rfsrc` objects are implemented.
 library(survxai)
 
 surve_cph <- explain(model = cph_model,
-                     data = pbc_smaller[,-c(1,7)], 
-                     y = Surv(pbc_smaller$years, pbc_smaller$status))
+                     data = test[,-c(1,5)], 
+                     y = Surv(test$years, test$status))
 
 surve_rf <- explain(model = rf_model, 
-                     label = "rf",
-                     data = pbc_smaller[,-c(1,7)], 
-                     y = Surv(pbc_smaller$years, pbc_smaller$status))
+                     label = "random forest",
+                     data = test[,-c(1,5)], 
+                     y = Surv(test$years, test$status))
 ```
 
 For model created by `survreg()` function we have to add specific custom predict function. 
@@ -128,8 +139,8 @@ custom_predict <- function(model, newdata, times){
 }
 
 surve_reg <- explain(model = reg_model,
-                     data = pbc_smaller[,-c(1,7)], 
-                     y = Surv(pbc_smaller$years, pbc_smaller$status),
+                     data = test[,-c(1,5)], 
+                     y = Surv(test$years, test$status),
                      predict_function = custom_predict)
 
 ```
@@ -152,7 +163,7 @@ mp_reg <- model_performance(surve_reg)
 
 We plot all three models using generic `plot()` function.
 ```{r}
-plot(mp_cph, mp_rf, mp_reg)
+plot(mp_cph, mp_rf, mp_reg) + ylim(c(0,0.30))
 ```
 
 On the plot, we see that the Cox Proportional Hazards Model and Parametric Survival Regression Model have simmilar performance - prediction errors for these models are almost the same. For the Survival Random Forest Model we have the smallest prediction errors.
@@ -206,7 +217,7 @@ plot(vr_cph_bili, vr_rf_bili, vr_reg_bili, split = "variable")
 The next aspects of survival model analysis are local explanations - the explanations for one, new observation.
 
 ```{r}
-single_observation <- pbc_smaller[1,-c(1,7)]
+single_observation <- test[1,-c(1,5)]
 single_observation
 ```
 
@@ -221,9 +232,9 @@ cp_reg <- ceteris_paribus(surve_reg, single_observation)
 ```
 
 ```{r}
-plot(cp_cph)
-plot(cp_rf)
-plot(cp_reg)
+plot(cp_cph, scale_type = "gradient", col_scale = c("red", "blue"))
+plot(cp_rf, scale_type = "gradient", col_scale = c("red", "blue"))
+plot(cp_reg, scale_type = "gradient", col_scale = c("red", "blue"))
 ```
 
 On the plots above we see that for variables `bili` and `sex` `coxph` and `survreg` model have simmilar performance, but `randomForest` model has different predictions of survival probability.
@@ -238,9 +249,9 @@ broken_prediction_reg <- prediction_breakdown(surve_reg, single_observation)
 
 
 ```{r}
-plot(broken_prediction_cph)
-plot(broken_prediction_rf)
-plot(broken_prediction_reg)
+plot(broken_prediction_cph, col_scale = c("red", "blue"), lines_type = 2)
+plot(broken_prediction_rf, col_scale = c("red", "blue"), lines_type = 2)
+plot(broken_prediction_reg, col_scale = c("red", "blue"), lines_type = 2)
 ```
 
 This plots helps to understand the factors that drive survival probability for a single observation.
@@ -255,9 +266,9 @@ broken_prediction_reg <- prediction_breakdown(surve_reg, single_observation, pro
 ```
 
 ```{r}
-plot(broken_prediction_cph)
-plot(broken_prediction_rf)
-plot(broken_prediction_reg)
+plot(broken_prediction_cph, col_scale = c("red", "blue"), lines_type = 2)
+plot(broken_prediction_rf, col_scale = c("red", "blue"), lines_type = 2)
+plot(broken_prediction_reg, col_scale = c("red", "blue"), lines_type = 2)
 ```
 
 We can compare this models on one plot, but for the transparency of the charts we have drawn them separately.

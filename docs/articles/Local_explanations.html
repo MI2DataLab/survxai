@@ -76,7 +76,7 @@
       <h1>Survival models - local explanations</h1>
                         <h4 class="author">Aleksandra Grudziaz</h4>
             
-            <h4 class="date">2018-07-29</h4>
+            <h4 class="date">2018-08-09</h4>
       
       
       <div class="hidden name"><code>Local_explanations.Rmd</code></div>
@@ -181,10 +181,10 @@ single_observation</code></pre></div>
 ## 5 numeric
 ## 6 numeric</code></pre>
 <p>After creating the <code>surv_ceteris_paribus</code> object we can visualize it in a very convinient way using the generic <code>plot()</code> function. Black line represent prediction of original observation.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">plot</span>(cp_cph)</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">plot</span>(cp_cph, <span class="dt">scale_type =</span> <span class="st">"gradient"</span>, <span class="dt">col_scale =</span> <span class="kw">c</span>(<span class="st">"red"</span>, <span class="st">"blue"</span>))</code></pre></div>
 <p><img src="Local_explanations_files/figure-html/unnamed-chunk-2-1.png" width="700"></p>
 <p>We can see that there are differences for stages. Next, we will plot Ceteris Paribus for sigle variable <code>stage</code>.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">plot</span>(cp_cph, <span class="dt">selected_variable =</span> <span class="st">"stage"</span>)</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">plot</span>(cp_cph, <span class="dt">selected_variable =</span> <span class="st">"stage"</span>, <span class="dt">scale_type =</span> <span class="st">"gradient"</span>, <span class="dt">col_scale =</span> <span class="kw">c</span>(<span class="st">"red"</span>, <span class="st">"blue"</span>))</code></pre></div>
 <p><img src="Local_explanations_files/figure-html/unnamed-chunk-3-1.png" width="700"></p>
 <p>We see a trend that a lower <code>stage</code> means a higher probability of survival for chosen observation.</p>
 </div>
@@ -195,7 +195,7 @@ single_observation</code></pre></div>
 <p>Break Down Plots for survival models compare differences in predictions for median of time.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">broken_prediction_cph &lt;-<span class="st"> </span><span class="kw"><a href="../reference/prediction_breakdown.html">prediction_breakdown</a></span>(surve_cph, pbc_smaller[<span class="dv">1</span>,<span class="op">-</span><span class="kw">c</span>(<span class="dv">1</span>,<span class="dv">2</span>)])</code></pre></div>
 <p>After creating the <code>surv_prediction_breakdown</code> object we can visualize it in a very convinient way using the generic <code>plot()</code> function.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">plot</span>(broken_prediction_cph)</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">plot</span>(broken_prediction_cph, <span class="dt">col_scale =</span> <span class="kw">c</span>(<span class="st">"red"</span>, <span class="st">"blue"</span>))</code></pre></div>
 <p><img src="Local_explanations_files/figure-html/unnamed-chunk-4-1.png" width="700"></p>
 <p>This plot helps to understand the factors that drive survival probability for a single observation.</p>
 </div>
