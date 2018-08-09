@@ -77,12 +77,13 @@ prediction_breakdown <- function(explainer, observation, time = NULL, prob = NUL
   res<- broken(model = explainer$model,
                   new_observation = observation,
                   data = explainer$data,
-                  predict.function = new_pred,
-                  baseline = "Intercept")
+                  predict.function = new_pred)
   options(warn = oldw)
 
   class(res) <- "data.frame"
-
+  
+  intercept <- res$contribution[res$variable_name=="Intercept"]
+  observ <- res$contribution[res$variable=="final_prognosis"]
 
   result <- data.frame(x = numeric(), y = numeric(), variable = character(), label = character(), position = numeric(), value = character())
   res <- res[-c(1, nrow(res)),]
@@ -132,6 +133,8 @@ prediction_breakdown <- function(explainer, observation, time = NULL, prob = NUL
   attr(result, "contribution") <- res
   attr(result, "time") <- time
   attr(result, "prob") <- prob
+  attr(result, "Intercept") <- intercept
+  attr(result, "Observation") <- observ
   class(result) <- c("surv_prediction_breakdown_explainer", "data.frame")
   result
 

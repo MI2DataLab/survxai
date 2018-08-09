@@ -73,8 +73,8 @@ plot.surv_prediction_breakdown_explainer <- function(x, ..., numerate = TRUE, li
   broken_cumm$contribution <- round(broken_cumm$contribution, digits = 2)
   broken_cumm$contribution <- paste0("(", broken_cumm$contribution, ")")
   broken_cumm$variable <- as.character(broken_cumm$variable)
-  broken_cumm <- rbind(broken_cumm, c("", "Intercept"))
-  broken_cumm <- rbind(broken_cumm, c("", "Observation"))
+  broken_cumm <- rbind(broken_cumm, c(round(attributes(x)$Intercept,2), "Intercept"))
+  broken_cumm <- rbind(broken_cumm, c(round(attributes(x)$Observation,2), "Observation"))
 
   df <- merge(df, broken_cumm, by = "variable")
   df$legend <- paste(df$legend, df$contribution)
@@ -83,12 +83,10 @@ plot.surv_prediction_breakdown_explainer <- function(x, ..., numerate = TRUE, li
   #colors
   cc <- seq_gradient_pal(col_scale[1],col_scale[2])(seq(0,1,length.out=length(unique(df$legend))))
 
-  #labels
   median_time <- median(unique(df$x))
   median <- which.min(abs(unique(df$x) - median_time))
   median <- unique(df$x)[median]
   
-  #to powyzej chyba usunac
   if(numerate == TRUE){
     numbers <- geom_text(data = df[df$x == median,], aes(label = position), color = "black", show.legend = FALSE, hjust = 0, vjust = 0, nudge_x = 0.4)
   }else{
