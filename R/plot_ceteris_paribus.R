@@ -7,6 +7,7 @@
 #' @param ... other arguments
 #' @param scale type of scale of colors, either "discrete" or "gradient"
 #' @param col_scale vector containing values of low and high ends of the gradient, when "gradient" type of scale was chosen
+#' @param ncol number of columns for faceting
 #'
 #' @import ggplot2
 #' @importFrom scales seq_gradient_pal
@@ -31,7 +32,7 @@
 #' @export
 
 plot.surv_ceteris_paribus_explainer <- function(x, ..., selected_variable = NULL, scale_type = "factor", 
-                                                col_scale=NULL) {
+                                                col_scale=NULL, ncol = 1) {
   y_hat <- new_x <- time <- time_2 <- y_hat_2 <- NULL
   new_observation <- attributes(x)$prediction$`observation`
   values <- as.data.frame(t(new_observation[1,]))
@@ -73,25 +74,19 @@ plot.surv_ceteris_paribus_explainer <- function(x, ..., selected_variable = NULL
   if(!is.null(selected_variable)){
     all_responses <- all_responses[which(all_responses$vname == selected_variable),]
     legend <- unique(all_responses$val)
-    add_theme <- labs(col = legend)
+    add_theme <- labs(col = legend)  
     facet <- NULL
     title <- ggtitle(paste("Ceteris paribus plot for variable", selected_variable,"."))
   }else{
     add_theme <- theme(legend.position = "none")
     title <- ggtitle(paste("Ceteris paribus plot for", unique(x$label),"model."))
-    facet <- facet_wrap(~val)
+    facet <- facet_wrap(~val, ncol = ncol)
   }
   
   #######################
   z <- all_responses[,c(1,3)]
   z <- unique(z)
-  vnames <- unique(z$vname)
-  z$legend <- 0
-  for(val in vnames){
-    number <- length(which(z$vname==val))
-    positions <- which(z$vname==val)
-    z$legend[positions] <- 1:number
-  }
+  z$legend <- 1:nrow(z)
   
   all_responses <- merge(all_responses, z, by=c("vname", "new_x"))
   
@@ -99,15 +94,17 @@ plot.surv_ceteris_paribus_explainer <- function(x, ..., selected_variable = NULL
   if(scale_type == "gradient"){
     if(!is.null(col_scale)){
       variables <- unique(all_responses$vname)
-      
-      v <- c()
+      v<- c()
       for(val in variables){
-        length <- max(all_responses$legend[all_responses$vname==val])
+        length <- length(unique(all_responses[all_responses$vname==val,2]))
         cc <- seq_gradient_pal(col_scale[1],col_scale[2])(seq(0,1,length.out=length))
         v <- c(v,cc)
       }
-      
+      if(!is.null(selected_variable)){
+        scale <- scale_colour_manual(values = v, labels = factor(unique(all_responses$new_x)))
+      }else{
       scale <- scale_colour_manual(values=v)
+      }
     }else{
       message("Please specify the low and high ends of gradient")
       scale <- NULL
@@ -115,10 +112,12 @@ plot.surv_ceteris_paribus_explainer <- function(x, ..., selected_variable = NULL
   }else{
     scale <- NULL
   }
+
+    
   
-  pl <- ggplot(all_responses, aes(x = time, y = y_hat, col = factor(new_x)))+
+  pl <- ggplot(all_responses, aes(x = time, y = y_hat, col = factor(legend)))+
     geom_step()+
-    geom_step(data = all_predictions, aes(x = time_2, y = y_hat_2), col="black") +
+    geom_step(data = all_predictions, aes(x = time_2, y = y_hat_2), col="black", lty = 2, size = 1) +
     scale_y_continuous(breaks = seq(0,1,0.1),
                        limits = c(0,1),
                        labels = paste(seq(0,100,10),"%"),

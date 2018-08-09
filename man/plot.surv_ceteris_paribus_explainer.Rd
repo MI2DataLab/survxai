@@ -5,7 +5,8 @@
 \title{Plot for ceteris_paribus object}
 \usage{
 \method{plot}{surv_ceteris_paribus_explainer}(x, ...,
-  selected_variable = NULL, scale_type = "factor", col_scale = NULL)
+  selected_variable = NULL, scale_type = "factor", col_scale = NULL,
+  ncol = 1)
 }
 \arguments{
 \item{x}{object of class "surv_ceteris_paribus_explainer"}
@@ -15,6 +16,8 @@
 \item{selected_variable}{name of varaible we want to draw ceteris paribus plot}
 
 \item{col_scale}{vector containing values of low and high ends of the gradient, when "gradient" type of scale was chosen}
+
+\item{ncol}{number of columns for faceting}
 
 \item{scale}{type of scale of colors, either "discrete" or "gradient"}
 }
