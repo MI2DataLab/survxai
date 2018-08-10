@@ -40,7 +40,7 @@ model_performance <- function(explainer, type = "BS",...){
   surv_vars <- all.vars(explainer$model$call[[2]][[2]])
   data <- cbind(explainer$y[,1], explainer$y[,2], explainer$data)
   colnames(data)[1:2] <- surv_vars
-
+  
   switch(type,
          BS = {
            p <- tryCatch({
@@ -52,6 +52,7 @@ model_performance <- function(explainer, type = "BS",...){
            res <- data.frame(time = p$time, err = p$AppErr[[2]], err_ref = p$AppErr[[1]], label = explainer$label)
            class(res) <- c("surv_model_performance_explainer", "data.frame", "BS")
            attr(res, "type") <- type
+           attr(res, "time") <- explainer$y[,1]
            return(res)
          },
          stop("Currently only 'BS' method is implemented"))

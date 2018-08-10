@@ -56,6 +56,7 @@ library(rms)
 library(survxai)
 
 pbc_smaller <- pbc[,c("days", "status", "treatment", "sex", "age", "bili", "stage")]
+head(pbc_smaller)
 
 cph_model <- cph(Surv(days/365, status)~. , data = pbc_smaller, surv = TRUE, x = TRUE, y=TRUE)
 ```
@@ -78,6 +79,7 @@ surve_cph <- explain(model = cph_model,
                   data = pbc_smaller[,-c(1,2)], y = Surv(pbc_smaller$days/365, pbc_smaller$status),
                   predict_function = predict_times)
 
+print(surve_cph)
 ```
 
 ## Ceteris paribus
@@ -97,19 +99,18 @@ single_observation
 
 ```{r, ceteris paribus}
 cp_cph <- ceteris_paribus(surve_cph, single_observation)
-
-head(cp_cph)
+print(cp_cph)
 ```
 
 After creating the `surv_ceteris_paribus` object we can visualize it in a very convinient way using the generic `plot()` function. Black line represent prediction of original observation.
 
-```{r}
-plot(cp_cph, scale_type = "gradient", col_scale = c("red", "blue"))
+```{r, fig.height=6}
+plot(cp_cph, scale_type = "gradient", col_scale = c("red", "blue"), ncol = 2)
 ```
 
 We can see that there are  differences for stages. Next, we will plot Ceteris Paribus for sigle variable `stage`.
 
-```{r}
+```{r, fig.height=3}
 plot(cp_cph, selected_variable = "stage", scale_type = "gradient", col_scale = c("red", "blue"))
 ```
 
@@ -124,6 +125,7 @@ Break Down Plots for survival models compare differences in predictions for medi
 
 ```{r, prediction breakdown}
 broken_prediction_cph <- prediction_breakdown(surve_cph, pbc_smaller[1,-c(1,2)])
+print(broken_prediction_cph)
 ```
 
 After creating the `surv_prediction_breakdown` object we can visualize it in a very convinient way using the generic `plot()` function.

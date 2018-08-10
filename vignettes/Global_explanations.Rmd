@@ -56,8 +56,10 @@ library(rms)
 library(survxai)
 
 pbc_smaller <- pbc[,c("days", "status", "treatment", "sex", "age", "bili", "stage")]
-
-cph_model <- cph(Surv(days/365, status)~., data = pbc_smaller, surv = TRUE, x = TRUE, y=TRUE)
+pbc_smaller$years <- pbc_smaller$days/356
+pbc_smaller <- pbc_smaller[,-1]
+head(pbc_smaller)
+cph_model <- cph(Surv(years, status)~., data = pbc_smaller, surv = TRUE, x = TRUE, y=TRUE)
 ```
 
 # Global explanations
@@ -70,9 +72,9 @@ Some models require custom predict function. Examples are in [Explainations of d
 ```{r, explainer}
 
 surve_cph <- explain(model = cph_model,
-                     data = pbc_smaller[,-c(1,2)], 
-                     y = Surv(pbc_smaller$days/365, pbc_smaller$status))
-
+                     data = pbc_smaller[,-c(1,7)], 
+                     y = Surv(pbc_smaller$years, pbc_smaller$status))
+print(surve_cph)
 ```
 
 ## Model performance
@@ -80,6 +82,7 @@ Currently, in the *survxai* package is implemented only the `BS` type of model p
 In this metod for each time point we compute the prediction error for our model.
 ```{r}
 mp_cph <- model_performance(surve_cph)
+print(mp_cph)
 ```
 
 After creating the `surv_model_prediction` object we can visualize it in a very convinient way using the generic `plot()` function. 
@@ -96,7 +99,7 @@ Variable response explainers are designed to better understand the relation betw
 These types of explainers are inspired among others by *pdp* package [Greenwell, 2017](https://journal.r-project.org/archive/2017/RJ-2017-016/index.html).
 ```{r}
 vr_cph_sex <- variable_response(surve_cph, "sex")
-
+print(vr_cph_sex)
 vr_cph_bili <- variable_response(surve_cph, "bili")
 ```
 

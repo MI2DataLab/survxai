@@ -111,10 +111,13 @@ surve_cph <- explain(model = cph_model,
                      data = test[,-c(1,5)], 
                      y = Surv(test$years, test$status))
 
+print(surve_cph)
 surve_rf <- explain(model = rf_model, 
                      label = "random forest",
                      data = test[,-c(1,5)], 
                      y = Surv(test$years, test$status))
+
+print(surve_rf)
 ```
 
 For model created by `survreg()` function we have to add specific custom predict function. 
@@ -142,7 +145,7 @@ surve_reg <- explain(model = reg_model,
                      data = test[,-c(1,5)], 
                      y = Surv(test$years, test$status),
                      predict_function = custom_predict)
-
+print(surve_reg)
 ```
 
 
@@ -159,6 +162,11 @@ We compute `model_performance` explainers for all three models created above.
 mp_cph <- model_performance(surve_cph)
 mp_rf <- model_performance(surve_rf)
 mp_reg <- model_performance(surve_reg)
+```
+
+For each explainer we can print values using generic `print()` function.
+```{r}
+print(mp_cph)
 ```
 
 We plot all three models using generic `plot()` function.
@@ -178,6 +186,11 @@ First, we compute explainers for the factor variable `sex`.
 vr_cph_sex <- variable_response(surve_cph, "sex")
 vr_rf_sex <- variable_response(surve_rf, "sex")
 vr_reg_sex <- variable_response(surve_reg, "sex")
+```
+
+For each explainer we can print values using generic `print()` function.
+```{r}
+print(vr_cph_sex)
 ```
 
 We visualize explainers on one plot.
@@ -228,11 +241,16 @@ Ceteris Paribus Plots for survival models are survival curves around one observa
 cp_cph <- ceteris_paribus(surve_cph, single_observation)
 cp_rf <- ceteris_paribus(surve_rf, single_observation)
 cp_reg <- ceteris_paribus(surve_reg, single_observation)
+```
 
+For each ceteris paribus explainer we can print values using generic `print()` function.
+```{r}
+print(cp_cph)
 ```
 
 ```{r}
 plot(cp_cph, scale_type = "gradient", col_scale = c("red", "blue"))
+
 plot(cp_rf, scale_type = "gradient", col_scale = c("red", "blue"))
 plot(cp_reg, scale_type = "gradient", col_scale = c("red", "blue"))
 ```
@@ -245,6 +263,11 @@ Break Down Plots for survival models compare, by default, differences in predict
 broken_prediction_cph <- prediction_breakdown(surve_cph, single_observation)
 broken_prediction_rf <- prediction_breakdown(surve_rf, single_observation)
 broken_prediction_reg <- prediction_breakdown(surve_reg, single_observation)
+```
+
+For each prediction breakdown explainer we can print values using generic `print()` function.
+```{r}
+print(broken_prediction_cph)
 ```
 
 

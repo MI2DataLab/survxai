@@ -76,7 +76,7 @@
       <h1>Survival models - local explanations</h1>
                         <h4 class="author">Aleksandra Grudziaz</h4>
             
-            <h4 class="date">2018-08-09</h4>
+            <h4 class="date">2018-08-10</h4>
       
       
       <div class="hidden name"><code>Local_explanations.Rmd</code></div>
@@ -130,8 +130,15 @@ pbc<span class="op">$</span>stage &lt;-<span class="st"> </span><span class="kw"
 <span class="kw">library</span>(survxai)
 
 pbc_smaller &lt;-<span class="st"> </span>pbc[,<span class="kw">c</span>(<span class="st">"days"</span>, <span class="st">"status"</span>, <span class="st">"treatment"</span>, <span class="st">"sex"</span>, <span class="st">"age"</span>, <span class="st">"bili"</span>, <span class="st">"stage"</span>)]
-
-cph_model &lt;-<span class="st"> </span><span class="kw">cph</span>(<span class="kw">Surv</span>(days<span class="op">/</span><span class="dv">365</span>, status)<span class="op">~</span>. , <span class="dt">data =</span> pbc_smaller, <span class="dt">surv =</span> <span class="ot">TRUE</span>, <span class="dt">x =</span> <span class="ot">TRUE</span>, <span class="dt">y=</span><span class="ot">TRUE</span>)</code></pre></div>
+<span class="kw">head</span>(pbc_smaller)</code></pre></div>
+<pre><code>##   days status treatment sex   age bili stage
+## 1  400      1         1   1 21464 14.5     4
+## 2 4500      0         1   1 20617  1.1     3
+## 3 1012      1         1   0 25594  1.4     4
+## 4 1925      1         1   1 19994  1.8     4
+## 5 1504      0         2   1 13918  3.4     3
+## 7 1832      0         2   1 20284  1.0     3</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">cph_model &lt;-<span class="st"> </span><span class="kw">cph</span>(<span class="kw">Surv</span>(days<span class="op">/</span><span class="dv">365</span>, status)<span class="op">~</span>. , <span class="dt">data =</span> pbc_smaller, <span class="dt">surv =</span> <span class="ot">TRUE</span>, <span class="dt">x =</span> <span class="ot">TRUE</span>, <span class="dt">y=</span><span class="ot">TRUE</span>)</code></pre></div>
 </div>
 </div>
 <div id="local-explanations" class="section level1">
@@ -150,7 +157,15 @@ cph_model &lt;-<span class="st"> </span><span class="kw">cph</span>(<span class=
 
 surve_cph &lt;-<span class="st"> </span><span class="kw"><a href="../reference/explain.html">explain</a></span>(<span class="dt">model =</span> cph_model,
                   <span class="dt">data =</span> pbc_smaller[,<span class="op">-</span><span class="kw">c</span>(<span class="dv">1</span>,<span class="dv">2</span>)], <span class="dt">y =</span> <span class="kw">Surv</span>(pbc_smaller<span class="op">$</span>days<span class="op">/</span><span class="dv">365</span>, pbc_smaller<span class="op">$</span>status),
-                  <span class="dt">predict_function =</span> predict_times)</code></pre></div>
+                  <span class="dt">predict_function =</span> predict_times)
+
+<span class="kw">print</span>(surve_cph)</code></pre></div>
+<pre><code>## Model label:  coxph 
+## Model class:  cph,rms,coxph 
+## Data head  :
+##   treatment sex   age bili stage
+## 1         1   1 21464 14.5     4
+## 2         1   1 20617  1.1     3</code></pre>
 </div>
 <div id="ceteris-paribus" class="section level2">
 <h2 class="hasAnchor">
@@ -164,8 +179,7 @@ single_observation</code></pre></div>
 <pre><code>##   treatment sex   age bili stage
 ## 1         1   1 21464 14.5     4</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">cp_cph &lt;-<span class="st"> </span><span class="kw"><a href="../reference/ceteris_paribus.html">ceteris_paribus</a></span>(surve_cph, single_observation)
-
-<span class="kw">head</span>(cp_cph)</code></pre></div>
+<span class="kw">print</span>(cp_cph)</code></pre></div>
 <pre><code>##       y_hat new_x     vname   x_quant quant relative_quant label      time
 ## 1 0.9789502     1 treatment 0.4927536     0     -0.4927536 coxph 0.1123288
 ## 2 0.9574511     1 treatment 0.4927536     0     -0.4927536 coxph 0.1397260
@@ -181,7 +195,7 @@ single_observation</code></pre></div>
 ## 5 numeric
 ## 6 numeric</code></pre>
 <p>After creating the <code>surv_ceteris_paribus</code> object we can visualize it in a very convinient way using the generic <code>plot()</code> function. Black line represent prediction of original observation.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">plot</span>(cp_cph, <span class="dt">scale_type =</span> <span class="st">"gradient"</span>, <span class="dt">col_scale =</span> <span class="kw">c</span>(<span class="st">"red"</span>, <span class="st">"blue"</span>))</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">plot</span>(cp_cph, <span class="dt">scale_type =</span> <span class="st">"gradient"</span>, <span class="dt">col_scale =</span> <span class="kw">c</span>(<span class="st">"red"</span>, <span class="st">"blue"</span>), <span class="dt">ncol =</span> <span class="dv">2</span>)</code></pre></div>
 <p><img src="Local_explanations_files/figure-html/unnamed-chunk-2-1.png" width="700"></p>
 <p>We can see that there are differences for stages. Next, we will plot Ceteris Paribus for sigle variable <code>stage</code>.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">plot</span>(cp_cph, <span class="dt">selected_variable =</span> <span class="st">"stage"</span>, <span class="dt">scale_type =</span> <span class="st">"gradient"</span>, <span class="dt">col_scale =</span> <span class="kw">c</span>(<span class="st">"red"</span>, <span class="st">"blue"</span>))</code></pre></div>
@@ -193,7 +207,14 @@ single_observation</code></pre></div>
 <a href="#prediction-breakdown" class="anchor"></a>Prediction breakdown</h2>
 <p>Break Down Plot presents variable contributions in final predictions. For more details for generalised models of machine learning see: <a href="https://github.com/pbiecek/breakDown" class="uri">https://github.com/pbiecek/breakDown</a>.</p>
 <p>Break Down Plots for survival models compare differences in predictions for median of time.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">broken_prediction_cph &lt;-<span class="st"> </span><span class="kw"><a href="../reference/prediction_breakdown.html">prediction_breakdown</a></span>(surve_cph, pbc_smaller[<span class="dv">1</span>,<span class="op">-</span><span class="kw">c</span>(<span class="dv">1</span>,<span class="dv">2</span>)])</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">broken_prediction_cph &lt;-<span class="st"> </span><span class="kw"><a href="../reference/prediction_breakdown.html">prediction_breakdown</a></span>(surve_cph, pbc_smaller[<span class="dv">1</span>,<span class="op">-</span><span class="kw">c</span>(<span class="dv">1</span>,<span class="dv">2</span>)])
+<span class="kw">print</span>(broken_prediction_cph)</code></pre></div>
+<pre><code>##           contribution
+## bili          -42.553%
+## stage         -19.083%
+## age            -5.153%
+## treatment      -1.055%
+## sex             0.354%</code></pre>
 <p>After creating the <code>surv_prediction_breakdown</code> object we can visualize it in a very convinient way using the generic <code>plot()</code> function.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">plot</span>(broken_prediction_cph, <span class="dt">col_scale =</span> <span class="kw">c</span>(<span class="st">"red"</span>, <span class="st">"blue"</span>))</code></pre></div>
 <p><img src="Local_explanations_files/figure-html/unnamed-chunk-4-1.png" width="700"></p>

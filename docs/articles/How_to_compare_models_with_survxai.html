@@ -76,7 +76,7 @@
       <h1>How to compare models with survxai</h1>
                         <h4 class="author">Alicja Gosiewska, Aleksandra Grudziaz</h4>
             
-            <h4 class="date">2018-08-09</h4>
+            <h4 class="date">2018-08-10</h4>
       
       
       <div class="hidden name"><code>How_to_compare_models_with_survxai.Rmd</code></div>
@@ -165,10 +165,25 @@ surve_cph &lt;-<span class="st"> </span><span class="kw"><a href="../reference/e
                      <span class="dt">data =</span> test[,<span class="op">-</span><span class="kw">c</span>(<span class="dv">1</span>,<span class="dv">5</span>)], 
                      <span class="dt">y =</span> <span class="kw">Surv</span>(test<span class="op">$</span>years, test<span class="op">$</span>status))
 
-surve_rf &lt;-<span class="st"> </span><span class="kw"><a href="../reference/explain.html">explain</a></span>(<span class="dt">model =</span> rf_model, 
+<span class="kw">print</span>(surve_cph)</code></pre></div>
+<pre><code>## Model label:  coxph 
+## Model class:  cph,rms,coxph 
+## Data head  :
+##   sex bili stage
+## 2   1  1.1     3
+## 3   0  1.4     4</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">surve_rf &lt;-<span class="st"> </span><span class="kw"><a href="../reference/explain.html">explain</a></span>(<span class="dt">model =</span> rf_model, 
                      <span class="dt">label =</span> <span class="st">"random forest"</span>,
                      <span class="dt">data =</span> test[,<span class="op">-</span><span class="kw">c</span>(<span class="dv">1</span>,<span class="dv">5</span>)], 
-                     <span class="dt">y =</span> <span class="kw">Surv</span>(test<span class="op">$</span>years, test<span class="op">$</span>status))</code></pre></div>
+                     <span class="dt">y =</span> <span class="kw">Surv</span>(test<span class="op">$</span>years, test<span class="op">$</span>status))
+
+<span class="kw">print</span>(surve_rf)</code></pre></div>
+<pre><code>## Model label:  random forest 
+## Model class:  rfsrc,grow,surv 
+## Data head  :
+##   sex bili stage
+## 2   1  1.1     3
+## 3   0  1.4     4</code></pre>
 <p>For model created by <code>survreg()</code> function we have to add specific custom predict function. We add this function to explainer by <code>predict_function</code> parameter.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(CFC)
 
@@ -190,7 +205,14 @@ custom_predict &lt;-<span class="st"> </span><span class="cf">function</span>(mo
 surve_reg &lt;-<span class="st"> </span><span class="kw"><a href="../reference/explain.html">explain</a></span>(<span class="dt">model =</span> reg_model,
                      <span class="dt">data =</span> test[,<span class="op">-</span><span class="kw">c</span>(<span class="dv">1</span>,<span class="dv">5</span>)], 
                      <span class="dt">y =</span> <span class="kw">Surv</span>(test<span class="op">$</span>years, test<span class="op">$</span>status),
-                     <span class="dt">predict_function =</span> custom_predict)</code></pre></div>
+                     <span class="dt">predict_function =</span> custom_predict)
+<span class="kw">print</span>(surve_reg)</code></pre></div>
+<pre><code>## Model label:  survreg 
+## Model class:  survreg 
+## Data head  :
+##   sex bili stage
+## 2   1  1.1     3
+## 3   0  1.4     4</code></pre>
 <div id="global-explanations" class="section level2">
 <h2 class="hasAnchor">
 <a href="#global-explanations" class="anchor"></a>Global explanations</h2>
@@ -202,9 +224,26 @@ surve_reg &lt;-<span class="st"> </span><span class="kw"><a href="../reference/e
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">mp_cph &lt;-<span class="st"> </span><span class="kw"><a href="../reference/model_performance.html">model_performance</a></span>(surve_cph)
 mp_rf &lt;-<span class="st"> </span><span class="kw"><a href="../reference/model_performance.html">model_performance</a></span>(surve_rf)
 mp_reg &lt;-<span class="st"> </span><span class="kw"><a href="../reference/model_performance.html">model_performance</a></span>(surve_reg)</code></pre></div>
+<p>For each explainer we can print values using generic <code>print()</code> function.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">print</span>(mp_cph)</code></pre></div>
+<pre><code>## Model performance for Brier Score method.
+##    time prediction error
+## 1     0             ~ 0%
+## 2     1           ~ 6.6%
+## 3     2           ~ 7.3%
+## 4     3         ~ 10.95%
+## 5     4         ~ 11.43%
+## 6     5         ~ 13.06%
+## 7     6         ~ 13.05%
+## 8     7         ~ 13.99%
+## 9     8         ~ 15.93%
+## 10    9         ~ 20.18%
+## 11   10         ~ 17.21%
+## 12   11         ~ 21.91%
+## 13   12         ~ 24.89%</code></pre>
 <p>We plot all three models using generic <code>plot()</code> function.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">plot</span>(mp_cph, mp_rf, mp_reg) <span class="op">+</span><span class="st"> </span><span class="kw">ylim</span>(<span class="kw">c</span>(<span class="dv">0</span>,<span class="fl">0.30</span>))</code></pre></div>
-<p><img src="How_to_compare_models_with_survxai_files/figure-html/unnamed-chunk-8-1.png" width="700"></p>
+<p><img src="How_to_compare_models_with_survxai_files/figure-html/unnamed-chunk-9-1.png" width="700"></p>
 <p>On the plot, we see that the Cox Proportional Hazards Model and Parametric Survival Regression Model have simmilar performance - prediction errors for these models are almost the same. For the Survival Random Forest Model we have the smallest prediction errors.</p>
 </div>
 <div id="variable-response" class="section level3">
@@ -218,12 +257,21 @@ mp_reg &lt;-<span class="st"> </span><span class="kw"><a href="../reference/mode
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">vr_cph_sex &lt;-<span class="st"> </span><span class="kw"><a href="../reference/variable_response.html">variable_response</a></span>(surve_cph, <span class="st">"sex"</span>)
 vr_rf_sex &lt;-<span class="st"> </span><span class="kw"><a href="../reference/variable_response.html">variable_response</a></span>(surve_rf, <span class="st">"sex"</span>)
 vr_reg_sex &lt;-<span class="st"> </span><span class="kw"><a href="../reference/variable_response.html">variable_response</a></span>(surve_reg, <span class="st">"sex"</span>)</code></pre></div>
+<p>For each explainer we can print values using generic <code>print()</code> function.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">print</span>(vr_cph_sex)</code></pre></div>
+<pre><code>##           x         y value type label var
+## 1 0.1397260 0.9922858     1  pdp coxph sex
+## 2 0.1945205 0.9922858     1  pdp coxph sex
+## 3 0.3589041 0.9762765     1  pdp coxph sex
+## 4 0.3835616 0.9762765     1  pdp coxph sex
+## 5 0.5232877 0.9613915     1  pdp coxph sex
+## 6 0.5424658 0.9613915     1  pdp coxph sex</code></pre>
 <p>We visualize explainers on one plot.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">plot</span>(vr_cph_sex, vr_rf_sex, vr_reg_sex)</code></pre></div>
-<p><img src="How_to_compare_models_with_survxai_files/figure-html/unnamed-chunk-10-1.png" width="700"> We see that in all models patients with <code>sex=1</code> have higher probability of survival.</p>
+<p><img src="How_to_compare_models_with_survxai_files/figure-html/unnamed-chunk-12-1.png" width="700"> We see that in all models patients with <code>sex=1</code> have higher probability of survival.</p>
 <p>In <code>survival_variable_response</code> plots we can also compare models in division into all variable levels using parameter <code>split = "variable"</code>.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">plot</span>(vr_cph_sex, vr_rf_sex, vr_reg_sex, <span class="dt">split =</span> <span class="st">"variable"</span>)</code></pre></div>
-<p><img src="How_to_compare_models_with_survxai_files/figure-html/unnamed-chunk-11-1.png" width="700"></p>
+<p><img src="How_to_compare_models_with_survxai_files/figure-html/unnamed-chunk-13-1.png" width="700"></p>
 </div>
 <div id="continuous-variable" class="section level4">
 <h4 class="hasAnchor">
@@ -233,10 +281,10 @@ vr_reg_sex &lt;-<span class="st"> </span><span class="kw"><a href="../reference/
 vr_rf_bili &lt;-<span class="st"> </span><span class="kw"><a href="../reference/variable_response.html">variable_response</a></span>(surve_rf, <span class="st">"bili"</span>)
 vr_reg_bili &lt;-<span class="st"> </span><span class="kw"><a href="../reference/variable_response.html">variable_response</a></span>(surve_reg, <span class="st">"bili"</span>)</code></pre></div>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">plot</span>(vr_cph_bili, vr_rf_bili, vr_reg_bili)</code></pre></div>
-<p><img src="How_to_compare_models_with_survxai_files/figure-html/unnamed-chunk-13-1.png" width="700"></p>
+<p><img src="How_to_compare_models_with_survxai_files/figure-html/unnamed-chunk-15-1.png" width="700"></p>
 <p>As mentioned above we can split our comparison by each variable level.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">plot</span>(vr_cph_bili, vr_rf_bili, vr_reg_bili, <span class="dt">split =</span> <span class="st">"variable"</span>)</code></pre></div>
-<p><img src="How_to_compare_models_with_survxai_files/figure-html/unnamed-chunk-14-1.png" width="700"></p>
+<p><img src="How_to_compare_models_with_survxai_files/figure-html/unnamed-chunk-16-1.png" width="700"></p>
 </div>
 </div>
 </div>
@@ -255,12 +303,28 @@ single_observation</code></pre></div>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">cp_cph &lt;-<span class="st"> </span><span class="kw"><a href="../reference/ceteris_paribus.html">ceteris_paribus</a></span>(surve_cph, single_observation)
 cp_rf &lt;-<span class="st"> </span><span class="kw"><a href="../reference/ceteris_paribus.html">ceteris_paribus</a></span>(surve_rf, single_observation)
 cp_reg &lt;-<span class="st"> </span><span class="kw"><a href="../reference/ceteris_paribus.html">ceteris_paribus</a></span>(surve_reg, single_observation)</code></pre></div>
+<p>For each ceteris paribus explainer we can print values using generic <code>print()</code> function.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">print</span>(cp_cph)</code></pre></div>
+<pre><code>##       y_hat new_x vname x_quant quant relative_quant label      time
+## 1 0.9978522     0   sex       0     0              0 coxph 0.1397260
+## 2 0.9978522     0   sex       0     0              0 coxph 0.1945205
+## 3 0.9927118     0   sex       0     0              0 coxph 0.3589041
+## 4 0.9927118     0   sex       0     0              0 coxph 0.3835616
+## 5 0.9870411     0   sex       0     0              0 coxph 0.5232877
+## 6 0.9870411     0   sex       0     0              0 coxph 0.5424658
+##    class
+## 1 factor
+## 2 factor
+## 3 factor
+## 4 factor
+## 5 factor
+## 6 factor</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">plot</span>(cp_cph, <span class="dt">scale_type =</span> <span class="st">"gradient"</span>, <span class="dt">col_scale =</span> <span class="kw">c</span>(<span class="st">"red"</span>, <span class="st">"blue"</span>))</code></pre></div>
-<p><img src="How_to_compare_models_with_survxai_files/figure-html/unnamed-chunk-17-1.png" width="700"></p>
+<p><img src="How_to_compare_models_with_survxai_files/figure-html/unnamed-chunk-20-1.png" width="700"></p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">plot</span>(cp_rf, <span class="dt">scale_type =</span> <span class="st">"gradient"</span>, <span class="dt">col_scale =</span> <span class="kw">c</span>(<span class="st">"red"</span>, <span class="st">"blue"</span>))</code></pre></div>
-<p><img src="How_to_compare_models_with_survxai_files/figure-html/unnamed-chunk-17-2.png" width="700"></p>
+<p><img src="How_to_compare_models_with_survxai_files/figure-html/unnamed-chunk-20-2.png" width="700"></p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">plot</span>(cp_reg, <span class="dt">scale_type =</span> <span class="st">"gradient"</span>, <span class="dt">col_scale =</span> <span class="kw">c</span>(<span class="st">"red"</span>, <span class="st">"blue"</span>))</code></pre></div>
-<p><img src="How_to_compare_models_with_survxai_files/figure-html/unnamed-chunk-17-3.png" width="700"></p>
+<p><img src="How_to_compare_models_with_survxai_files/figure-html/unnamed-chunk-20-3.png" width="700"></p>
 <p>On the plots above we see that for variables <code>bili</code> and <code>sex</code> <code>coxph</code> and <code>survreg</code> model have simmilar performance, but <code>randomForest</code> model has different predictions of survival probability.</p>
 </div>
 <div id="prediction-breakdown" class="section level3">
@@ -270,12 +334,18 @@ cp_reg &lt;-<span class="st"> </span><span class="kw"><a href="../reference/cete
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">broken_prediction_cph &lt;-<span class="st"> </span><span class="kw"><a href="../reference/prediction_breakdown.html">prediction_breakdown</a></span>(surve_cph, single_observation)
 broken_prediction_rf &lt;-<span class="st"> </span><span class="kw"><a href="../reference/prediction_breakdown.html">prediction_breakdown</a></span>(surve_rf, single_observation)
 broken_prediction_reg &lt;-<span class="st"> </span><span class="kw"><a href="../reference/prediction_breakdown.html">prediction_breakdown</a></span>(surve_reg, single_observation)</code></pre></div>
+<p>For each prediction breakdown explainer we can print values using generic <code>print()</code> function.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">print</span>(broken_prediction_cph)</code></pre></div>
+<pre><code>##       contribution
+## bili       10.103%
+## stage       7.714%
+## sex         1.069%</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">plot</span>(broken_prediction_cph, <span class="dt">col_scale =</span> <span class="kw">c</span>(<span class="st">"red"</span>, <span class="st">"blue"</span>), <span class="dt">lines_type =</span> <span class="dv">2</span>)</code></pre></div>
-<p><img src="How_to_compare_models_with_survxai_files/figure-html/unnamed-chunk-19-1.png" width="700"></p>
+<p><img src="How_to_compare_models_with_survxai_files/figure-html/unnamed-chunk-23-1.png" width="700"></p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">plot</span>(broken_prediction_rf, <span class="dt">col_scale =</span> <span class="kw">c</span>(<span class="st">"red"</span>, <span class="st">"blue"</span>), <span class="dt">lines_type =</span> <span class="dv">2</span>)</code></pre></div>
-<p><img src="How_to_compare_models_with_survxai_files/figure-html/unnamed-chunk-19-2.png" width="700"></p>
+<p><img src="How_to_compare_models_with_survxai_files/figure-html/unnamed-chunk-23-2.png" width="700"></p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">plot</span>(broken_prediction_reg, <span class="dt">col_scale =</span> <span class="kw">c</span>(<span class="st">"red"</span>, <span class="st">"blue"</span>), <span class="dt">lines_type =</span> <span class="dv">2</span>)</code></pre></div>
-<p><img src="How_to_compare_models_with_survxai_files/figure-html/unnamed-chunk-19-3.png" width="700"></p>
+<p><img src="How_to_compare_models_with_survxai_files/figure-html/unnamed-chunk-23-3.png" width="700"></p>
 <p>This plots helps to understand the factors that drive survival probability for a single observation.</p>
 <p>For all models variable <code>bili</code> is the variable with the largest contribution. But the second variable is different randomForest (<code>age</code>) and coxph, survreg (<code>stage</code>).</p>
 <p>We can also compute the variables contribution for chosen survival probability value.</p>
@@ -283,11 +353,11 @@ broken_prediction_reg &lt;-<span class="st"> </span><span class="kw"><a href="..
 broken_prediction_rf &lt;-<span class="st"> </span><span class="kw"><a href="../reference/prediction_breakdown.html">prediction_breakdown</a></span>(surve_rf, single_observation, <span class="dt">prob =</span> <span class="fl">0.8</span>)
 broken_prediction_reg &lt;-<span class="st"> </span><span class="kw"><a href="../reference/prediction_breakdown.html">prediction_breakdown</a></span>(surve_reg, single_observation, <span class="dt">prob =</span> <span class="fl">0.8</span>)</code></pre></div>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">plot</span>(broken_prediction_cph, <span class="dt">col_scale =</span> <span class="kw">c</span>(<span class="st">"red"</span>, <span class="st">"blue"</span>), <span class="dt">lines_type =</span> <span class="dv">2</span>)</code></pre></div>
-<p><img src="How_to_compare_models_with_survxai_files/figure-html/unnamed-chunk-21-1.png" width="700"></p>
+<p><img src="How_to_compare_models_with_survxai_files/figure-html/unnamed-chunk-25-1.png" width="700"></p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">plot</span>(broken_prediction_rf, <span class="dt">col_scale =</span> <span class="kw">c</span>(<span class="st">"red"</span>, <span class="st">"blue"</span>), <span class="dt">lines_type =</span> <span class="dv">2</span>)</code></pre></div>
-<p><img src="How_to_compare_models_with_survxai_files/figure-html/unnamed-chunk-21-2.png" width="700"></p>
+<p><img src="How_to_compare_models_with_survxai_files/figure-html/unnamed-chunk-25-2.png" width="700"></p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">plot</span>(broken_prediction_reg, <span class="dt">col_scale =</span> <span class="kw">c</span>(<span class="st">"red"</span>, <span class="st">"blue"</span>), <span class="dt">lines_type =</span> <span class="dv">2</span>)</code></pre></div>
-<p><img src="How_to_compare_models_with_survxai_files/figure-html/unnamed-chunk-21-3.png" width="700"></p>
+<p><img src="How_to_compare_models_with_survxai_files/figure-html/unnamed-chunk-25-3.png" width="700"></p>
 <p>We can compare this models on one plot, but for the transparency of the charts we have drawn them separately.</p>
 </div>
 </div>

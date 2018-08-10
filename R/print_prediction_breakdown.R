@@ -16,7 +16,6 @@ print.surv_prediction_breakdown_explainer <- function(x, ..., digits = 3, roundi
   class(broken_cumm) = "data.frame"
   broken_cumm$contribution <- broken_cumm$contribution*100
   broken_cumm$contribution <- rounding_function(broken_cumm$contribution, digits)
-  rownames(broken_cumm) <- substr(broken_cumm$variable, 2, length(broken_cumm$variable))
   broken_cumm <- broken_cumm[which(abs(broken_cumm$contribution)>=0.01),]
   broken_cumm$contribution <- paste0(broken_cumm$contribution, "%")
   print(broken_cumm[, "contribution", drop=FALSE])

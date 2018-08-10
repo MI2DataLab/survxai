@@ -8,14 +8,14 @@
 
 print.surv_model_performance_explainer <- function(x, times = NULL, ...) {
   if(is.null(times)){
-    times_to_set <- unique(floor(x$time))
+    times_to_set <- unique(floor(attributes(x)$time))
   }else{
     times_to_set <- times
   }
 
   x <- as.data.frame(x)
-  x$time <- floor(x$time)
-
+  x <- x[!duplicated(x$time),]
+  x$time <-floor(x$time)
   x <- x[which(x$time %in% times_to_set),]
 
   x <- x[!duplicated(x$time),]
