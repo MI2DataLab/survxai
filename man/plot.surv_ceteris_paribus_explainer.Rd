@@ -15,11 +15,11 @@
 
 \item{selected_variable}{name of varaible we want to draw ceteris paribus plot}
 
+\item{scale_type}{type of scale of colors, either "discrete" or "gradient"}
+
 \item{col_scale}{vector containing values of low and high ends of the gradient, when "gradient" type of scale was chosen}
 
 \item{ncol}{number of columns for faceting}
-
-\item{scale}{type of scale of colors, either "discrete" or "gradient"}
 }
 \description{
 Function plot for ceteris_paribus object visualise estimated survival curve of mean probabilities in chosen time points. Black lines on each plot correspond to survival curve for our new observation specified in the \code{ceteris_paribus} function.

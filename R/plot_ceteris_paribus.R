@@ -5,7 +5,7 @@
 #' @param x object of class "surv_ceteris_paribus_explainer"
 #' @param selected_variable name of varaible we want to draw ceteris paribus plot
 #' @param ... other arguments
-#' @param scale type of scale of colors, either "discrete" or "gradient"
+#' @param scale_type type of scale of colors, either "discrete" or "gradient"
 #' @param col_scale vector containing values of low and high ends of the gradient, when "gradient" type of scale was chosen
 #' @param ncol number of columns for faceting
 #'
