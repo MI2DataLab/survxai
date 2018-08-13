@@ -104,7 +104,7 @@
     <p>Function <code>variable response</code> calculates the expected output condition on a selected variable.</p>
     
 
-    <pre class="usage"><span class='fu'>variable_response</span>(<span class='no'>explainer</span>, <span class='no'>variable</span>, <span class='kw'>type</span> <span class='kw'>=</span> <span class='st'>"pdp"</span>, <span class='kw'>trans</span> <span class='kw'>=</span> <span class='no'>explainer</span>$<span class='no'>link</span>,
+    <pre class="usage"><span class='fu'>variable_response</span>(<span class='no'>explainer</span>, <span class='no'>variable</span>, <span class='kw'>type</span> <span class='kw'>=</span> <span class='st'>"pdp"</span>, <span class='kw'>link</span> <span class='kw'>=</span> <span class='no'>explainer</span>$<span class='no'>link</span>,
   <span class='no'>...</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a> Arguments</h2>
@@ -124,8 +124,8 @@
 Currently following options are implemented: 'pdp' for Partial Dependency.</p></td>
     </tr>
     <tr>
-      <th>trans</th>
-      <td><p>function - a transformation/link function that shall be applied to raw model predictions. This will be inherited from the explainer.</p></td>
+      <th>link</th>
+      <td><p>function - a link function that shall be applied to raw model predictions. This will be inherited from the explainer.</p></td>
     </tr>
     <tr>
       <th>...</th>

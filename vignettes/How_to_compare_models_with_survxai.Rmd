@@ -249,10 +249,10 @@ print(cp_cph)
 ```
 
 ```{r}
-plot(cp_cph, scale_type = "gradient", col_scale = c("red", "blue"))
+plot(cp_cph, scale_type = "gradient", scale_col = c("red", "blue"))
 
-plot(cp_rf, scale_type = "gradient", col_scale = c("red", "blue"))
-plot(cp_reg, scale_type = "gradient", col_scale = c("red", "blue"))
+plot(cp_rf, scale_type = "gradient", scale_col = c("red", "blue"))
+plot(cp_reg, scale_type = "gradient", scale_col = c("red", "blue"))
 ```
 
 On the plots above we see that for variables `bili` and `sex` `coxph` and `survreg` model have simmilar performance, but `randomForest` model has different predictions of survival probability.
