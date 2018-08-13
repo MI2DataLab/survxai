@@ -8,7 +8,7 @@
 #' @param lines logical; indicating wheter we want to add lines on chosen time point or probability
 #' @param lines_type type of line; see http://sape.inf.usi.ch/quick-reference/ggplot2/linetype
 #' @param lines_col color of line
-#' @param col_scale vector containig two colors for gradient scale in legend
+#' @param scale_col vector containig two colors for gradient scale in legend
 #'
 #'
 #' @import ggplot2
@@ -36,7 +36,7 @@
 
 plot.surv_prediction_breakdown_explainer <- function(x, ..., numerate = TRUE, lines = TRUE, 
                                                      lines_type = 1, lines_col = "black",
-                                                     col_scale = c("#010059","#e0f6fb")){
+                                                     scale_col = c("#010059","#e0f6fb")){
   y <- col <- label <- value <- position <- legend <-  NULL
 
   df <- data.frame(x)
@@ -81,7 +81,7 @@ plot.surv_prediction_breakdown_explainer <- function(x, ..., numerate = TRUE, li
   df$legend <- factor(df$legend, levels = unique(df$legend[order(df$position)]))
 
   #colors
-  cc <- seq_gradient_pal(col_scale[1],col_scale[2])(seq(0,1,length.out=length(unique(df$legend))))
+  cc <- seq_gradient_pal(scale_col[1],scale_col[2])(seq(0,1,length.out=length(unique(df$legend))))
 
   median_time <- median(unique(df$x))
   median <- which.min(abs(unique(df$x) - median_time))
@@ -110,7 +110,7 @@ plot.surv_prediction_breakdown_explainer <- function(x, ..., numerate = TRUE, li
     scale_y_continuous(breaks = seq(0,1,0.1),
                        limits = c(0,1),
                        labels = paste(seq(0,100,10),"%"),
-                       name = "survival probability")+
+                       name = "survival probability") + 
     legend
 
 

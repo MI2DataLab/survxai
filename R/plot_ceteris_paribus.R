@@ -6,7 +6,7 @@
 #' @param selected_variable name of varaible we want to draw ceteris paribus plot
 #' @param ... other arguments
 #' @param scale_type type of scale of colors, either "discrete" or "gradient"
-#' @param col_scale vector containing values of low and high ends of the gradient, when "gradient" type of scale was chosen
+#' @param scale_col vector containing values of low and high ends of the gradient, when "gradient" type of scale was chosen
 #' @param ncol number of columns for faceting
 #'
 #' @import ggplot2
@@ -32,13 +32,13 @@
 #' @export
 
 plot.surv_ceteris_paribus_explainer <- function(x, ..., selected_variable = NULL, scale_type = "factor", 
-                                                col_scale=NULL, ncol = 1) {
+                                                scale_col = NULL, ncol = 1) {
   y_hat <- new_x <- time <- time_2 <- y_hat_2 <- NULL
   new_observation <- attributes(x)$prediction$`observation`
   values <- as.data.frame(t(new_observation[1,]))
   values[,1] <- as.character(values[,1])
   new_observation_legend <- data.frame(vname = colnames(new_observation), val = paste0(colnames(new_observation), "=", values[,1]))
-  seq_length <- attributes(x)$grid.points
+  seq_length <- attributes(x)$grid_points
   
   
   dfl <- c(list(x), list(...))
@@ -92,12 +92,12 @@ plot.surv_ceteris_paribus_explainer <- function(x, ..., selected_variable = NULL
   
   #############################
   if(scale_type == "gradient"){
-    if(!is.null(col_scale)){
+    if(!is.null(scale_col)){
       variables <- unique(all_responses$vname)
       v<- c()
       for(val in variables){
         length <- length(unique(all_responses[all_responses$vname==val,2]))
-        cc <- seq_gradient_pal(col_scale[1],col_scale[2])(seq(0,1,length.out=length))
+        cc <- seq_gradient_pal(scale_col[1],scale_col[2])(seq(0,1,length.out=length))
         v <- c(v,cc)
       }
       if(!is.null(selected_variable)){

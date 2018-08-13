@@ -6,10 +6,10 @@
 \title{Create Survival Model Explainer}
 \usage{
 explain.default(model, data = NULL, y, times = NULL,
-  predict_function = yhat, link = I, ..., label = tail(class(model), 1))
+  predict_function = yhat, link = I, label = tail(class(model), 1), ...)
 
 explain(model, data = NULL, y, times = NULL, predict_function = yhat,
-  link = I, ..., label = tail(class(model), 1))
+  link = I, label = tail(class(model), 1), ...)
 }
 \arguments{
 \item{model}{object - a survival model to be explained}
@@ -24,9 +24,9 @@ explain(model, data = NULL, y, times = NULL, predict_function = yhat,
 
 \item{link}{function - a transformation/link function that shall be applied to raw model predictions}
 
-\item{...}{other parameters}
-
 \item{label}{character - the name of the survival model. By default it's extracted from the 'class' attribute of the model.}
+
+\item{...}{other parameters}
 }
 \value{
 An object of the class 'surv_explainer'.

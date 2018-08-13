@@ -4,7 +4,7 @@
 #'
 #' @param explainer a model to be explained, preprocessed by the 'survxai::explain' function
 #' @param observation a new observarvation for which predictions need to be explained
-#' @param grid.points grid_points number of points used for response path
+#' @param grid_points grid_points number of points used for response path
 #' @param selected_variables if specified, then only these variables will be explained
 #'
 #' @return An object of the class surv_ceteris_paribus_explainer.
@@ -32,7 +32,7 @@
 #' }
 #' @export
 
-ceteris_paribus <- function(explainer, observation, grid.points = 5, selected_variables = NULL){
+ceteris_paribus <- function(explainer, observation, grid_points = 5, selected_variables = NULL){
   if (!("surv_explainer" %in% class(explainer)))
     stop("The ceteris_paribus() function requires an object created with explain() function from survxai package.")
   if (is.null(explainer$data))
@@ -53,10 +53,10 @@ ceteris_paribus <- function(explainer, observation, grid.points = 5, selected_va
   responses <- lapply(names_to_present, function(vname) {
     
     if(class(data[,vname])=="numeric" || class(data[,vname])=="integer"){
-      probs <- seq(0, 1, length.out = grid.points)
+      probs <- seq(0, 1, length.out = grid_points)
       new_x <- quantile(data[,vname], probs = probs)
       quant_x <- mean(observation[1,vname] >= data[,vname], na.rm = TRUE)
-      new_data <- observation[rep(1, grid.points),]
+      new_data <- observation[rep(1, grid_points),]
       new_data[,vname] <- new_x
       
       y_hat <- t(predict_function(model, new_data, times))
@@ -65,7 +65,7 @@ ceteris_paribus <- function(explainer, observation, grid.points = 5, selected_va
                         x_quant = numeric(), quant = numeric(), relative_quant = numeric(), label = character(), 
                         class = character())
       
-      for(i in 1:grid.points){
+      for(i in 1:grid_points){
         tmp <- data.frame(y_hat = y_hat[,i])
         tmp$new_x <- as.character(new_x[i])
         tmp$vname <- vname
@@ -119,7 +119,7 @@ ceteris_paribus <- function(explainer, observation, grid.points = 5, selected_va
   new_y_hat <- predict_function(model, observation, times)
 
   attr(all_responses, "prediction") <- list(observation = observation, new_y_hat = new_y_hat, times = times)
-  attr(all_responses, "grid.points") <-grid.points
+  attr(all_responses, "grid_points") <- grid_points
   
   class(all_responses) = c("surv_ceteris_paribus_explainer", "data.frame")
   all_responses

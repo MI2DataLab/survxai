@@ -12,9 +12,8 @@
 #' @param times optional argument, the vector of time points on which we want to predict survival probability 
 #' @param predict_function function that takes three arguments: model, new data, vector with times, and returns numeric vector or matrix with predictions. If not passed, function \code{\link[pec]{predictSurvProb}} is used.
 #' @param link function - a transformation/link function that shall be applied to raw model predictions
-#' @param ... other parameters
 #' @param label character - the name of the survival model. By default it's extracted from the 'class' attribute of the model.
-#'
+#' @param ... other parameters
 #'
 #' @return An object of the class 'surv_explainer'.
 #'
@@ -51,7 +50,7 @@
 #' }
 #' @export
 
-explain.default <- function(model, data = NULL, y, times = NULL, predict_function = yhat, link = I, ..., label = tail(class(model), 1)) {
+explain.default <- function(model, data = NULL, y, times = NULL, predict_function = yhat, link = I, label = tail(class(model), 1), ...) {
   if (is.null(data)) {
     possible_data <- try(model.frame(model), silent = TRUE)
     if (class(possible_data) != "try-error") {

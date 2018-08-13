@@ -5,7 +5,7 @@
 \title{Plot for ceteris_paribus object}
 \usage{
 \method{plot}{surv_ceteris_paribus_explainer}(x, ...,
-  selected_variable = NULL, scale_type = "factor", col_scale = NULL,
+  selected_variable = NULL, scale_type = "factor", scale_col = NULL,
   ncol = 1)
 }
 \arguments{
@@ -17,7 +17,7 @@
 
 \item{scale_type}{type of scale of colors, either "discrete" or "gradient"}
 
-\item{col_scale}{vector containing values of low and high ends of the gradient, when "gradient" type of scale was chosen}
+\item{scale_col}{vector containing values of low and high ends of the gradient, when "gradient" type of scale was chosen}
 
 \item{ncol}{number of columns for faceting}
 }

@@ -4,7 +4,7 @@
 \alias{variable_response}
 \title{Variable response for survival models}
 \usage{
-variable_response(explainer, variable, type = "pdp", trans = explainer$link,
+variable_response(explainer, variable, type = "pdp", link = explainer$link,
   ...)
 }
 \arguments{
@@ -15,7 +15,7 @@ variable_response(explainer, variable, type = "pdp", trans = explainer$link,
 \item{type}{character - type of the response to be calculated.
 Currently following options are implemented: 'pdp' for Partial Dependency.}
 
-\item{trans}{function - a transformation/link function that shall be applied to raw model predictions. This will be inherited from the explainer.}
+\item{link}{function - a link function that shall be applied to raw model predictions. This will be inherited from the explainer.}
 
 \item{...}{other parameters}
 }

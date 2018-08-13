@@ -6,7 +6,7 @@
 #' @param variable character with variable name.
 #' @param type character - type of the response to be calculated.
 #' Currently following options are implemented: 'pdp' for Partial Dependency.
-#' @param trans function - a transformation/link function that shall be applied to raw model predictions. This will be inherited from the explainer.
+#' @param link function - a link function that shall be applied to raw model predictions. This will be inherited from the explainer.
 #' @param ... other parameters
 #'
 #' @examples
@@ -27,7 +27,7 @@
 #' }
 #' @export
 
-variable_response <- function(explainer, variable, type = "pdp", trans = explainer$link, ...){
+variable_response <- function(explainer, variable, type = "pdp", link = explainer$link, ...){
   if (!("surv_explainer" %in% class(explainer))) stop("The variable_response() function requires an object created with explain() function from survxai package.")
   if (is.null(explainer$data)) stop("The variable_response() function requires explainers created with specified 'data' parameter.")
 

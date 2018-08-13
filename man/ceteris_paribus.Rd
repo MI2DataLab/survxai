@@ -4,7 +4,7 @@
 \alias{ceteris_paribus}
 \title{Ceteris Paribus}
 \usage{
-ceteris_paribus(explainer, observation, grid.points = 5,
+ceteris_paribus(explainer, observation, grid_points = 5,
   selected_variables = NULL)
 }
 \arguments{
@@ -12,7 +12,7 @@ ceteris_paribus(explainer, observation, grid.points = 5,
 
 \item{observation}{a new observarvation for which predictions need to be explained}
 
-\item{grid.points}{grid_points number of points used for response path}
+\item{grid_points}{grid_points number of points used for response path}
 
 \item{selected_variables}{if specified, then only these variables will be explained}
 }
