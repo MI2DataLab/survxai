@@ -60,6 +60,9 @@
     </li>
   </ul>
 </li>
+<li>
+  <a href="../news/index.html">Changelog</a>
+</li>
       </ul>
 <ul class="nav navbar-nav navbar-right"></ul>
 </div>
@@ -268,7 +271,8 @@ vr_reg_sex &lt;-<span class="st"> </span><span class="kw"><a href="../reference/
 ## 6 0.5424658 0.9613915     1  pdp coxph sex</code></pre>
 <p>We visualize explainers on one plot.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">plot</span>(vr_cph_sex, vr_rf_sex, vr_reg_sex)</code></pre></div>
-<p><img src="How_to_compare_models_with_survxai_files/figure-html/unnamed-chunk-12-1.png" width="700"> We see that in all models patients with <code>sex=1</code> have higher probability of survival.</p>
+<p><img src="How_to_compare_models_with_survxai_files/figure-html/unnamed-chunk-12-1.png" width="700"></p>
+<p>We see that in all models patients with <code>sex=1</code> have higher probability of survival.</p>
 <p>In <code>survival_variable_response</code> plots we can also compare models in division into all variable levels using parameter <code>split = "variable"</code>.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">plot</span>(vr_cph_sex, vr_rf_sex, vr_reg_sex, <span class="dt">split =</span> <span class="st">"variable"</span>)</code></pre></div>
 <p><img src="How_to_compare_models_with_survxai_files/figure-html/unnamed-chunk-13-1.png" width="700"></p>
@@ -340,11 +344,11 @@ broken_prediction_reg &lt;-<span class="st"> </span><span class="kw"><a href="..
 ## bili       10.103%
 ## stage       7.714%
 ## sex         1.069%</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">plot</span>(broken_prediction_cph, <span class="dt">col_scale =</span> <span class="kw">c</span>(<span class="st">"red"</span>, <span class="st">"blue"</span>), <span class="dt">lines_type =</span> <span class="dv">2</span>)</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">plot</span>(broken_prediction_cph, <span class="dt">scale_col =</span> <span class="kw">c</span>(<span class="st">"red"</span>, <span class="st">"blue"</span>), <span class="dt">lines_type =</span> <span class="dv">2</span>)</code></pre></div>
 <p><img src="How_to_compare_models_with_survxai_files/figure-html/unnamed-chunk-23-1.png" width="700"></p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">plot</span>(broken_prediction_rf, <span class="dt">col_scale =</span> <span class="kw">c</span>(<span class="st">"red"</span>, <span class="st">"blue"</span>), <span class="dt">lines_type =</span> <span class="dv">2</span>)</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">plot</span>(broken_prediction_rf, <span class="dt">scale_col =</span> <span class="kw">c</span>(<span class="st">"red"</span>, <span class="st">"blue"</span>), <span class="dt">lines_type =</span> <span class="dv">2</span>)</code></pre></div>
 <p><img src="How_to_compare_models_with_survxai_files/figure-html/unnamed-chunk-23-2.png" width="700"></p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">plot</span>(broken_prediction_reg, <span class="dt">col_scale =</span> <span class="kw">c</span>(<span class="st">"red"</span>, <span class="st">"blue"</span>), <span class="dt">lines_type =</span> <span class="dv">2</span>)</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">plot</span>(broken_prediction_reg, <span class="dt">scale_col =</span> <span class="kw">c</span>(<span class="st">"red"</span>, <span class="st">"blue"</span>), <span class="dt">lines_type =</span> <span class="dv">2</span>)</code></pre></div>
 <p><img src="How_to_compare_models_with_survxai_files/figure-html/unnamed-chunk-23-3.png" width="700"></p>
 <p>This plots helps to understand the factors that drive survival probability for a single observation.</p>
 <p>For all models variable <code>bili</code> is the variable with the largest contribution. But the second variable is different randomForest (<code>age</code>) and coxph, survreg (<code>stage</code>).</p>
@@ -352,13 +356,16 @@ broken_prediction_reg &lt;-<span class="st"> </span><span class="kw"><a href="..
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">broken_prediction_cph &lt;-<span class="st"> </span><span class="kw"><a href="../reference/prediction_breakdown.html">prediction_breakdown</a></span>(surve_cph, single_observation, <span class="dt">prob =</span> <span class="fl">0.8</span>)
 broken_prediction_rf &lt;-<span class="st"> </span><span class="kw"><a href="../reference/prediction_breakdown.html">prediction_breakdown</a></span>(surve_rf, single_observation, <span class="dt">prob =</span> <span class="fl">0.8</span>)
 broken_prediction_reg &lt;-<span class="st"> </span><span class="kw"><a href="../reference/prediction_breakdown.html">prediction_breakdown</a></span>(surve_reg, single_observation, <span class="dt">prob =</span> <span class="fl">0.8</span>)</code></pre></div>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">plot</span>(broken_prediction_cph, <span class="dt">col_scale =</span> <span class="kw">c</span>(<span class="st">"red"</span>, <span class="st">"blue"</span>), <span class="dt">lines_type =</span> <span class="dv">2</span>)</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">plot</span>(broken_prediction_cph, <span class="dt">scale_col =</span> <span class="kw">c</span>(<span class="st">"red"</span>, <span class="st">"blue"</span>), <span class="dt">lines_type =</span> <span class="dv">2</span>)</code></pre></div>
 <p><img src="How_to_compare_models_with_survxai_files/figure-html/unnamed-chunk-25-1.png" width="700"></p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">plot</span>(broken_prediction_rf, <span class="dt">col_scale =</span> <span class="kw">c</span>(<span class="st">"red"</span>, <span class="st">"blue"</span>), <span class="dt">lines_type =</span> <span class="dv">2</span>)</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">plot</span>(broken_prediction_rf, <span class="dt">scale_col =</span> <span class="kw">c</span>(<span class="st">"red"</span>, <span class="st">"blue"</span>), <span class="dt">lines_type =</span> <span class="dv">2</span>)</code></pre></div>
 <p><img src="How_to_compare_models_with_survxai_files/figure-html/unnamed-chunk-25-2.png" width="700"></p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">plot</span>(broken_prediction_reg, <span class="dt">col_scale =</span> <span class="kw">c</span>(<span class="st">"red"</span>, <span class="st">"blue"</span>), <span class="dt">lines_type =</span> <span class="dv">2</span>)</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">plot</span>(broken_prediction_reg, <span class="dt">scale_col =</span> <span class="kw">c</span>(<span class="st">"red"</span>, <span class="st">"blue"</span>), <span class="dt">lines_type =</span> <span class="dv">2</span>)</code></pre></div>
 <p><img src="How_to_compare_models_with_survxai_files/figure-html/unnamed-chunk-25-3.png" width="700"></p>
-<p>We can compare this models on one plot, but for the transparency of the charts we have drawn them separately.</p>
+<p>We can compare this models on one plot.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">plot</span>(broken_prediction_cph, broken_prediction_rf, broken_prediction_reg, <span class="dt">scale_col =</span> <span class="kw">c</span>(<span class="st">"red"</span>, <span class="st">"blue"</span>), <span class="dt">lines_type =</span> <span class="dv">2</span>)</code></pre></div>
+<p><img src="How_to_compare_models_with_survxai_files/figure-html/unnamed-chunk-26-1.png" width="700"></p>
+<p>For the transparency of the charts we recommend drawning them separately.</p>
 </div>
 </div>
 </div>

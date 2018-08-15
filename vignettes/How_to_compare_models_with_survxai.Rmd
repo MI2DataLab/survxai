@@ -194,9 +194,10 @@ print(vr_cph_sex)
 ```
 
 We visualize explainers on one plot.
-```{r}
+```{r, fig.height=10}
 plot(vr_cph_sex, vr_rf_sex, vr_reg_sex)
 ```
+
 We see that in all models patients with `sex=1` have higher probability of survival.
 
 In `survival_variable_response` plots we can also compare models in division into all variable levels using parameter `split = "variable"`.
@@ -216,7 +217,7 @@ vr_rf_bili <- variable_response(surve_rf, "bili")
 vr_reg_bili <- variable_response(surve_reg, "bili")
 ```
 
-```{r}
+```{r, fig.height=10}
 plot(vr_cph_bili, vr_rf_bili, vr_reg_bili)
 ```
 
@@ -248,7 +249,7 @@ For each ceteris paribus explainer we can print values using generic `print()` f
 print(cp_cph)
 ```
 
-```{r}
+```{r, fig.height=10}
 plot(cp_cph, scale_type = "gradient", scale_col = c("red", "blue"))
 
 plot(cp_rf, scale_type = "gradient", scale_col = c("red", "blue"))
@@ -272,9 +273,9 @@ print(broken_prediction_cph)
 
 
 ```{r}
-plot(broken_prediction_cph, col_scale = c("red", "blue"), lines_type = 2)
-plot(broken_prediction_rf, col_scale = c("red", "blue"), lines_type = 2)
-plot(broken_prediction_reg, col_scale = c("red", "blue"), lines_type = 2)
+plot(broken_prediction_cph, scale_col = c("red", "blue"), lines_type = 2)
+plot(broken_prediction_rf, scale_col = c("red", "blue"), lines_type = 2)
+plot(broken_prediction_reg, scale_col = c("red", "blue"), lines_type = 2)
 ```
 
 This plots helps to understand the factors that drive survival probability for a single observation.
@@ -289,9 +290,16 @@ broken_prediction_reg <- prediction_breakdown(surve_reg, single_observation, pro
 ```
 
 ```{r}
-plot(broken_prediction_cph, col_scale = c("red", "blue"), lines_type = 2)
-plot(broken_prediction_rf, col_scale = c("red", "blue"), lines_type = 2)
-plot(broken_prediction_reg, col_scale = c("red", "blue"), lines_type = 2)
+plot(broken_prediction_cph, scale_col = c("red", "blue"), lines_type = 2)
+plot(broken_prediction_rf, scale_col = c("red", "blue"), lines_type = 2)
+plot(broken_prediction_reg, scale_col = c("red", "blue"), lines_type = 2)
 ```
 
-We can compare this models on one plot, but for the transparency of the charts we have drawn them separately.
+We can compare this models on one plot.
+
+```{r, fig.height=10}
+plot(broken_prediction_cph, broken_prediction_rf, broken_prediction_reg, scale_col = c("red", "blue"), lines_type = 2)
+```
+
+
+For the transparency of the charts we recommend drawning them separately.
