@@ -2,7 +2,7 @@
 % Please edit documentation in R/theme_mi2.R
 \name{theme_mi2}
 \alias{theme_mi2}
-\title{MI^2 Theme}
+\title{MI^2 plot theme}
 \usage{
 theme_mi2()
 }
@@ -10,5 +10,5 @@ theme_mi2()
 theme object that can be added to ggplot2 plots
 }
 \description{
-MI^2 Theme
+ggplot theme for charts generated with MI^2 Data Lab packages.
 }

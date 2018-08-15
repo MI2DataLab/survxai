@@ -15,11 +15,11 @@ explain(model, data = NULL, y, times = NULL, predict_function = yhat,
 \arguments{
 \item{model}{object - a survival model to be explained}
 
-\item{data}{data.frame or matrix - data that will be used by survival explainers. If not provided then will be extracted from the model}
+\item{data}{data.frame, tibble or matrix - data that will be used by survival explainers. If not provided then will be extracted from the model}
 
-\item{y}{object of class surv contains event status and times}
+\item{y}{object of class 'surv', contains event status and times}
 
-\item{times}{optional argument, the vector of time points on which we want to predict survival probability}
+\item{times}{optional argument, the vector of time points on which survival probability will be predicted}
 
 \item{predict_function}{function that takes three arguments: model, new data, vector with times, and returns numeric vector or matrix with predictions. If not passed, function \code{\link[pec]{predictSurvProb}} is used.}
 
@@ -38,6 +38,7 @@ It's a list with following fields:
 \item \code{model} the explained model
 \item \code{data} the dataset
 \item \code{y} event statuses and times
+\item \code{times} time points on which survival probability is predicted
 \item \code{predict_function} function that may be used for model predictions, shall return a single numerical value for each time.
 \item \code{link} function - a transformation/link function that shall be applied to raw model predictions
 \item \code{class} class/classes of a model
@@ -46,10 +47,11 @@ It's a list with following fields:
 }
 \description{
 Survival models may have very different structures.
-This function creates a unified representation of a survival model, which can be further processed by various survival explainers.
+This function creates a unified representation of a survival model, which can be further processed by various survival
+explainers (see also \code{\link[DALEX]{explain}}).
 
 Please NOTE, that the \code{model} is actually the only required argument.
-But some survival explainers may require that others will be provided too.
+But some survival explainers may require additional arguments.
 }
 \examples{
 \dontrun{

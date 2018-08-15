@@ -83,9 +83,12 @@ explain.default <- function(model, data = NULL, y, times = NULL, predict_functio
 #' @rdname explain
 explain <- explain.default
 
-
 #' @method predictSurvProb surv_explainer
 #' @export
 predictSurvProb.surv_explainer <- function(object, newdata, times, ...) {
   object$predict_function(object$model, newdata, times)
+}
+
+yhat <- function(X.model, newdata, times) {
+  predictSurvProb(X.model, newdata, times)
 }
