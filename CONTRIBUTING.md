@@ -13,7 +13,7 @@ Please follow these rules when reporting bugs:
 
 #### **Did you fixed a bug?**
 
-* Ensure that changes meet the requirements of [The tidyverse style guide](http://style.tidyverse.org).
+* Ensure that changes meet the requirements of [The tidyverse style guide](http://style.tidyverse.org) and relevant tests are added.
 
 * Open a new GitHub pull request with the solution.
 
