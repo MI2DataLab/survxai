@@ -1,8 +1,0 @@
-template:
-  package: MI2template
-  default_assets: false
-home:
-  links:
-  - text: Source code
-    href: https://github.com/MI2DataLab/survxai
-    

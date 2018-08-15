@@ -28,3 +28,5 @@ Suggests: CFC,
     rms,
     testthat
 VignetteBuilder: knitr
+URL: https://mi2datalab.github.io/survxai/
+BugReports: https://github.com/MI2DataLab/survxai/issues

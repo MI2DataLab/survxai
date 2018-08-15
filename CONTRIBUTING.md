@@ -13,6 +13,8 @@ Please follow these rules when reporting bugs:
 
 #### **Did you fixed a bug?**
 
+* Ensure that changes meet the requirements of [The tidyverse style guide](http://style.tidyverse.org).
+
 * Open a new GitHub pull request with the solution.
 
 * Ensure the PR clearly describes the problem and solution. Include the relevant issue number if applicable.
