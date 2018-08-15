@@ -18,6 +18,11 @@ devtools::install_github("MI2DataLab/survxai")
 <img src="https://github.com/MI2DataLab/survxai/blob/master/materials/survxai-cheatsheet.png?raw=true">
 </a>
 
+## News
+Informations about changes in `survxai` relases can be found in [NEWS](https://github.com/MI2DataLab/survxai/blob/master/NEWS.md).
+
+## How to contribute
+Informations about creating issues and pull requests in `survxai` can be found in [CONTRIBUTING](https://github.com/MI2DataLab/survxai/blob/master/CONTRIBUTING.md).
 
 
 ## Acknowledgments
