@@ -7,10 +7,10 @@
 model_performance(explainer, type = "BS", ...)
 }
 \arguments{
-\item{explainer}{an object of the class 'surv_explainer'.}
+\item{explainer}{a model to be explained, preprocessed by the 'survxai::explain' function}
 
-\item{type}{character - type of the response to be calculated.
-Currently following options are implemented: 'BS' for Expected Brier Score.}
+\item{type}{character - type of the response to be calculated
+Currently following options are implemented: 'BS' for Expected Brier Score}
 
 \item{...}{other parameters}
 }
@@ -26,11 +26,10 @@ and a model based prediction of surviving time t.
 \dontrun{
    library(survxai)
    library(rms)
-   library(randomForestSRC)
-   data(pbc, package = "randomForestSRC")
-   pbc <- pbc[complete.cases(pbc),]
-   cph_model <- cph(Surv(days/365, status)~., data=pbc, surv=TRUE, x = TRUE, y=TRUE)
-   surve_cph <- explain(model = cph_model, data = pbc[,-c(1,2)], y = Surv(pbc$days/365, pbc$status))
+   data("pbcTrain")
+   data("pbcTest")
+   cph_model <- cph(Surv(years, status)~., data=pbcTrain, surv=TRUE, x = TRUE, y=TRUE)
+   surve_cph <- explain(model = cph_model, data = pbcTest[,-c(1,5)], y = Surv(pbcTest$years, pbcTest$status))
    mp_cph <- model_performance(surve_cph)
 }
 

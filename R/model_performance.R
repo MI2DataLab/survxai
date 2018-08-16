@@ -2,9 +2,9 @@
 #'
 #' @description Function \code{model_performance} calculates the prediction error for chosen survival model. 
 #' 
-#' @param explainer an object of the class 'surv_explainer'.
-#' @param type character - type of the response to be calculated.
-#' Currently following options are implemented: 'BS' for Expected Brier Score.
+#' @param explainer a model to be explained, preprocessed by the 'survxai::explain' function
+#' @param type character - type of the response to be calculated
+#' Currently following options are implemented: 'BS' for Expected Brier Score
 #' @param ... other parameters
 #' 
 #' @details 
@@ -16,11 +16,11 @@
 #' \dontrun{
 #'    library(survxai)
 #'    library(rms)
-#'    library(randomForestSRC)
-#'    data(pbc, package = "randomForestSRC")
-#'    pbc <- pbc[complete.cases(pbc),]
-#'    cph_model <- cph(Surv(days/365, status)~., data=pbc, surv=TRUE, x = TRUE, y=TRUE)
-#'    surve_cph <- explain(model = cph_model, data = pbc[,-c(1,2)], y = Surv(pbc$days/365, pbc$status))
+#'    data("pbcTrain")
+#'    data("pbcTest")
+#'    cph_model <- cph(Surv(years, status)~., data=pbcTrain, surv=TRUE, x = TRUE, y=TRUE)
+#'    surve_cph <- explain(model = cph_model, data = pbcTest[,-c(1,5)], 
+#'                         y = Surv(pbcTest$years, pbcTest$status))
 #'    mp_cph <- model_performance(surve_cph)
 #' }
 #'
@@ -36,7 +36,6 @@ model_performance <- function(explainer, type = "BS",...){
   if (!("surv_explainer" %in% class(explainer))) stop("The model_performance() function requires an object created with explain() function from survxai package.")
   reference_formula <- eval(explainer$model$call[[2]])
   reference_formula[3] <- 1
-  
   surv_vars <- all.vars(explainer$model$call[[2]][[2]])
   data <- cbind(explainer$y[,1], explainer$y[,2], explainer$data)
   colnames(data)[1:2] <- surv_vars

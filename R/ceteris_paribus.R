@@ -18,17 +18,17 @@
 #' \dontrun{
 #' library(survxai)
 #' library(rms) 
-#' library(randomForestSRC)
-#' data(pbc, package = "randomForestSRC")
-#' pbc <- pbc[complete.cases(pbc),]
+#' data("pbcTrain")
+#' data("pbcTest")
 #' predict_times <- function(model, data, times){ 
-#'                   prob <- rms::survest(model, data, times = times)$surv
-#'                   return(prob)
+#'                     prob <- rms::survest(model, data, times = times)$surv
+#'                     return(prob)
 #'                   }
-#' cph_model <- cph(Surv(days/365, status)~., data=pbc, surv=TRUE, x = TRUE, y=TRUE)
-#' surve_cph <- explain(model = cph_model, data = pbc[,-c(1,2)], y = Surv(pbc$days/365, pbc$status), 
+#' cph_model <- cph(Surv(years, status)~., data = pbcTrain, surv = TRUE, x = TRUE, y=TRUE)
+#' surve_cph <- explain(model = cph_model, data = pbcTest[,-c(1,5)], 
+#'              y = Surv(pbcTest$years, pbcTest$status), 
 #'              predict_function = predict_times)
-#' cp_cph <- ceteris_paribus(surve_cph, pbc[1,-c(1,2)])
+#' cp_cph <- ceteris_paribus(surve_cph, pbcTest[1,-c(1,5)])
 #' }
 #' @export
 
@@ -42,85 +42,22 @@ ceteris_paribus <- function(explainer, observation, grid_points = 5, selected_va
   model <- explainer$model
   predict_function <- explainer$predict_function
   names_to_present <- colnames(data)
+  grid_points <- grid_points
   
   if (!is.null(selected_variables)) {
     names_to_present <- intersect(names_to_present, selected_variables)
   }
-  times <- explainer$times
   
+  times <- explainer$times
   times <- sort(times)
   
-  responses <- lapply(names_to_present, function(vname) {
-    
-    if(class(data[,vname])=="numeric" || class(data[,vname])=="integer"){
-      probs <- seq(0, 1, length.out = grid_points)
-      new_x <- quantile(data[,vname], probs = probs)
-      quant_x <- mean(observation[1,vname] >= data[,vname], na.rm = TRUE)
-      new_data <- observation[rep(1, grid_points),]
-      new_data[,vname] <- new_x
-      
-      y_hat <- t(predict_function(model, new_data, times))
-      
-      res <- data.frame(y_hat=numeric(), time = numeric(), vname = character(), new_x = numeric(), 
-                        x_quant = numeric(), quant = numeric(), relative_quant = numeric(), label = character(), 
-                        class = character())
-      
-      for(i in 1:grid_points){
-        tmp <- data.frame(y_hat = y_hat[,i])
-        tmp$new_x <- as.character(new_x[i])
-        tmp$vname <- vname
-        tmp$x_quant <- quant_x
-        tmp$quant <- probs[i]
-        tmp$relative_quant <- probs[i] - quant_x
-        tmp$label <- explainer$label
-        tmp$time <- times
-        tmp$class <- "numeric"
-        
-        res <- rbind(res, tmp)
-      }
-    }
-    if(class(data[,vname])=="character" || class(data[,vname])=="factor"){
-      data[,vname] <- as.factor(data[,vname])
-      new_data <- observation[rep(1, length(levels(data[,vname]))),]
-      new_data[,vname] <- as.factor(new_data[,vname])
-      new_x <- levels(data[,vname])
-      new_data[,vname] <- new_x
-      
-      f <- sapply(data, is.factor)
-      cols <- names(which(f))
-      
-      new_data[cols] <- lapply(new_data[cols], as.factor)
-      
-      
-      y_hat <- t(predict_function(model, new_data, times))
-      
-      res <- data.frame(y_hat=numeric(), time = numeric(), vname = character(), new_x = character(), 
-                        x_quant = numeric(), quant = numeric(), relative_quant = numeric(), label = character(), 
-                        class = character())
-      for(i in 1:length(levels(data[,vname]))){
-        tmp <- data.frame(y_hat = y_hat[,i])
-        tmp$new_x <- new_x[i]
-        tmp$vname <- vname
-        tmp$x_quant <- 0
-        tmp$quant <- 0
-        tmp$relative_quant <- 0
-        tmp$label <- explainer$label
-        tmp$time <- times
-        tmp$class <- "factor"
-        res <- rbind(res, tmp)
-      }
-      
-    }
-    return(res)
-  })
-  
+  responses <- lapply(names_to_present, function(vname, times_s, observation_s, model_s, explainer_s, grid_points_s, data_s, predict_function_s) calculate_responses(vname,times_s = times, observation_s = observation, model_s = model, explainer_s = explainer, grid_points_s = grid_points, data_s = data, predict_function_s = predict_function))
   
   all_responses <- do.call(rbind, responses)
   new_y_hat <- predict_function(model, observation, times)
-
   attr(all_responses, "prediction") <- list(observation = observation, new_y_hat = new_y_hat, times = times)
   attr(all_responses, "grid_points") <- grid_points
   
-  class(all_responses) = c("surv_ceteris_paribus_explainer", "data.frame")
+  class(all_responses) <- c("surv_ceteris_paribus_explainer", "data.frame")
   all_responses
 }
