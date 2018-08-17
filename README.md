@@ -1,5 +1,6 @@
 # survxai
 
+[![CII Best Practices](https://bestpractices.coreinfrastructure.org/en/projects/2123)](https://bestpractices.coreinfrastructure.org/en/projects/2123)
 [![Build Status](https://travis-ci.org/MI2DataLab/survxai.svg?branch=master)](https://travis-ci.org/MI2DataLab/survxai)
 [![Coverage Status](https://img.shields.io/codecov/c/github/MI2DataLab/survxai/master.svg)](https://codecov.io/github/MI2DataLab/survxai?branch=master)
 
