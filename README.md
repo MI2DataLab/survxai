@@ -1,8 +1,8 @@
 # survxai
-
-[![CII Best Practices](https://bestpractices.coreinfrastructure.org/en/projects/2123)](https://bestpractices.coreinfrastructure.org/en/projects/2123)
+[![CRAN_Status_Badge](http://www.r-pkg.org/badges/version/survxai)](https://cran.r-project.org/package=survaxi)
 [![Build Status](https://travis-ci.org/MI2DataLab/survxai.svg?branch=master)](https://travis-ci.org/MI2DataLab/survxai)
 [![Coverage Status](https://img.shields.io/codecov/c/github/MI2DataLab/survxai/master.svg)](https://codecov.io/github/MI2DataLab/survxai?branch=master)
+[![CII Best Practices](https://bestpractices.coreinfrastructure.org/projects/2123/badge)](https://bestpractices.coreinfrastructure.org/projects/2123)
 
 Survival analysis models are used primarily in medicine and churn analysis. Due to many applications, we are witnessing a fast development of a wide range of black-box survival models. Their lack of interpretability makes them unusable for analyzes that require an understanding of the model behavior. 
 
