@@ -4,14 +4,11 @@
 \alias{plot.surv_ceteris_paribus_explainer}
 \title{Plot for ceteris_paribus object}
 \usage{
-\method{plot}{surv_ceteris_paribus_explainer}(x, ...,
-  selected_variable = NULL, scale_type = "factor", scale_col = NULL,
-  ncol = 1)
+\method{plot}{surv_ceteris_paribus_explainer}(x, selected_variable = NULL,
+  scale_type = "factor", scale_col = NULL, ncol = 1)
 }
 \arguments{
 \item{x}{object of class "surv_ceteris_paribus_explainer"}
-
-\item{...}{other arguments}
 
 \item{selected_variable}{name of varaible we want to draw ceteris paribus plot}
 
@@ -28,17 +25,16 @@ Function plot for ceteris_paribus object visualise estimated survival curve of m
 \dontrun{
 library(survxai)
 library(rms)
-library(randomForestSRC)
-data(pbc, package = "randomForestSRC")
-pbc <- pbc[complete.cases(pbc),]
+data("pbcTest")
+data("pbcTrain")
 predict_times <- function(model, data, times){
                   prob <- rms::survest(model, data, times = times)$surv
                   return(prob)
                   }
-cph_model <- cph(Surv(days/365, status)~., data=pbc, surv=TRUE, x = TRUE, y=TRUE)
-surve_cph <- explain(model = cph_model, data = pbc[,-c(1,2)], y = Surv(pbc$days/365, pbc$status),
+cph_model <- cph(Surv(years, status)~., data=pbcTrain, surv=TRUE, x = TRUE, y=TRUE)
+surve_cph <- explain(model = cph_model, data = pbcTest[,-c(1,5)], y = Surv(pbcTest$years, pbcTest$status),
              predict_function = predict_times)
-cp_cph <- ceteris_paribus(surve_cph, pbc[1,-c(1,2)])
+cp_cph <- ceteris_paribus(surve_cph, pbcTest[1,-c(1,5)])
 plot(cp_cph)
 }
 }

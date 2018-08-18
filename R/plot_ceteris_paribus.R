@@ -4,7 +4,6 @@
 #'
 #' @param x object of class "surv_ceteris_paribus_explainer"
 #' @param selected_variable name of varaible we want to draw ceteris paribus plot
-#' @param ... other arguments
 #' @param scale_type type of scale of colors, either "discrete" or "gradient"
 #' @param scale_col vector containing values of low and high ends of the gradient, when "gradient" type of scale was chosen
 #' @param ncol number of columns for faceting
@@ -15,59 +14,34 @@
 #' \dontrun{
 #' library(survxai)
 #' library(rms)
-#' library(randomForestSRC)
-#' data(pbc, package = "randomForestSRC")
-#' pbc <- pbc[complete.cases(pbc),]
+#' data("pbcTest")
+#' data("pbcTrain")
 #' predict_times <- function(model, data, times){
 #'                   prob <- rms::survest(model, data, times = times)$surv
 #'                   return(prob)
 #'                   }
-#' cph_model <- cph(Surv(days/365, status)~., data=pbc, surv=TRUE, x = TRUE, y=TRUE)
-#' surve_cph <- explain(model = cph_model, data = pbc[,-c(1,2)], y = Surv(pbc$days/365, pbc$status),
+#' cph_model <- cph(Surv(years, status)~., data=pbcTrain, surv=TRUE, x = TRUE, y=TRUE)
+#' surve_cph <- explain(model = cph_model, data = pbcTest[,-c(1,5)], y = Surv(pbcTest$years, pbcTest$status),
 #'              predict_function = predict_times)
-#' cp_cph <- ceteris_paribus(surve_cph, pbc[1,-c(1,2)])
+#' cp_cph <- ceteris_paribus(surve_cph, pbcTest[1,-c(1,5)])
 #' plot(cp_cph)
 #' }
 #' @method plot surv_ceteris_paribus_explainer
 #' @export
 
-plot.surv_ceteris_paribus_explainer <- function(x, ..., selected_variable = NULL, scale_type = "factor", 
+plot.surv_ceteris_paribus_explainer <- function(x, selected_variable = NULL, scale_type = "factor", 
                                                 scale_col = NULL, ncol = 1) {
-  y_hat <- new_x <- time <- time_2 <- y_hat_2 <- NULL
-  new_observation <- attributes(x)$prediction$`observation`
-  values <- as.data.frame(t(new_observation[1,]))
-  values[,1] <- as.character(values[,1])
-  new_observation_legend <- data.frame(vname = colnames(new_observation), val = paste0(colnames(new_observation), "=", values[,1]))
-  seq_length <- attributes(x)$grid_points
   
-  
-  dfl <- c(list(x), list(...))
-
-  all_responses <- do.call(rbind, dfl)
-  class(all_responses) <- "data.frame"
-
-
   if(!is.null(selected_variable) && !(selected_variable %in% factor(all_responses$vname))){
     stop(paste0("Selected variable ", selected_variable, "not present in surv_ceteris_paribus object."))
   }
-
-  all_predictions <- lapply(dfl, function(tmp) {
-    pred <- attr(tmp, "prediction")
-    data.frame(prediction = pred$new_y_hat,
-               label = tmp$label[1])
-  })
-
-  times <- lapply(dfl, function(tmp) {
-    pred <- attr(tmp, "prediction")
-    data.frame(prediction = pred$times)
-  })
-
-  times <- do.call(rbind, times)
-  all_predictions <- do.call(rbind, all_predictions)
-  all_predictions <- data.frame(t(all_predictions[,-ncol(all_predictions)]))
-
-  all_predictions$time_2 <- times$prediction
-  colnames(all_predictions)[1] <- "y_hat_2"
+  y_hat <- new_x <- time <- time_2 <- y_hat_2 <- NULL
+  new_observation_legend <- create_legend(x)
+  seq_length <- attributes(x)$grid_points
+  
+  all_responses <- x
+  
+  all_predictions <- create_predictions(x)
 
   
   all_responses <- merge(all_responses, new_observation_legend, by="vname")
@@ -84,11 +58,10 @@ plot.surv_ceteris_paribus_explainer <- function(x, ..., selected_variable = NULL
   }
   
   #######################
-  z <- all_responses[,c(1,3)]
-  z <- unique(z)
-  z$legend <- 1:nrow(z)
-  
-  all_responses <- merge(all_responses, z, by=c("vname", "new_x"))
+  df <- all_responses[,c("vname","new_x")]
+  df <- unique(df)
+  df$legend <- 1:nrow(df)
+  all_responses <- merge(all_responses, df, by=c("vname", "new_x"))
   
   #############################
   if(scale_type == "gradient"){
@@ -115,18 +88,34 @@ plot.surv_ceteris_paribus_explainer <- function(x, ..., selected_variable = NULL
 
     
   
-  pl <- ggplot(all_responses, aes(x = time, y = y_hat, col = factor(legend)))+
-    geom_step()+
+  ggplot(all_responses, aes(x = time, y = y_hat, col = factor(legend))) +
+    geom_step() +
     geom_step(data = all_predictions, aes(x = time_2, y = y_hat_2), col="black", lty = 2, size = 1) +
     scale_y_continuous(breaks = seq(0,1,0.1),
                        limits = c(0,1),
                        labels = paste(seq(0,100,10),"%"),
-                       name = "survival probability")
-
-  pl <- pl + facet +
-    theme_mi2()+
-    add_theme+
-    title
-  
-  pl + scale
+                       name = "survival probability") + 
+    facet +
+    theme_mi2() +
+    add_theme +
+    title +
+    scale
 }
+
+create_legend <- function(x){
+  new_observation <- attributes(x)$prediction$`observation`
+  values <- as.data.frame(t(new_observation[1,]))
+  values[,1] <- as.character(values[,1])
+  new_observation_legend <- data.frame(vname = colnames(new_observation), val = paste0(colnames(new_observation), "=", values[,1]))
+  return(new_observation_legend)
+}
+
+
+create_predictions <- function(x){
+  pred <- attr(x, "prediction")
+  all_predictions <- data.frame(prediction = pred$new_y_hat)
+  times <- data.frame(prediction = pred$times)
+  all_predictions <- data.frame(t(all_predictions))
+  all_predictions$time_2 <- times$prediction
+  colnames(all_predictions)[1] <- "y_hat_2"
+  return(all_predictions)}
