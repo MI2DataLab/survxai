@@ -9,7 +9,7 @@
   scale_col = c("#010059", "#e0f6fb"))
 }
 \arguments{
-\item{x}{object of class "surv_prediction_breakdown_explainer"}
+\item{x}{an object of class "surv_prediction_breakdown_explainer"}
 
 \item{...}{other arguments, for example additional object of class "surv_prediction_breakdown_explainer"}
 
@@ -17,11 +17,11 @@
 
 \item{lines}{logical; indicating wheter we want to add lines on chosen time point or probability}
 
-\item{lines_type}{type of line; see http://sape.inf.usi.ch/quick-reference/ggplot2/linetype}
+\item{lines_type}{a type of line; see http://sape.inf.usi.ch/quick-reference/ggplot2/linetype}
 
-\item{lines_col}{color of line}
+\item{lines_col}{a color of line}
 
-\item{scale_col}{vector containig two colors for gradient scale in legend}
+\item{scale_col}{a vector containig two colors for gradient scale in legend}
 }
 \description{
 Function plot for surv_breakdown object visualise estimated survival curve of mean probabilities in chosen time points.
@@ -30,16 +30,15 @@ Function plot for surv_breakdown object visualise estimated survival curve of me
 \dontrun{
 library(survxai)
 library(rms)
-library(randomForestSRC)
-data(pbc, package = "randomForestSRC")
-pbc <- pbc[complete.cases(pbc),]
+data("pbcTest")
+data("pbcTrain")
 predict_times <- function(model, data, times){
                   prob <- rms::survest(model, data, times = times)$surv
                   return(prob)
                   }
-cph_model <- cph(Surv(days/365, status)~., data=pbc, surv=TRUE, x = TRUE, y=TRUE)
-surve_cph <- explain(model = cph_model, data = pbc[,-c(1,2)], y = Surv(pbc$days/365, pbc$status),
-             predict_function = predict_times)
+cph_model <- cph(Surv(years, status)~., data=pbcTrain, surv=TRUE, x = TRUE, y=TRUE)
+surve_cph <- explain(model = cph_model, data = pbcTest[,-c(1,5)], 
+                    y = Surv(pbcTest$years, pbcTest$status), predict_function = predict_times)
 broken_prediction <- prediction_breakdown(surve_cph, pbc[1,-c(1,2)])
 plot(broken_prediction)
 }

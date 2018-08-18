@@ -5,8 +5,8 @@
 #'
 #' @param explainer an object of the class 'surv_explainer'
 #' @param observation a new observation to explain
-#' @param time time point at which variable contributions are computed. If NULL median time is taken.
-#' @param prob survival probability at which variable contributions are computed
+#' @param time a time point at which variable contributions are computed. If NULL median time is taken.
+#' @param prob a survival probability at which variable contributions are computed
 #' @param ... other parameters
 #'
 #' @return An object of class surv_prediction_breakdown_explainer
@@ -18,17 +18,16 @@
 #' \dontrun{
 #' library(survxai)
 #' library(rms)
-#' library(randomForestSRC)
-#' data(pbc, package = "randomForestSRC")
-#' pbc <- pbc[complete.cases(pbc),]
+#' data("pbcTest")
+#' data("pbcTrain")
 #' predict_times <- function(model, data, times){
 #'                   prob <- rms::survest(model, data, times = times)$surv
 #'                   return(prob)
 #'                   }
-#' cph_model <- cph(Surv(days/365, status)~., data=pbc, surv=TRUE, x = TRUE, y=TRUE)
-#' surve_cph <- explain(model = cph_model, data = pbc[,-c(1,2)], y = Surv(pbc$days/365, pbc$status),
-#'              predict_function = predict_times)
-#' broken_prediction <- prediction_breakdown(surve_cph, pbc[1,-c(1,2)])
+#' cph_model <- cph(Surv(years, status)~., data=pbcTrain, surv=TRUE, x = TRUE, y=TRUE)
+#' surve_cph <- explain(model = cph_model, data = pbcTest[,-c(1,5)], 
+#'                     y = Surv(pbcTest$years, pbcTest$status), predict_function = predict_times)
+#' broken_prediction <- prediction_breakdown(surve_cph, pbcTest[1,-c(1,5)])
 #' }
 #' @export
 
@@ -39,38 +38,7 @@ prediction_breakdown <- function(explainer, observation, time = NULL, prob = NUL
   if (!is.null(time) & !is.null(prob)) stop("Only one of the parameters 'time', 'prob' should be provided.")
 
   # breakDown
-  if (is.null(prob)) {
-    if (is.null(time)) time <- median(explainer$times)
-
-    new_pred <- function(model, data){
-      explainer$predict_function(model, data, times = time)
-    }
-  } else {
-    times_sorted <- sort(explainer$times)
-
-    find_time <- function(x){
-      tim <- (x < prob)
-      index <- c(min(which(tim == TRUE)) -1, min(which(tim == TRUE)))
-      closest_times <- times_sorted[index]
-      weighted.mean(closest_times, x[index])
-    }
-
-    new_pred <- function(model, data){
-      probabilities <- explainer$predict_function(model, data, times = explainer$times)
-      probabilities <- as.data.frame(probabilities)
-
-     res <- apply(probabilities, MARGIN = 1, FUN = find_time)
-     res <- na.omit(res)
-     return(res)
-
-    }
-
-    npred <- new_pred(explainer$model, explainer$data)
-    message("Number of observations with prob > ", prob, ": ", nrow(explainer$data) - length(npred))
-  }
-
-
-
+  new_pred <- predict_fun(prob, time, explainer)
 
   oldw <- getOption("warn")
   options(warn = -1)
@@ -92,39 +60,18 @@ prediction_breakdown <- function(explainer, observation, time = NULL, prob = NUL
   times <- sort(explainer$times)
 
   #baseline
-  prediction <- explainer$predict_function(explainer$model, explainer$data, times)
-  mean_prediction <- data.frame(x = times, y = colMeans(prediction, na.rm=T))
-  mean_prediction <- rbind(mean_prediction, c(0, 1))
-  mean_prediction$variable<- "Intercept"
-  mean_prediction$label <- explainer$label
-  mean_prediction$position <- 1
-  mean_prediction$value <- "Intercept"
-
+  mean_prediction <- calculate_prediction_intercept(explainer, times)
   result <- rbind(result, mean_prediction)
-
-
   #one observation
-  prediction <- explainer$predict_function(explainer$model, observation, times)
-  mean_prediction <- data.frame(x = times, y = prediction[1,])
-  mean_prediction <- rbind(mean_prediction, c(0, 1))
-  mean_prediction$variable<- "Observation"
-  mean_prediction$label <- explainer$label
-  mean_prediction$position <- nrow(res)+2
-  mean_prediction$value <- "Observation"
+  mean_prediction <- calculate_prediction_observation(explainer, observation, times, res)
   result <- rbind(result, mean_prediction)
-
   tmp_data <- explainer$data
 
   for (i in 1:nrow(res)){
+    #explainer <- explainer
     variable <- res[i, "variable_name"]
     tmp_data[,as.character(variable)] <-  observation[[as.character(variable)]]
-    prediction <- explainer$predict_function(explainer$model, tmp_data, times)
-    mean_prediction <- data.frame(x = times, y = colMeans(prediction, na.rm=T))
-    mean_prediction <- rbind(mean_prediction, c(0, 1))
-    mean_prediction$variable<- variable
-    mean_prediction$label <- explainer$label
-    mean_prediction$position <- res[i, "position"]
-    mean_prediction$value <- res[i, "variable"]
+    mean_prediction <- calculate_prediction(explainer, tmp_data, times, res, i, variable)
     result <- rbind(result, mean_prediction)
   }
 
@@ -138,4 +85,75 @@ prediction_breakdown <- function(explainer, observation, time = NULL, prob = NUL
   class(result) <- c("surv_prediction_breakdown_explainer", "data.frame")
   result
 
+}
+
+
+predict_fun <- function(prob, time, explainer){
+  if (is.null(prob)) {
+    if (is.null(time)) time <- median(explainer$times)
+    
+    new_pred <- function(model, data){
+      explainer$predict_function(model, data, times = time)
+    }
+  } else {
+    times_sorted <- sort(explainer$times)
+    
+    find_time <- function(x){
+      tim <- (x < prob)
+      index <- c(min(which(tim == TRUE)) -1, min(which(tim == TRUE)))
+      closest_times <- times_sorted[index]
+      weighted.mean(closest_times, x[index])
+    }
+    
+    new_pred <- function(model, data){
+      probabilities <- explainer$predict_function(model, data, times = explainer$times)
+      probabilities <- as.data.frame(probabilities)
+      
+      res <- apply(probabilities, MARGIN = 1, FUN = find_time)
+      res <- na.omit(res)
+      return(res)
+      
+    }
+    
+    npred <- new_pred(explainer$model, explainer$data)
+    message("Number of observations with prob > ", prob, ": ", nrow(explainer$data) - length(npred))
+  }
+  
+  return(new_pred)
+}
+
+
+
+calculate_prediction_intercept <- function(explainer, times){
+  prediction <- explainer$predict_function(explainer$model, explainer$data, times)
+  mean_prediction <- data.frame(x = times, y = colMeans(prediction, na.rm=T))
+  mean_prediction <- rbind(mean_prediction, c(0, 1))
+  mean_prediction$variable<- "Intercept"
+  mean_prediction$label <- explainer$label
+  mean_prediction$position <- 1
+  mean_prediction$value <- "Intercept"
+  return(mean_prediction)
+}
+
+calculate_prediction_observation <- function(explainer, observation, times, res){
+  prediction <- explainer$predict_function(explainer$model, observation, times)
+  mean_prediction <- data.frame(x = times, y = prediction[1,])
+  mean_prediction <- rbind(mean_prediction, c(0, 1))
+  mean_prediction$variable<- "Observation"
+  mean_prediction$label <- explainer$label
+  mean_prediction$position <- nrow(res)+2
+  mean_prediction$value <- "Observation"
+  return(mean_prediction)
+}
+
+
+calculate_prediction <- function(explainer, tmp_data, times, res, i, variable){
+  prediction <- explainer$predict_function(explainer$model, tmp_data, times)
+  mean_prediction <- data.frame(x = times, y = colMeans(prediction, na.rm=T))
+  mean_prediction <- rbind(mean_prediction, c(0, 1))
+  mean_prediction$variable<- variable
+  mean_prediction$label <- explainer$label
+  mean_prediction$position <- res[i, "position"]
+  mean_prediction$value <- res[i, "variable"]
+  return(mean_prediction)
 }

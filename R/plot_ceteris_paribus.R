@@ -38,7 +38,7 @@ plot.surv_ceteris_paribus_explainer <- function(x, ..., selected_variable = NULL
   }
   
   y_hat <- new_x <- time <- time_2 <- y_hat_2 <- NULL
-  new_observation_legend <- create_legend(x)
+  new_observation_legend <- create_legend(x=x)
   seq_length <- attributes(x)$grid_points
   
   all_responses <- x

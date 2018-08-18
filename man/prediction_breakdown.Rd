@@ -11,9 +11,9 @@ prediction_breakdown(explainer, observation, time = NULL, prob = NULL, ...)
 
 \item{observation}{a new observation to explain}
 
-\item{time}{time point at which variable contributions are computed. If NULL median time is taken.}
+\item{time}{a time point at which variable contributions are computed. If NULL median time is taken.}
 
-\item{prob}{survival probability at which variable contributions are computed}
+\item{prob}{a survival probability at which variable contributions are computed}
 
 \item{...}{other parameters}
 }
@@ -28,16 +28,15 @@ The contribution is defined as the difference between survival probabilities for
 \dontrun{
 library(survxai)
 library(rms)
-library(randomForestSRC)
-data(pbc, package = "randomForestSRC")
-pbc <- pbc[complete.cases(pbc),]
+data("pbcTest")
+data("pbcTrain")
 predict_times <- function(model, data, times){
                   prob <- rms::survest(model, data, times = times)$surv
                   return(prob)
                   }
-cph_model <- cph(Surv(days/365, status)~., data=pbc, surv=TRUE, x = TRUE, y=TRUE)
-surve_cph <- explain(model = cph_model, data = pbc[,-c(1,2)], y = Surv(pbc$days/365, pbc$status),
-             predict_function = predict_times)
-broken_prediction <- prediction_breakdown(surve_cph, pbc[1,-c(1,2)])
+cph_model <- cph(Surv(years, status)~., data=pbcTrain, surv=TRUE, x = TRUE, y=TRUE)
+surve_cph <- explain(model = cph_model, data = pbcTest[,-c(1,5)], 
+                    y = Surv(pbcTest$years, pbcTest$status), predict_function = predict_times)
+broken_prediction <- prediction_breakdown(surve_cph, pbcTest[1,-c(1,5)])
 }
 }
