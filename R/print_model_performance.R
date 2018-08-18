@@ -7,18 +7,11 @@
 #' @export
 
 print.surv_model_performance_explainer <- function(x, times = NULL, ...) {
-  if(is.null(times)){
-    times_to_set <- unique(floor(attributes(x)$time))
-  }else{
-    times_to_set <- times
-  }
+  if (is.null(times)) times <- sort(attributes(x)$time)[1:10]
 
   x <- as.data.frame(x)
   x <- x[!duplicated(x$time),]
-  x$time <-floor(x$time)
-  x <- x[which(x$time %in% times_to_set),]
-
-  x <- x[!duplicated(x$time),]
+  x <- x[which(x$time %in% times),]
   rownames(x) <- NULL
   colnames(x)[2] <- "prediction error"
   x$`prediction error` <- x$`prediction error` * 100
@@ -26,9 +19,7 @@ print.surv_model_performance_explainer <- function(x, times = NULL, ...) {
   x$`prediction error` <- paste0("~ ", x$`prediction error`, "%")
 
   type <- attributes(x)$type
-  if(type == "BS"){
-    type <- "Brier Score"
-  }
+  if (type == "BS") type <- "Brier Score"
 
 
   cat(paste("Model performance for", type, "method."))

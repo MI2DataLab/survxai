@@ -7,11 +7,11 @@
 \method{plot}{surv_variable_response_explainer}(x, ..., split = "model")
 }
 \arguments{
-\item{x}{object of class "surv_variable_response"}
+\item{x}{an object of class "surv_variable_response"}
 
 \item{...}{other arguments}
 
-\item{split}{a character, either "model" or "variable". Sets the variable for faceting.}
+\item{split}{a character, either "model" or "variable"; sets the variable for faceting}
 }
 \description{
 Function plot for surv_variable_response object shows the expected output condition on a selected variable.
@@ -20,15 +20,14 @@ Function plot for surv_variable_response object shows the expected output condit
 \dontrun{
 library(survxai)
 library(rms)
-library(randomForestSRC)
-data(pbc, package = "randomForestSRC")
-pbc <- pbc[complete.cases(pbc),]
+data("pbcTest")
+data("pbcTrain")
 predict_times <- function(model, data, times){
                   prob <- rms::survest(model, data, times = times)$surv
                   return(prob)
                   }
-cph_model <- cph(Surv(days/365, status)~., data=pbc, surv=TRUE, x = TRUE, y=TRUE)
-surve_cph <- explain(model = cph_model, data = pbc[,-c(1,2)], y = Surv(pbc$days/365, pbc$status),
+cph_model <- cph(Surv(years, status)~., data=pbcTrain, surv=TRUE, x = TRUE, y=TRUE)
+surve_cph <- explain(model = cph_model, data = pbcTest[,-c(1,5)], y = Surv(pbcTest$years, pbcTest$status),
              predict_function = predict_times)
 svr_cph <- variable_response(surve_cph, "sex")
 plot(svr_cph)

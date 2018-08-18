@@ -32,7 +32,7 @@
 plot.surv_ceteris_paribus_explainer <- function(x, selected_variable = NULL, scale_type = "factor", 
                                                 scale_col = NULL, ncol = 1) {
   
-  if(!is.null(selected_variable) && !(selected_variable %in% factor(all_responses$vname))){
+  if(!is.null(selected_variable) && !(selected_variable %in% factor(x$vname))){
     stop(paste0("Selected variable ", selected_variable, "not present in surv_ceteris_paribus object."))
   }
   
@@ -65,7 +65,7 @@ plot.surv_ceteris_paribus_explainer <- function(x, selected_variable = NULL, sca
   all_responses <- merge(all_responses, df, by=c("vname", "new_x"))
   
   ############################
-  scale <- create_scale(all_responses, scale_type, scale_col)
+  scale <- create_scale(all_responses, scale_type, scale_col, selected_variable)
   
   ggplot(all_responses, aes(x = time, y = y_hat, col = factor(legend))) +
     geom_step() +
@@ -97,10 +97,11 @@ create_predictions <- function(x){
   all_predictions <- data.frame(t(all_predictions))
   all_predictions$time_2 <- times$prediction
   colnames(all_predictions)[1] <- "y_hat_2"
-  return(all_predictions)}
+  return(all_predictions)
+}
 
 
-create_scale <- function(all_responses, scale_type, scale_col){
+create_scale <- function(all_responses, scale_type, scale_col, selected_variable){
   if(scale_type == "gradient"){
     if(!is.null(scale_col)){
       variables <- unique(all_responses$vname)

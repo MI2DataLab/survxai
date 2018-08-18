@@ -9,15 +9,19 @@
 #'
 #' @examples
 #' \dontrun{
-#'    library(survxai)
-#'    library(randomForestSRC)
-#'    library(rms)
-#'    data(pbc, package = "randomForestSRC")
-#'    pbc <- pbc[complete.cases(pbc),]
-#'    cph_model <- cph(Surv(days/365, status)~., data=pbc, surv=TRUE, x = TRUE, y=TRUE)
-#'    surve_cph <- explain(model = cph_model, data = pbc[,-c(1,2)], y = Surv(pbc$days/365, pbc$status))
-#'    mp_cph <- model_performance(surve_cph, data = pbc, reference_formula = Surv(days/365, status)~1)
-#'    plot(mp_cph)
+#' library(survxai)
+#' library(rms)
+#' data("pbcTest")
+#' data("pbcTrain")
+#' predict_times <- function(model, data, times){
+#'                   prob <- rms::survest(model, data, times = times)$surv
+#'                   return(prob)
+#'                   }
+#' cph_model <- cph(Surv(years, status)~., data=pbcTrain, surv=TRUE, x = TRUE, y=TRUE)
+#' surve_cph <- explain(model = cph_model, data = pbcTest[,-c(1,5)], y = Surv(pbcTest$years, pbcTest$status),
+#'              predict_function = predict_times)
+#' mp_cph <- model_performance(surve_cph, data = pbcTest)
+#' plot(mp_cph)
 #' }
 #'
 #' @method plot surv_model_performance_explainer
@@ -28,9 +32,7 @@ plot.surv_model_performance_explainer <- function(x, ...){
 
   df <- data.frame(x)
   type <- attributes(x)$type
-  if(type == "BS"){
-    type <- "Brier Score"
-  }
+  if (type == "BS") type <- "Brier Score"
 
   dfl <- list(...)
   if (length(dfl) > 0) {
