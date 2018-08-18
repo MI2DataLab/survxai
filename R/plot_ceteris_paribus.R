@@ -35,6 +35,7 @@ plot.surv_ceteris_paribus_explainer <- function(x, selected_variable = NULL, sca
   if(!is.null(selected_variable) && !(selected_variable %in% factor(all_responses$vname))){
     stop(paste0("Selected variable ", selected_variable, "not present in surv_ceteris_paribus object."))
   }
+  
   y_hat <- new_x <- time <- time_2 <- y_hat_2 <- NULL
   new_observation_legend <- create_legend(x)
   seq_length <- attributes(x)$grid_points
@@ -63,30 +64,8 @@ plot.surv_ceteris_paribus_explainer <- function(x, selected_variable = NULL, sca
   df$legend <- 1:nrow(df)
   all_responses <- merge(all_responses, df, by=c("vname", "new_x"))
   
-  #############################
-  if(scale_type == "gradient"){
-    if(!is.null(scale_col)){
-      variables <- unique(all_responses$vname)
-      v<- c()
-      for(val in variables){
-        length <- length(unique(all_responses[all_responses$vname==val,2]))
-        cc <- seq_gradient_pal(scale_col[1],scale_col[2])(seq(0,1,length.out=length))
-        v <- c(v,cc)
-      }
-      if(!is.null(selected_variable)){
-        scale <- scale_colour_manual(values = v, labels = factor(unique(all_responses$new_x)))
-      }else{
-      scale <- scale_colour_manual(values=v)
-      }
-    }else{
-      message("Please specify the low and high ends of gradient")
-      scale <- NULL
-    }
-  }else{
-    scale <- NULL
-  }
-
-    
+  ############################
+  scale <- create_scale(all_responses, scale_type, scale_col)
   
   ggplot(all_responses, aes(x = time, y = y_hat, col = factor(legend))) +
     geom_step() +
@@ -119,3 +98,29 @@ create_predictions <- function(x){
   all_predictions$time_2 <- times$prediction
   colnames(all_predictions)[1] <- "y_hat_2"
   return(all_predictions)}
+
+
+create_scale <- function(all_responses, scale_type, scale_col){
+  if(scale_type == "gradient"){
+    if(!is.null(scale_col)){
+      variables <- unique(all_responses$vname)
+      v<- c()
+      for(val in variables){
+        length <- length(unique(all_responses[all_responses$vname==val,2]))
+        cc <- seq_gradient_pal(scale_col[1],scale_col[2])(seq(0,1,length.out=length))
+        v <- c(v,cc)
+      }
+      if(!is.null(selected_variable)){
+        scale <- scale_colour_manual(values = v, labels = factor(unique(all_responses$new_x)))
+      }else{
+        scale <- scale_colour_manual(values=v)
+      }
+    }else{
+      message("Please specify the low and high ends of gradient")
+      scale <- NULL
+    }
+  }else{
+    scale <- NULL
+  }
+  return(scale)
+}
