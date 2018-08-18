@@ -4,9 +4,9 @@
 \alias{plot.surv_prediction_breakdown_explainer}
 \title{Plot for surv_breakdown object}
 \usage{
-\method{plot}{surv_prediction_breakdown_explainer}(x, ..., numerate = TRUE,
-  lines = TRUE, lines_type = 1, lines_col = "black",
-  scale_col = c("#010059", "#e0f6fb"))
+\method{plot}{surv_prediction_breakdown_explainer}(x, ...,
+  numerate = TRUE, lines = TRUE, lines_type = 1,
+  lines_col = "black", scale_col = c("#010059", "#e0f6fb"))
 }
 \arguments{
 \item{x}{object of class "surv_prediction_breakdown_explainer"}

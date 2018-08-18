@@ -12,15 +12,12 @@
 
 \item{...}{other parameters}
 
-\item{digits}{number of decimal places (round) or significant digits (signif) to be used.
+\item{digits}{number of decimal places (round) or significant digits (signif) to be used
 See the \code{rounding_function} argument}
 
 \item{rounding_function}{function that is to used for rounding numbers.
 It may be \code{signif()} which keeps a specified number of significant digits.
 Or the default \code{round()} to have the same precision for all components}
-}
-\value{
-a data frame
 }
 \description{
 Prediction Breakdown Print

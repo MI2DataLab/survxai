@@ -2,13 +2,11 @@
 #'
 #' @param x the model model of 'surv_prediction_breakdown_explainer' class
 #' @param ... other parameters
-#' @param digits number of decimal places (round) or significant digits (signif) to be used.
+#' @param digits number of decimal places (round) or significant digits (signif) to be used
 #' See the \code{rounding_function} argument
 #' @param rounding_function function that is to used for rounding numbers.
 #' It may be \code{signif()} which keeps a specified number of significant digits.
 #' Or the default \code{round()} to have the same precision for all components
-#'
-#' @return a data frame
 #'
 #' @export
 print.surv_prediction_breakdown_explainer <- function(x, ..., digits = 3, rounding_function = round) {
