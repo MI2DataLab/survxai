@@ -29,7 +29,8 @@ and a model based prediction of surviving time t.
    data("pbcTrain")
    data("pbcTest")
    cph_model <- cph(Surv(years, status)~., data=pbcTrain, surv=TRUE, x = TRUE, y=TRUE)
-   surve_cph <- explain(model = cph_model, data = pbcTest[,-c(1,5)], y = Surv(pbcTest$years, pbcTest$status))
+   surve_cph <- explain(model = cph_model, data = pbcTest[,-c(1,5)], 
+                        y = Surv(pbcTest$years, pbcTest$status))
    mp_cph <- model_performance(surve_cph)
 }
 
