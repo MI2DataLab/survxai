@@ -11,10 +11,6 @@ test_that("Output prediction_breakdown", {
    expect_error(print(broken_prediction), NA)
 })
 
-test_that("Output model_performance", {
-  expect_error(print(mp_rf), NA)
-})
-
 test_that("Output variable_response", {
   expect_error(print(svr_cph), NA)
 })

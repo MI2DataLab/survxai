@@ -3,6 +3,7 @@
 #' @description Function plot for ceteris_paribus object visualise estimated survival curve of mean probabilities in chosen time points. Black lines on each plot correspond to survival curve for our new observation specified in the \code{ceteris_paribus} function.
 #'
 #' @param x object of class "surv_ceteris_paribus_explainer"
+#' @param ... other arguments
 #' @param selected_variable name of varaible we want to draw ceteris paribus plot
 #' @param scale_type type of scale of colors, either "discrete" or "gradient"
 #' @param scale_col vector containing values of low and high ends of the gradient, when "gradient" type of scale was chosen
@@ -21,15 +22,15 @@
 #'                   return(prob)
 #'                   }
 #' cph_model <- cph(Surv(years, status)~., data=pbcTrain, surv=TRUE, x = TRUE, y=TRUE)
-#' surve_cph <- explain(model = cph_model, data = pbcTest[,-c(1,5)], y = Surv(pbcTest$years, pbcTest$status),
-#'              predict_function = predict_times)
+#' surve_cph <- explain(model = cph_model, data = pbcTest[,-c(1,5)], 
+#'              y = Surv(pbcTest$years, pbcTest$status), predict_function = predict_times)
 #' cp_cph <- ceteris_paribus(surve_cph, pbcTest[1,-c(1,5)])
 #' plot(cp_cph)
 #' }
 #' @method plot surv_ceteris_paribus_explainer
 #' @export
 
-plot.surv_ceteris_paribus_explainer <- function(x, selected_variable = NULL, scale_type = "factor", 
+plot.surv_ceteris_paribus_explainer <- function(x, ..., selected_variable = NULL, scale_type = "factor", 
                                                 scale_col = NULL, ncol = 1) {
   
   if(!is.null(selected_variable) && !(selected_variable %in% factor(x$vname))){

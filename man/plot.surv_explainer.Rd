@@ -25,8 +25,8 @@ predict_times <- function(model, data, times){
                   return(prob)
                   }
 cph_model <- cph(Surv(years, status)~., data=pbcTrain, surv=TRUE, x = TRUE, y=TRUE)
-surve_cph <- explain(model = cph_model, data = pbcTest[,-c(1,5)], y = Surv(pbcTest$years, pbcTest$status),
-             predict_function = predict_times)
+surve_cph <- explain(model = cph_model, data = pbcTest[,-c(1,5)], 
+             y = Surv(pbcTest$years, pbcTest$status), predict_function = predict_times)
 plot(surve_cph)
 }
 }
