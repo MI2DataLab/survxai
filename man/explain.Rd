@@ -6,7 +6,8 @@
 \title{Create Survival Model Explainer}
 \usage{
 explain.default(model, data = NULL, y, times = NULL,
-  predict_function = yhat, link = I, label = tail(class(model), 1), ...)
+  predict_function = yhat, link = I, label = tail(class(model), 1),
+  ...)
 
 explain(model, data = NULL, y, times = NULL, predict_function = yhat,
   link = I, label = tail(class(model), 1), ...)

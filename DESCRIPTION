@@ -2,13 +2,15 @@ Package: survxai
 Title: Visualization of the Local and Global Survival Model Explanations
 Version: 0.2.0
 Authors@R: c(
-  person("Alicja", "Gosiewska", email = "alicja.gosiewska@gmail.com", role = c("aut","cre")),
-  person("Aleksandra", "Grudziaz", email = "aleksandra.grudziaz@gmail.com", role = c("aut")),
-  person("Przemyslaw", "Biecek", email = "przemyslaw.biecek@gmail.com@gmail.com", role = c("aut", "ths"))
+  person("Aleksandra", "Grudziaz", email = "aleksandra.grudziaz@gmail.com", role = c("aut", "cre")),
+  person("Alicja", "Gosiewska", email = "alicjagosiewska@gmail.com", role = c("aut")),
+  person("Przemyslaw", "Biecek", email = "przemyslaw.biecek@gmail.com", role = c("aut", "ths"))
   )
 Description: Survival models may have very different structures. This package contains functions 
   for creating a unified representation of a survival models, which can be further processed by various 
-  survival explainers.
+  survival explainers. Tools implemented in survxai help to understand how input variables are used in 
+  the model and what impact do they have on the final model prediction. Currently, four explanation methods are implemented. 
+  We can divide them into two groups: local and global.
 License: GPL
 Encoding: UTF-8
 LazyData: true
@@ -26,7 +28,8 @@ Suggests: CFC,
     randomForestSRC,
     rmarkdown,
     rms,
-    testthat
+    testthat,
+	tibble
 VignetteBuilder: knitr
 URL: https://mi2datalab.github.io/survxai/
 BugReports: https://github.com/MI2DataLab/survxai/issues

@@ -4,7 +4,8 @@
 \alias{prediction_breakdown}
 \title{BreakDown for survival models}
 \usage{
-prediction_breakdown(explainer, observation, time = NULL, prob = NULL, ...)
+prediction_breakdown(explainer, observation, time = NULL, prob = NULL,
+  ...)
 }
 \arguments{
 \item{explainer}{an object of the class 'surv_explainer'}

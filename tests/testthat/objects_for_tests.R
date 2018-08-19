@@ -1,12 +1,13 @@
 library(survxai)
 library(rms)
 library(randomForestSRC)
-library(prodlim) #dlaczego nie widzi w importach?
+library(prodlim) 
 library(pec)
+library(tibble)
 
 data("pbcTest")
 data("pbcTrain")
-pbc2 <- tibble::as_tibble(pbcTest)
+pbc2 <- as_tibble(pbcTest)
 
 predict_times <- function(object, newdata, times){
   prob <- rms::survest(object, newdata, times = times)$surv

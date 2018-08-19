@@ -4,8 +4,8 @@
 \alias{variable_response}
 \title{Variable response for survival models}
 \usage{
-variable_response(explainer, variable, type = "pdp", link = explainer$link,
-  ...)
+variable_response(explainer, variable, type = "pdp",
+  link = explainer$link, ...)
 }
 \arguments{
 \item{explainer}{an object of the class 'surv_explainer'.}
