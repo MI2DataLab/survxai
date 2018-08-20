@@ -15,7 +15,7 @@
 
 \item{numerate}{logical; indicating whether we want to number curves}
 
-\item{lines}{logical; indicating wheter we want to add lines on chosen time point or probability}
+\item{lines}{logical; indicating whether we want to add lines on chosen time point or probability}
 
 \item{lines_type}{a type of line; see http://sape.inf.usi.ch/quick-reference/ggplot2/linetype}
 
@@ -27,7 +27,7 @@
 Function plot for surv_breakdown object visualise estimated survival curve of mean probabilities in chosen time points.
 }
 \examples{
-\dontrun{
+\donttest{
 library(survxai)
 library(rms)
 data("pbcTest")

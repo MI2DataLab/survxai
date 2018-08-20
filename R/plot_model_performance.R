@@ -1,6 +1,6 @@
 #' @title Plot for surv_model_performance object
 #'
-#' @description Function plot for surv_model_perfomance object.
+#' @description Function plot for surv_model_performance object.
 #'
 #' @param x object of class "surv_model_performance"
 #' @param ... other arguments
@@ -8,7 +8,7 @@
 #' @import ggplot2
 #'
 #' @examples
-#' \dontrun{
+#' \donttest{
 #' library(survxai)
 #' library(rms)
 #' data("pbcTest")

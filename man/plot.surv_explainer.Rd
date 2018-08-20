@@ -15,7 +15,7 @@
 Function plot for surv_explainer object visualise estimated survival curve of mean probabilities in chosen time points.
 }
 \examples{
-\dontrun{
+\donttest{
 library(survxai)
 library(rms)
 data("pbcTest")

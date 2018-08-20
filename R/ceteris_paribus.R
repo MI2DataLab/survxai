@@ -1,9 +1,9 @@
 #' Ceteris Paribus
 #' 
-#' @description The \code{ceteris_paribus()} function computes the predictions for the neighbour of our chosen observation. The neighbour is defined as the observations with changed value of one of the variable.
+#' @description The \code{ceteris_paribus()} function computes the predictions for the neighbor of our chosen observation. The neighbour is defined as the observations with changed value of one of the variable.
 #'
 #' @param explainer a model to be explained, preprocessed by the 'survxai::explain' function
-#' @param observation a new observarvation for which predictions need to be explained
+#' @param observation a new observation for which predictions need to be explained
 #' @param grid_points grid_points number of points used for response path
 #' @param selected_variables if specified, then only these variables will be explained
 #'
@@ -15,7 +15,7 @@
 #' @importFrom utils head
 #'
 #' @examples 
-#' \dontrun{
+#' \donttest{
 #' library(survxai)
 #' library(rms) 
 #' data("pbcTrain")

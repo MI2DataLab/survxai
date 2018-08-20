@@ -104,7 +104,7 @@
     </div>
 
     
-    <p>Function <code>surv_breakdown</code> is an extension of a broken function from breakDown package. It computes the contribution in prediction for the varaibles in the model.
+    <p>Function <code>surv_breakdown</code> is an extension of a broken function from breakDown package. It computes the contribution in prediction for the variables in the model.
 The contribution is defined as the difference between survival probabilities for model with added specific value of variable and with the random levels of this variable.</p>
     
 
@@ -124,11 +124,11 @@ The contribution is defined as the difference between survival probabilities for
     </tr>
     <tr>
       <th>time</th>
-      <td><p>time point at which variable contributions are computed. If NULL median time is taken.</p></td>
+      <td><p>a time point at which variable contributions are computed. If NULL median time is taken.</p></td>
     </tr>
     <tr>
       <th>prob</th>
-      <td><p>survival probability at which variable contributions are computed</p></td>
+      <td><p>a survival probability at which variable contributions are computed</p></td>
     </tr>
     <tr>
       <th>...</th>
@@ -142,21 +142,18 @@ The contribution is defined as the difference between survival probabilities for
     
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><span class='co'># NOT RUN {</span>
-<span class='fu'>library</span>(<span class='no'>survxai</span>)
+    <pre class="examples"><div class='input'><span class='fu'>library</span>(<span class='no'>survxai</span>)
 <span class='fu'>library</span>(<span class='no'>rms</span>)
-<span class='fu'>library</span>(<span class='no'>randomForestSRC</span>)
-<span class='fu'>data</span>(<span class='no'>pbc</span>, <span class='kw'>package</span> <span class='kw'>=</span> <span class='st'>"randomForestSRC"</span>)
-<span class='no'>pbc</span> <span class='kw'>&lt;-</span> <span class='no'>pbc</span>[<span class='fu'>complete.cases</span>(<span class='no'>pbc</span>),]
+<span class='fu'>data</span>(<span class='st'>"pbcTest"</span>)
+<span class='fu'>data</span>(<span class='st'>"pbcTrain"</span>)
 <span class='no'>predict_times</span> <span class='kw'>&lt;-</span> <span class='kw'>function</span>(<span class='no'>model</span>, <span class='no'>data</span>, <span class='no'>times</span>){
                   <span class='no'>prob</span> <span class='kw'>&lt;-</span> <span class='kw pkg'>rms</span><span class='kw ns'>::</span><span class='fu'><a href='http://www.rdocumentation.org/packages/rms/topics/survest.cph'>survest</a></span>(<span class='no'>model</span>, <span class='no'>data</span>, <span class='kw'>times</span> <span class='kw'>=</span> <span class='no'>times</span>)$<span class='no'>surv</span>
                   <span class='fu'>return</span>(<span class='no'>prob</span>)
                   }
-<span class='no'>cph_model</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='http://www.rdocumentation.org/packages/rms/topics/cph'>cph</a></span>(<span class='fu'>Surv</span>(<span class='no'>days</span>/<span class='fl'>365</span>, <span class='no'>status</span>)~<span class='no'>.</span>, <span class='kw'>data</span><span class='kw'>=</span><span class='no'>pbc</span>, <span class='kw'>surv</span><span class='kw'>=</span><span class='fl'>TRUE</span>, <span class='kw'>x</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>y</span><span class='kw'>=</span><span class='fl'>TRUE</span>)
-<span class='no'>surve_cph</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='explain.html'>explain</a></span>(<span class='kw'>model</span> <span class='kw'>=</span> <span class='no'>cph_model</span>, <span class='kw'>data</span> <span class='kw'>=</span> <span class='no'>pbc</span>[,-<span class='fu'>c</span>(<span class='fl'>1</span>,<span class='fl'>2</span>)], <span class='kw'>y</span> <span class='kw'>=</span> <span class='fu'>Surv</span>(<span class='no'>pbc</span>$<span class='no'>days</span>/<span class='fl'>365</span>, <span class='no'>pbc</span>$<span class='no'>status</span>),
-             <span class='kw'>predict_function</span> <span class='kw'>=</span> <span class='no'>predict_times</span>)
-<span class='no'>broken_prediction</span> <span class='kw'>&lt;-</span> <span class='fu'>prediction_breakdown</span>(<span class='no'>surve_cph</span>, <span class='no'>pbc</span>[<span class='fl'>1</span>,-<span class='fu'>c</span>(<span class='fl'>1</span>,<span class='fl'>2</span>)])
-<span class='co'># }</span></pre>
+<span class='no'>cph_model</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='http://www.rdocumentation.org/packages/rms/topics/cph'>cph</a></span>(<span class='fu'>Surv</span>(<span class='no'>years</span>, <span class='no'>status</span>)~<span class='no'>.</span>, <span class='kw'>data</span><span class='kw'>=</span><span class='no'>pbcTrain</span>, <span class='kw'>surv</span><span class='kw'>=</span><span class='fl'>TRUE</span>, <span class='kw'>x</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>y</span><span class='kw'>=</span><span class='fl'>TRUE</span>)
+<span class='no'>surve_cph</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='explain.html'>explain</a></span>(<span class='kw'>model</span> <span class='kw'>=</span> <span class='no'>cph_model</span>, <span class='kw'>data</span> <span class='kw'>=</span> <span class='no'>pbcTest</span>[,-<span class='fu'>c</span>(<span class='fl'>1</span>,<span class='fl'>5</span>)],
+                    <span class='kw'>y</span> <span class='kw'>=</span> <span class='fu'>Surv</span>(<span class='no'>pbcTest</span>$<span class='no'>years</span>, <span class='no'>pbcTest</span>$<span class='no'>status</span>), <span class='kw'>predict_function</span> <span class='kw'>=</span> <span class='no'>predict_times</span>)
+<span class='no'>broken_prediction</span> <span class='kw'>&lt;-</span> <span class='fu'>prediction_breakdown</span>(<span class='no'>surve_cph</span>, <span class='no'>pbcTest</span>[<span class='fl'>1</span>,-<span class='fu'>c</span>(<span class='fl'>1</span>,<span class='fl'>5</span>)])</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
@@ -173,7 +170,7 @@ The contribution is defined as the difference between survival probabilities for
 
       <footer>
       <div class="copyright">
-  <p>Developed by Alicja Gosiewska, Aleksandra Grudziaz, Przemyslaw Biecek.</p>
+  <p>Developed by Aleksandra Grudziaz, Alicja Gosiewska, Przemyslaw Biecek.</p>
 </div>
 
 <div class="pkgdown">

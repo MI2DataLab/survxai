@@ -105,9 +105,10 @@
 
     
     <p>Survival models may have very different structures.
-This function creates a unified representation of a survival model, which can be further processed by various survival explainers.</p>
+This function creates a unified representation of a survival model, which can be further processed by various survival
+explainers (see also <code><a href='http://www.rdocumentation.org/packages/DALEX/topics/explain'>explain</a></code>).</p>
 <p>Please NOTE, that the <code>model</code> is actually the only required argument.
-But some survival explainers may require that others will be provided too.</p>
+But some survival explainers may require additional arguments.</p>
     
 
     <pre class="usage"><span class='fu'>explain.default</span>(<span class='no'>model</span>, <span class='kw'>data</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='no'>y</span>, <span class='kw'>times</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
@@ -126,15 +127,15 @@ But some survival explainers may require that others will be provided too.</p>
     </tr>
     <tr>
       <th>data</th>
-      <td><p>data.frame or matrix - data that will be used by survival explainers. If not provided then will be extracted from the model</p></td>
+      <td><p>data.frame, tibble or matrix - data that will be used by survival explainers. If not provided then will be extracted from the model</p></td>
     </tr>
     <tr>
       <th>y</th>
-      <td><p>object of class surv contains event status and times</p></td>
+      <td><p>object of class 'surv', contains event status and times</p></td>
     </tr>
     <tr>
       <th>times</th>
-      <td><p>optional argument, the vector of time points on which we want to predict survival probability</p></td>
+      <td><p>optional argument, the vector of time points on which survival probability will be predicted</p></td>
     </tr>
     <tr>
       <th>predict_function</th>
@@ -162,6 +163,7 @@ But some survival explainers may require that others will be provided too.</p>
 <li><p><code>model</code> the explained model</p></li>
 <li><p><code>data</code> the dataset</p></li>
 <li><p><code>y</code> event statuses and times</p></li>
+<li><p><code>times</code> time points on which survival probability is predicted</p></li>
 <li><p><code>predict_function</code> function that may be used for model predictions, shall return a single numerical value for each time.</p></li>
 <li><p><code>link</code> function - a transformation/link function that shall be applied to raw model predictions</p></li>
 <li><p><code>class</code> class/classes of a model</p></li>
@@ -171,11 +173,16 @@ But some survival explainers may require that others will be provided too.</p>
     
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><span class='co'># NOT RUN {</span>
-<span class='fu'>library</span>(<span class='no'>survxai</span>)
+    <pre class="examples"><div class='input'><span class='fu'>library</span>(<span class='no'>survxai</span>)
 <span class='fu'>library</span>(<span class='no'>rms</span>)
-<span class='fu'>library</span>(<span class='no'>randomForestSRC</span>)
-<span class='fu'>data</span>(<span class='no'>pbc</span>, <span class='kw'>package</span> <span class='kw'>=</span> <span class='st'>"randomForestSRC"</span>)
+<span class='fu'>library</span>(<span class='no'>randomForestSRC</span>)</div><div class='output co'>#&gt; <span class='message'></span>
+#&gt; <span class='message'> randomForestSRC 2.6.1 </span>
+#&gt; <span class='message'> </span>
+#&gt; <span class='message'> Type rfsrc.news() to see new features, changes, and bug fixes. </span>
+#&gt; <span class='message'> </span></div><div class='output co'>#&gt; <span class='message'></span>
+#&gt; <span class='message'>Dołączanie pakietu: 'randomForestSRC'</span></div><div class='output co'>#&gt; <span class='message'>Następujący obiekt został zakryty z 'package:Hmisc':</span>
+#&gt; <span class='message'></span>
+#&gt; <span class='message'>    impute</span></div><div class='input'><span class='fu'>data</span>(<span class='no'>pbc</span>, <span class='kw'>package</span> <span class='kw'>=</span> <span class='st'>"randomForestSRC"</span>)
 <span class='no'>pbc</span> <span class='kw'>&lt;-</span> <span class='no'>pbc</span>[<span class='fu'>complete.cases</span>(<span class='no'>pbc</span>),]
 <span class='no'>predict_times</span> <span class='kw'>&lt;-</span> <span class='kw'>function</span>(<span class='no'>model</span>, <span class='no'>data</span>, <span class='no'>times</span>){
                   <span class='no'>prob</span> <span class='kw'>&lt;-</span> <span class='kw pkg'>rms</span><span class='kw ns'>::</span><span class='fu'><a href='http://www.rdocumentation.org/packages/rms/topics/survest.cph'>survest</a></span>(<span class='no'>model</span>, <span class='no'>data</span>, <span class='kw'>times</span> <span class='kw'>=</span> <span class='no'>times</span>)$<span class='no'>surv</span>
@@ -183,8 +190,7 @@ But some survival explainers may require that others will be provided too.</p>
                   }
 <span class='no'>cph_model</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='http://www.rdocumentation.org/packages/rms/topics/cph'>cph</a></span>(<span class='fu'>Surv</span>(<span class='no'>days</span>/<span class='fl'>365</span>, <span class='no'>status</span>)~<span class='no'>.</span>, <span class='kw'>data</span><span class='kw'>=</span><span class='no'>pbc</span>, <span class='kw'>surv</span><span class='kw'>=</span><span class='fl'>TRUE</span>, <span class='kw'>x</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>y</span><span class='kw'>=</span><span class='fl'>TRUE</span>)
 <span class='no'>surve_cph</span> <span class='kw'>&lt;-</span> <span class='fu'>explain</span>(<span class='kw'>model</span> <span class='kw'>=</span> <span class='no'>cph_model</span>, <span class='kw'>data</span> <span class='kw'>=</span> <span class='no'>pbc</span>[,-<span class='fu'>c</span>(<span class='fl'>1</span>,<span class='fl'>2</span>)], <span class='kw'>y</span> <span class='kw'>=</span> <span class='fu'>Surv</span>(<span class='no'>pbc</span>$<span class='no'>days</span>/<span class='fl'>365</span>, <span class='no'>pbc</span>$<span class='no'>status</span>),
-             <span class='kw'>predict_function</span> <span class='kw'>=</span> <span class='no'>predict_times</span>)
-<span class='co'># }</span></pre>
+             <span class='kw'>predict_function</span> <span class='kw'>=</span> <span class='no'>predict_times</span>)</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
@@ -201,7 +207,7 @@ But some survival explainers may require that others will be provided too.</p>
 
       <footer>
       <div class="copyright">
-  <p>Developed by Alicja Gosiewska, Aleksandra Grudziaz, Przemyslaw Biecek.</p>
+  <p>Developed by Aleksandra Grudziaz, Alicja Gosiewska, Przemyslaw Biecek.</p>
 </div>
 
 <div class="pkgdown">

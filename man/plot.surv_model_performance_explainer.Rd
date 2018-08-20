@@ -12,10 +12,10 @@
 \item{...}{other arguments}
 }
 \description{
-Function plot for surv_model_perfomance object.
+Function plot for surv_model_performance object.
 }
 \examples{
-\dontrun{
+\donttest{
 library(survxai)
 library(rms)
 data("pbcTest")

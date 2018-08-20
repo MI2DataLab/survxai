@@ -10,7 +10,7 @@ ceteris_paribus(explainer, observation, grid_points = 5,
 \arguments{
 \item{explainer}{a model to be explained, preprocessed by the 'survxai::explain' function}
 
-\item{observation}{a new observarvation for which predictions need to be explained}
+\item{observation}{a new observation for which predictions need to be explained}
 
 \item{grid_points}{grid_points number of points used for response path}
 
@@ -21,10 +21,10 @@ An object of the class surv_ceteris_paribus_explainer.
 It's a data frame with calculated average responses.
 }
 \description{
-The \code{ceteris_paribus()} function computes the predictions for the neighbour of our chosen observation. The neighbour is defined as the observations with changed value of one of the variable.
+The \code{ceteris_paribus()} function computes the predictions for the neighbor of our chosen observation. The neighbour is defined as the observations with changed value of one of the variable.
 }
 \examples{
-\dontrun{
+\donttest{
 library(survxai)
 library(rms) 
 data("pbcTrain")

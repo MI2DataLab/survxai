@@ -104,7 +104,7 @@
     </div>
 
     
-    <p>Function plot for surv_model_perfomance object.</p>
+    <p>Function plot for surv_model_performance object.</p>
     
 
     <pre class="usage"><span class='co'># S3 method for surv_model_performance_explainer</span>
@@ -125,17 +125,18 @@
     
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><span class='co'># NOT RUN {</span>
-   <span class='fu'>library</span>(<span class='no'>survxai</span>)
-   <span class='fu'>library</span>(<span class='no'>randomForestSRC</span>)
-   <span class='fu'>library</span>(<span class='no'>rms</span>)
-   <span class='fu'>data</span>(<span class='no'>pbc</span>, <span class='kw'>package</span> <span class='kw'>=</span> <span class='st'>"randomForestSRC"</span>)
-   <span class='no'>pbc</span> <span class='kw'>&lt;-</span> <span class='no'>pbc</span>[<span class='fu'>complete.cases</span>(<span class='no'>pbc</span>),]
-   <span class='no'>cph_model</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='http://www.rdocumentation.org/packages/rms/topics/cph'>cph</a></span>(<span class='fu'>Surv</span>(<span class='no'>days</span>/<span class='fl'>365</span>, <span class='no'>status</span>)~<span class='no'>.</span>, <span class='kw'>data</span><span class='kw'>=</span><span class='no'>pbc</span>, <span class='kw'>surv</span><span class='kw'>=</span><span class='fl'>TRUE</span>, <span class='kw'>x</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>y</span><span class='kw'>=</span><span class='fl'>TRUE</span>)
-   <span class='no'>surve_cph</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='explain.html'>explain</a></span>(<span class='kw'>model</span> <span class='kw'>=</span> <span class='no'>cph_model</span>, <span class='kw'>data</span> <span class='kw'>=</span> <span class='no'>pbc</span>[,-<span class='fu'>c</span>(<span class='fl'>1</span>,<span class='fl'>2</span>)], <span class='kw'>y</span> <span class='kw'>=</span> <span class='fu'>Surv</span>(<span class='no'>pbc</span>$<span class='no'>days</span>/<span class='fl'>365</span>, <span class='no'>pbc</span>$<span class='no'>status</span>))
-   <span class='no'>mp_cph</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='model_performance.html'>model_performance</a></span>(<span class='no'>surve_cph</span>, <span class='kw'>data</span> <span class='kw'>=</span> <span class='no'>pbc</span>, <span class='kw'>reference_formula</span> <span class='kw'>=</span> <span class='fu'>Surv</span>(<span class='no'>days</span>/<span class='fl'>365</span>, <span class='no'>status</span>)~<span class='fl'>1</span>)
-   <span class='fu'>plot</span>(<span class='no'>mp_cph</span>)
-<span class='co'># }</span><div class='input'>
+    <pre class="examples"><div class='input'><span class='fu'>library</span>(<span class='no'>survxai</span>)
+<span class='fu'>library</span>(<span class='no'>rms</span>)
+<span class='fu'>data</span>(<span class='st'>"pbcTest"</span>)
+<span class='fu'>data</span>(<span class='st'>"pbcTrain"</span>)
+<span class='no'>predict_times</span> <span class='kw'>&lt;-</span> <span class='kw'>function</span>(<span class='no'>model</span>, <span class='no'>data</span>, <span class='no'>times</span>){
+                  <span class='no'>prob</span> <span class='kw'>&lt;-</span> <span class='kw pkg'>rms</span><span class='kw ns'>::</span><span class='fu'><a href='http://www.rdocumentation.org/packages/rms/topics/survest.cph'>survest</a></span>(<span class='no'>model</span>, <span class='no'>data</span>, <span class='kw'>times</span> <span class='kw'>=</span> <span class='no'>times</span>)$<span class='no'>surv</span>
+                  <span class='fu'>return</span>(<span class='no'>prob</span>)
+                  }
+<span class='no'>cph_model</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='http://www.rdocumentation.org/packages/rms/topics/cph'>cph</a></span>(<span class='fu'>Surv</span>(<span class='no'>years</span>, <span class='no'>status</span>)~<span class='no'>.</span>, <span class='kw'>data</span><span class='kw'>=</span><span class='no'>pbcTrain</span>, <span class='kw'>surv</span><span class='kw'>=</span><span class='fl'>TRUE</span>, <span class='kw'>x</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>y</span><span class='kw'>=</span><span class='fl'>TRUE</span>)
+<span class='no'>surve_cph</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='explain.html'>explain</a></span>(<span class='kw'>model</span> <span class='kw'>=</span> <span class='no'>cph_model</span>, <span class='kw'>data</span> <span class='kw'>=</span> <span class='no'>pbcTest</span>[,-<span class='fu'>c</span>(<span class='fl'>1</span>,<span class='fl'>5</span>)],
+                    <span class='kw'>y</span> <span class='kw'>=</span> <span class='fu'>Surv</span>(<span class='no'>pbcTest</span>$<span class='no'>years</span>, <span class='no'>pbcTest</span>$<span class='no'>status</span>), <span class='kw'>predict_function</span> <span class='kw'>=</span> <span class='no'>predict_times</span>)
+<span class='no'>mp_cph</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='model_performance.html'>model_performance</a></span>(<span class='no'>surve_cph</span>, <span class='kw'>data</span> <span class='kw'>=</span> <span class='no'>pbcTest</span>)</div><div class='output co'>#&gt; <span class='message'>No covariates  specified: Kaplan-Meier for censoring times used for weighting.</span></div><div class='input'><span class='fu'>plot</span>(<span class='no'>mp_cph</span>)</div><div class='output co'>#&gt; <span class='warning'>Warning: Removed 2 rows containing missing values (geom_path).</span></div><div class='img'><img src='plot.surv_model_performance_explainer-1.png' alt='' width='700' height='433' /></div><div class='input'>
 </div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
@@ -151,7 +152,7 @@
 
       <footer>
       <div class="copyright">
-  <p>Developed by Alicja Gosiewska, Aleksandra Grudziaz, Przemyslaw Biecek.</p>
+  <p>Developed by Aleksandra Grudziaz, Alicja Gosiewska, Przemyslaw Biecek.</p>
 </div>
 
 <div class="pkgdown">

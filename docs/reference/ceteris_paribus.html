@@ -104,7 +104,7 @@
     </div>
 
     
-    <p>The <code>ceteris_paribus()</code> function computes the predictions for the neighbour of our chosen observation. The neighbour is defined as the observations with changed value of one of the variable.</p>
+    <p>The <code>ceteris_paribus()</code> function computes the predictions for the neighbor of our chosen observation. The neighbour is defined as the observations with changed value of one of the variable.</p>
     
 
     <pre class="usage"><span class='fu'>ceteris_paribus</span>(<span class='no'>explainer</span>, <span class='no'>observation</span>, <span class='kw'>grid_points</span> <span class='kw'>=</span> <span class='fl'>5</span>,
@@ -119,7 +119,7 @@
     </tr>
     <tr>
       <th>observation</th>
-      <td><p>a new observarvation for which predictions need to be explained</p></td>
+      <td><p>a new observation for which predictions need to be explained</p></td>
     </tr>
     <tr>
       <th>grid_points</th>
@@ -138,21 +138,24 @@ It's a data frame with calculated average responses.</p>
     
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><span class='co'># NOT RUN {</span>
-<span class='fu'>library</span>(<span class='no'>survxai</span>)
-<span class='fu'>library</span>(<span class='no'>rms</span>)
-<span class='fu'>library</span>(<span class='no'>randomForestSRC</span>)
-<span class='fu'>data</span>(<span class='no'>pbc</span>, <span class='kw'>package</span> <span class='kw'>=</span> <span class='st'>"randomForestSRC"</span>)
-<span class='no'>pbc</span> <span class='kw'>&lt;-</span> <span class='no'>pbc</span>[<span class='fu'>complete.cases</span>(<span class='no'>pbc</span>),]
+    <pre class="examples"><div class='input'><span class='fu'>library</span>(<span class='no'>survxai</span>)
+<span class='fu'>library</span>(<span class='no'>rms</span>)</div><div class='output co'>#&gt; <span class='message'>Ładowanie wymaganego pakietu: Hmisc</span></div><div class='output co'>#&gt; <span class='message'>Ładowanie wymaganego pakietu: lattice</span></div><div class='output co'>#&gt; <span class='message'>Ładowanie wymaganego pakietu: survival</span></div><div class='output co'>#&gt; <span class='message'>Ładowanie wymaganego pakietu: Formula</span></div><div class='output co'>#&gt; <span class='message'>Ładowanie wymaganego pakietu: ggplot2</span></div><div class='output co'>#&gt; <span class='message'></span>
+#&gt; <span class='message'>Dołączanie pakietu: 'Hmisc'</span></div><div class='output co'>#&gt; <span class='message'>Następujące obiekty zostały zakryte z 'package:base':</span>
+#&gt; <span class='message'></span>
+#&gt; <span class='message'>    format.pval, units</span></div><div class='output co'>#&gt; <span class='message'>Ładowanie wymaganego pakietu: SparseM</span></div><div class='output co'>#&gt; <span class='message'></span>
+#&gt; <span class='message'>Dołączanie pakietu: 'SparseM'</span></div><div class='output co'>#&gt; <span class='message'>Następujący obiekt został zakryty z 'package:base':</span>
+#&gt; <span class='message'></span>
+#&gt; <span class='message'>    backsolve</span></div><div class='input'><span class='fu'>data</span>(<span class='st'>"pbcTrain"</span>)
+<span class='fu'>data</span>(<span class='st'>"pbcTest"</span>)
 <span class='no'>predict_times</span> <span class='kw'>&lt;-</span> <span class='kw'>function</span>(<span class='no'>model</span>, <span class='no'>data</span>, <span class='no'>times</span>){
-                  <span class='no'>prob</span> <span class='kw'>&lt;-</span> <span class='kw pkg'>rms</span><span class='kw ns'>::</span><span class='fu'><a href='http://www.rdocumentation.org/packages/rms/topics/survest.cph'>survest</a></span>(<span class='no'>model</span>, <span class='no'>data</span>, <span class='kw'>times</span> <span class='kw'>=</span> <span class='no'>times</span>)$<span class='no'>surv</span>
-                  <span class='fu'>return</span>(<span class='no'>prob</span>)
+                    <span class='no'>prob</span> <span class='kw'>&lt;-</span> <span class='kw pkg'>rms</span><span class='kw ns'>::</span><span class='fu'><a href='http://www.rdocumentation.org/packages/rms/topics/survest.cph'>survest</a></span>(<span class='no'>model</span>, <span class='no'>data</span>, <span class='kw'>times</span> <span class='kw'>=</span> <span class='no'>times</span>)$<span class='no'>surv</span>
+                    <span class='fu'>return</span>(<span class='no'>prob</span>)
                   }
-<span class='no'>cph_model</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='http://www.rdocumentation.org/packages/rms/topics/cph'>cph</a></span>(<span class='fu'>Surv</span>(<span class='no'>days</span>/<span class='fl'>365</span>, <span class='no'>status</span>)~<span class='no'>.</span>, <span class='kw'>data</span><span class='kw'>=</span><span class='no'>pbc</span>, <span class='kw'>surv</span><span class='kw'>=</span><span class='fl'>TRUE</span>, <span class='kw'>x</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>y</span><span class='kw'>=</span><span class='fl'>TRUE</span>)
-<span class='no'>surve_cph</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='explain.html'>explain</a></span>(<span class='kw'>model</span> <span class='kw'>=</span> <span class='no'>cph_model</span>, <span class='kw'>data</span> <span class='kw'>=</span> <span class='no'>pbc</span>[,-<span class='fu'>c</span>(<span class='fl'>1</span>,<span class='fl'>2</span>)], <span class='kw'>y</span> <span class='kw'>=</span> <span class='fu'>Surv</span>(<span class='no'>pbc</span>$<span class='no'>days</span>/<span class='fl'>365</span>, <span class='no'>pbc</span>$<span class='no'>status</span>),
+<span class='no'>cph_model</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='http://www.rdocumentation.org/packages/rms/topics/cph'>cph</a></span>(<span class='fu'>Surv</span>(<span class='no'>years</span>, <span class='no'>status</span>)~<span class='no'>.</span>, <span class='kw'>data</span> <span class='kw'>=</span> <span class='no'>pbcTrain</span>, <span class='kw'>surv</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>x</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>y</span><span class='kw'>=</span><span class='fl'>TRUE</span>)
+<span class='no'>surve_cph</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='explain.html'>explain</a></span>(<span class='kw'>model</span> <span class='kw'>=</span> <span class='no'>cph_model</span>, <span class='kw'>data</span> <span class='kw'>=</span> <span class='no'>pbcTest</span>[,-<span class='fu'>c</span>(<span class='fl'>1</span>,<span class='fl'>5</span>)],
+             <span class='kw'>y</span> <span class='kw'>=</span> <span class='fu'>Surv</span>(<span class='no'>pbcTest</span>$<span class='no'>years</span>, <span class='no'>pbcTest</span>$<span class='no'>status</span>),
              <span class='kw'>predict_function</span> <span class='kw'>=</span> <span class='no'>predict_times</span>)
-<span class='no'>cp_cph</span> <span class='kw'>&lt;-</span> <span class='fu'>ceteris_paribus</span>(<span class='no'>surve_cph</span>, <span class='no'>pbc</span>[<span class='fl'>1</span>,-<span class='fu'>c</span>(<span class='fl'>1</span>,<span class='fl'>2</span>)])
-<span class='co'># }</span></pre>
+<span class='no'>cp_cph</span> <span class='kw'>&lt;-</span> <span class='fu'>ceteris_paribus</span>(<span class='no'>surve_cph</span>, <span class='no'>pbcTest</span>[<span class='fl'>1</span>,-<span class='fu'>c</span>(<span class='fl'>1</span>,<span class='fl'>5</span>)])</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
@@ -169,7 +172,7 @@ It's a data frame with calculated average responses.</p>
 
       <footer>
       <div class="copyright">
-  <p>Developed by Alicja Gosiewska, Aleksandra Grudziaz, Przemyslaw Biecek.</p>
+  <p>Developed by Aleksandra Grudziaz, Alicja Gosiewska, Przemyslaw Biecek.</p>
 </div>
 
 <div class="pkgdown">

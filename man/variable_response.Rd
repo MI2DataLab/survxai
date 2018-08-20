@@ -23,7 +23,7 @@ Currently following options are implemented: 'pdp' for Partial Dependency.}
 Function \code{variable response} calculates the expected output condition on a selected variable.
 }
 \examples{
-\dontrun{
+\donttest{
 library(survxai)
 library(rms)
 data("pbcTest")

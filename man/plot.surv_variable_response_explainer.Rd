@@ -17,7 +17,7 @@
 Function plot for surv_variable_response object shows the expected output condition on a selected variable.
 }
 \examples{
-\dontrun{
+\donttest{
 library(survxai)
 library(rms)
 data("pbcTest")

@@ -36,7 +36,7 @@
 #' @importFrom utils head tail
 #'
 #' @examples
-#' \dontrun{
+#' \donttest{
 #' library(survxai)
 #' library(rms)
 #' library(randomForestSRC)

@@ -13,7 +13,7 @@
 #' and a model based prediction of surviving time t.
 #'
 #' @examples
-#' \dontrun{
+#' \donttest{
 #'    library(survxai)
 #'    library(rms)
 #'    data("pbcTrain")

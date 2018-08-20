@@ -23,7 +23,7 @@ At a given time point t, the Brier score for a single observation is the squared
 and a model based prediction of surviving time t.
 }
 \examples{
-\dontrun{
+\donttest{
    library(survxai)
    library(rms)
    data("pbcTrain")

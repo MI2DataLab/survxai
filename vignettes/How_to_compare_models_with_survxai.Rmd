@@ -32,7 +32,7 @@ Methods and functions in  *survxai* package are based on [*DALEX* package](https
 
 ## Data set
 We use the data from the Mayo Clinic trial in primary biliary cirrhosis (PBC) of the liver conducted between 1974 and 1984. A total of 424 PBC patients, referred to Mayo Clinic during that ten-year interval, met eligibility criteria for the randomized placebo controlled trial of the drug D-penicillamine. First 312 cases in the data set participated in the randomized trial and contain largely complete data.
-The `pbc` data is included in the [*randomForestSRC* package](https://cran.r-project.org/web/packages/randomForestSRC/index.html).
+The `pbc` data is included in the [*randomForestSRC* package](https://CRAN.R-project.org/package=randomForestSRC).
 
 We base models on three variables from `pbc` data set. They are `stage`, `sex`, and `bili`. For this purpouse we create a new data set `pbc_smaller`. We also change `days` for `years`.
 

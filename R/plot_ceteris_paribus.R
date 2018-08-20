@@ -4,7 +4,7 @@
 #'
 #' @param x object of class "surv_ceteris_paribus_explainer"
 #' @param ... other arguments
-#' @param selected_variable name of varaible we want to draw ceteris paribus plot
+#' @param selected_variable name of variable we want to draw ceteris paribus plot
 #' @param scale_type type of scale of colors, either "discrete" or "gradient"
 #' @param scale_col vector containing values of low and high ends of the gradient, when "gradient" type of scale was chosen
 #' @param ncol number of columns for faceting
@@ -12,7 +12,7 @@
 #' @import ggplot2
 #' @importFrom scales seq_gradient_pal
 #' @examples
-#' \dontrun{
+#' \donttest{
 #' library(survxai)
 #' library(rms)
 #' data("pbcTest")

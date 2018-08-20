@@ -79,7 +79,7 @@
       <h1>Survival models - local explanations</h1>
                         <h4 class="author">Aleksandra Grudziaz</h4>
             
-            <h4 class="date">2018-08-15</h4>
+            <h4 class="date">2018-08-20</h4>
       
       
       <div class="hidden name"><code>Local_explanations.Rmd</code></div>
@@ -101,7 +101,7 @@
 <div id="data-set" class="section level2">
 <h2 class="hasAnchor">
 <a href="#data-set" class="anchor"></a>Data set</h2>
-<p>In our use case we will use the data from the Mayo Clinic trial in primary biliary cirrhosis (PBC) of the liver conducted between 1974 and 1984. A total of 424 PBC patients, referred to Mayo Clinic during that ten-year interval, met eligibility criteria for the randomized placebo controlled trial of the drug D-penicillamine. The first 312 cases in the data set participated in the randomized trial and contain largely complete data. The <code>pbc</code> data is included in the <a href="https://cran.r-project.org/web/packages/randomForestSRC/index.html"><em>randomForestSRC</em> package</a>.</p>
+<p>In our use case we will use the data from the Mayo Clinic trial in primary biliary cirrhosis (PBC) of the liver conducted between 1974 and 1984. A total of 424 PBC patients, referred to Mayo Clinic during that ten-year interval, met eligibility criteria for the randomized placebo controlled trial of the drug D-penicillamine. The first 312 cases in the data set participated in the randomized trial and contain largely complete data. The <code>pbc</code> data is included in the <a href="https://CRAN.R-project.org/package=randomForestSRC"><em>randomForestSRC</em> package</a>.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">data</span>(pbc, <span class="dt">package =</span> <span class="st">"randomForestSRC"</span>)
 pbc &lt;-<span class="st"> </span>pbc[<span class="kw">complete.cases</span>(pbc),]
 
@@ -152,7 +152,7 @@ pbc_smaller &lt;-<span class="st"> </span>pbc[,<span class="kw">c</span>(<span c
 <h2 class="hasAnchor">
 <a href="#explainers" class="anchor"></a>Explainers</h2>
 <p>First, we have to create survival explainers - objects to wrap-up the black-box model with meta-data. Explainers unify model interfacing.</p>
-<p>We have to define custom predict function which takes three arguments: model, data and vector with time points. Predict funcions may vary depending on the model. Examples for some models are in <a href="">Explainations of different survival models vignette</a>.</p>
+<p>We have to define custom predict function which takes three arguments: model, data and vector with time points. Predict funcions may vary depending on the model. Examples for some models are in <a href="https://github.com/MI2DataLab/survxai/blob/master/vignettes/Custom_predict_for_survival_models.Rmd">Explainations of different survival models vignette</a>.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">predict_times &lt;-<span class="st"> </span><span class="cf">function</span>(model, data, times){
   prob &lt;-<span class="st"> </span>rms<span class="op">::</span><span class="kw"><a href="http://www.rdocumentation.org/packages/rms/topics/survest.cph">survest</a></span>(model, data, <span class="dt">times =</span> times)<span class="op">$</span>surv
   <span class="kw">return</span>(prob)
@@ -253,7 +253,7 @@ single_observation</code></pre></div>
 
 
       <footer><div class="copyright">
-  <p>Developed by Alicja Gosiewska, Aleksandra Grudziaz, Przemyslaw Biecek.</p>
+  <p>Developed by Aleksandra Grudziaz, Alicja Gosiewska, Przemyslaw Biecek.</p>
 </div>
 
 <div class="pkgdown">

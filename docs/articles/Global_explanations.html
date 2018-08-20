@@ -79,7 +79,7 @@
       <h1>Survival models - global explanations</h1>
                         <h4 class="author">Alicja Gosiewska</h4>
             
-            <h4 class="date">2018-08-15</h4>
+            <h4 class="date">2018-08-20</h4>
       
       
       <div class="hidden name"><code>Global_explanations.Rmd</code></div>
@@ -101,7 +101,7 @@
 <div id="data-set" class="section level2">
 <h2 class="hasAnchor">
 <a href="#data-set" class="anchor"></a>Data set</h2>
-<p>In our use case we will use the data from the Mayo Clinic trial in primary biliary cirrhosis (PBC) of the liver conducted between 1974 and 1984. A total of 424 PBC patients, referred to Mayo Clinic during that ten-year interval, met eligibility criteria for the randomized placebo controlled trial of the drug D-penicillamine. The first 312 cases in the data set participated in the randomized trial and contain largely complete data. The <code>pbc</code> data is included in the <a href="https://cran.r-project.org/web/packages/randomForestSRC/index.html"><em>randomForestSRC</em> package</a>.</p>
+<p>In our use case we will use the data from the Mayo Clinic trial in primary biliary cirrhosis (PBC) of the liver conducted between 1974 and 1984. A total of 424 PBC patients, referred to Mayo Clinic during that ten-year interval, met eligibility criteria for the randomized placebo controlled trial of the drug D-penicillamine. The first 312 cases in the data set participated in the randomized trial and contain largely complete data. The <code>pbc</code> data is included in the <a href="https://CRAN.R-project.org/package=randomForestSRC"><em>randomForestSRC</em> package</a>.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">data</span>(pbc, <span class="dt">package =</span> <span class="st">"randomForestSRC"</span>)
 pbc &lt;-<span class="st"> </span>pbc[<span class="kw">complete.cases</span>(pbc),]
 
@@ -173,20 +173,17 @@ pbc_smaller &lt;-<span class="st"> </span>pbc_smaller[,<span class="op">-</span>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">mp_cph &lt;-<span class="st"> </span><span class="kw"><a href="../reference/model_performance.html">model_performance</a></span>(surve_cph)
 <span class="kw">print</span>(mp_cph)</code></pre></div>
 <pre><code>## Model performance for Brier Score method.
-##    time prediction error
-## 1     0             ~ 0%
-## 2     1          ~ 5.44%
-## 3     2          ~ 7.65%
-## 4     3          ~ 9.99%
-## 5     4         ~ 10.79%
-## 6     5         ~ 12.03%
-## 7     6         ~ 13.32%
-## 8     7         ~ 16.03%
-## 9     8         ~ 17.01%
-## 10    9         ~ 18.47%
-## 11   10         ~ 16.64%
-## 12   11          ~ 18.1%
-## 13   12         ~ 20.02%</code></pre>
+##         time prediction error
+## 1  0.1151685          ~ 0.34%
+## 2  0.1432584          ~ 0.66%
+## 3  0.1994382          ~ 0.99%
+## 4  0.2162921          ~ 1.22%
+## 5  0.3089888          ~ 1.54%
+## 6  0.3679775          ~ 1.83%
+## 7  0.3932584          ~ 2.16%
+## 8  0.5028090          ~ 2.46%
+## 9  0.5224719           ~ 2.8%
+## 10 0.5365169          ~ 3.12%</code></pre>
 <p>After creating the <code>surv_model_prediction</code> object we can visualize it in a very convinient way using the generic <code>plot()</code> function. On our plot there are prediction error curves for model from the explainer. For more details about these curves see: <a href="https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4194196/">Mogensen, 2012</a></p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">plot</span>(mp_cph)</code></pre></div>
 <p><img src="Global_explanations_files/figure-html/unnamed-chunk-3-1.png" width="700"></p>
@@ -243,7 +240,7 @@ pbc_smaller &lt;-<span class="st"> </span>pbc_smaller[,<span class="op">-</span>
 
 
       <footer><div class="copyright">
-  <p>Developed by Alicja Gosiewska, Aleksandra Grudziaz, Przemyslaw Biecek.</p>
+  <p>Developed by Aleksandra Grudziaz, Alicja Gosiewska, Przemyslaw Biecek.</p>
 </div>
 
 <div class="pkgdown">

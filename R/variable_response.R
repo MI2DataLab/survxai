@@ -10,7 +10,7 @@
 #' @param ... other parameters
 #'
 #' @examples
-#' \dontrun{
+#' \donttest{
 #' library(survxai)
 #' library(rms)
 #' data("pbcTest")

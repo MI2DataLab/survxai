@@ -2,7 +2,7 @@
 % Please edit documentation in R/print_variable_response.R
 \name{print.surv_variable_response_explainer}
 \alias{print.surv_variable_response_explainer}
-\title{Varaible Response Print}
+\title{Variable Response Print}
 \usage{
 \method{print}{surv_variable_response_explainer}(x, ...)
 }
@@ -15,5 +15,5 @@
 a data frame
 }
 \description{
-Varaible Response Print
+Variable Response Print
 }

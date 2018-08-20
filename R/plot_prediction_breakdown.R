@@ -5,7 +5,7 @@
 #' @param x an object of class "surv_prediction_breakdown_explainer"
 #' @param ... other arguments, for example additional object of class "surv_prediction_breakdown_explainer"
 #' @param numerate logical; indicating whether we want to number curves
-#' @param lines logical; indicating wheter we want to add lines on chosen time point or probability
+#' @param lines logical; indicating whether we want to add lines on chosen time point or probability
 #' @param lines_type a type of line; see http://sape.inf.usi.ch/quick-reference/ggplot2/linetype
 #' @param lines_col a color of line
 #' @param scale_col a vector containig two colors for gradient scale in legend
@@ -13,7 +13,7 @@
 #'
 #' @import ggplot2
 #' @examples
-#' \dontrun{
+#' \donttest{
 #' library(survxai)
 #' library(rms)
 #' data("pbcTest")

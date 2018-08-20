@@ -1,4 +1,4 @@
-#' Varaible Response Print
+#' Variable Response Print
 #'
 #' @param x the model of 'surv_variable_response_explainer' class
 #' @param ... other parameters

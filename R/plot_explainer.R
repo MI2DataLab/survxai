@@ -9,7 +9,7 @@
 #' @importFrom survival survfit
 #' @importFrom survminer ggsurvplot
 #' @examples 
-#' \dontrun{
+#' \donttest{
 #' library(survxai)
 #' library(rms)
 #' data("pbcTest")

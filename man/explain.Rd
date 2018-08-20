@@ -54,7 +54,7 @@ Please NOTE, that the \code{model} is actually the only required argument.
 But some survival explainers may require additional arguments.
 }
 \examples{
-\dontrun{
+\donttest{
 library(survxai)
 library(rms)
 library(randomForestSRC)
