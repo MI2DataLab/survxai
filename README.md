@@ -1,5 +1,6 @@
 # survxai
-[![CRAN_Status_Badge](http://www.r-pkg.org/badges/version/survxai)](https://cran.r-project.org/package=survaxi)
+[![CRAN_Status_Badge](http://www.r-pkg.org/badges/version/survxai)](https://CRAN.R-project.org/package=survxai)
+[![Total Downloads](http://cranlogs.r-pkg.org/badges/grand-total/survxai)](http://cranlogs.r-pkg.org/badges/grand-total/survxai)
 [![Build Status](https://travis-ci.org/MI2DataLab/survxai.svg?branch=master)](https://travis-ci.org/MI2DataLab/survxai)
 [![Coverage Status](https://img.shields.io/codecov/c/github/MI2DataLab/survxai/master.svg)](https://codecov.io/github/MI2DataLab/survxai?branch=master)
 [![CII Best Practices](https://bestpractices.coreinfrastructure.org/projects/2123/badge)](https://bestpractices.coreinfrastructure.org/projects/2123)
