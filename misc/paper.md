@@ -20,9 +20,9 @@ tags:
 - interpretable machine learning
 affiliations:
 - index: 1
-  name: Faculty of Mathematics and Information Science, Warsaw University of Technology
-- index: 2
   name: Faculty of Mathematics, Informatics, and Mechanics, University of Warsaw
+- index: 2
+  name: Faculty of Mathematics and Information Science, Warsaw University of Technology
 ---
 
 # Introduction
