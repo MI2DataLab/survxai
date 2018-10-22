@@ -5,6 +5,8 @@
 _pkgdown.yaml
 docs/
 materials/
+misc/
+LICENSE
 ^_pkgdown\.yml$
 ^docs$
 CONTRIBUTING.md

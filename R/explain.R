@@ -31,7 +31,6 @@
 #' \item \code{label} label, by default it's the last value from the \code{class} vector, but may be set to any character.
 #' }
 #'
-#' @rdname explain
 #' @importFrom stats predict model.frame
 #' @importFrom utils head tail
 #'
@@ -52,6 +51,10 @@
 #' }
 #' @export
 
+explain  <- function(model, data = NULL, y, times = NULL, predict_function = yhat, link = I, label = tail(class(model), 1), ...) UseMethod("explain")
+
+#' @rdname explain
+#' @export
 explain.default <- function(model, data = NULL, y, times = NULL, predict_function = yhat, link = I, label = tail(class(model), 1), ...) {
   if (is.null(times)) times <- y[,1]
 
@@ -79,9 +82,6 @@ explain.default <- function(model, data = NULL, y, times = NULL, predict_functio
 }
 
 
-#' @export
-#' @rdname explain
-explain <- explain.default
 
 #' @method predictSurvProb surv_explainer
 #' @export
