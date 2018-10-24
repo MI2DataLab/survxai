@@ -11,7 +11,7 @@
 \arguments{
 \item{x}{an object of class "surv_prediction_breakdown_explainer"}
 
-\item{...}{optional, additional object of class "surv_prediction_breakdown_explainer"}
+\item{...}{optional, additional objects of class "surv_prediction_breakdown_explainer"}
 
 \item{numerate}{logical; indicating whether we want to number curves}
 
@@ -37,7 +37,7 @@ predict_times <- function(model, data, times){
                   return(prob)
                   }
 cph_model <- cph(Surv(years, status)~., data=pbcTrain, surv=TRUE, x = TRUE, y=TRUE)
-surve_cph <- explain(model = cph_model, data = pbcTest[,-c(1,5)], 
+surve_cph <- explain(model = cph_model, data = pbcTest[,-c(1,5)],
                     y = Surv(pbcTest$years, pbcTest$status), predict_function = predict_times)
 broken_prediction <- prediction_breakdown(surve_cph, pbc[1,-c(1,2)])
 plot(broken_prediction)

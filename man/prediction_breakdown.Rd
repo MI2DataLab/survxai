@@ -16,7 +16,7 @@ prediction_breakdown(explainer, observation, time = NULL, prob = NULL,
 
 \item{prob}{a survival probability at which variable contributions are computed}
 
-\item{...}{other parameters corresponding to arguments from \code{broken} function from \code{breakDown} package. See https://github.com/pbiecek/breakDown/blob/master/R/break_agnostic.R for details}
+\item{...}{other parameters corresponding to arguments from \code{\link[breakDown]{broken}} function from \code{breakDown} package. See https://github.com/pbiecek/breakDown/blob/master/R/break_agnostic.R for details}
 }
 \value{
 An object of class surv_prediction_breakdown_explainer
@@ -36,7 +36,7 @@ predict_times <- function(model, data, times){
                   return(prob)
                   }
 cph_model <- cph(Surv(years, status)~., data=pbcTrain, surv=TRUE, x = TRUE, y=TRUE)
-surve_cph <- explain(model = cph_model, data = pbcTest[,-c(1,5)], 
+surve_cph <- explain(model = cph_model, data = pbcTest[,-c(1,5)],
                     y = Surv(pbcTest$years, pbcTest$status), predict_function = predict_times)
 broken_prediction <- prediction_breakdown(surve_cph, pbcTest[1,-c(1,5)])
 }

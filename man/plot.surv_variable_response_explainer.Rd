@@ -9,7 +9,7 @@
 \arguments{
 \item{x}{an object of class "surv_variable_response"}
 
-\item{...}{optional, additional object of class "surv_variable_response_explainer"}
+\item{...}{optional, additional objects of class "surv_variable_response_explainer"}
 
 \item{split}{a character, either "model" or "variable"; sets the variable for faceting}
 }
@@ -27,7 +27,7 @@ predict_times <- function(model, data, times){
                   return(prob)
                   }
 cph_model <- cph(Surv(years, status)~., data=pbcTrain, surv=TRUE, x = TRUE, y=TRUE)
-surve_cph <- explain(model = cph_model, data = pbcTest[,-c(1,5)], 
+surve_cph <- explain(model = cph_model, data = pbcTest[,-c(1,5)],
              y = Surv(pbcTest$years, pbcTest$status), predict_function = predict_times)
 svr_cph <- variable_response(surve_cph, "sex")
 plot(svr_cph)

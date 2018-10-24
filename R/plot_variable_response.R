@@ -3,7 +3,7 @@
 #' @description Function plot for surv_variable_response object shows the expected output condition on a selected variable.
 #'
 #' @param x an object of class "surv_variable_response"
-#' @param ... optional, additional object of class "surv_variable_response_explainer"
+#' @param ... optional, additional objects of class "surv_variable_response_explainer"
 #' @param split a character, either "model" or "variable"; sets the variable for faceting
 #'
 #' @import ggplot2
@@ -20,7 +20,7 @@
 #'                   return(prob)
 #'                   }
 #' cph_model <- cph(Surv(years, status)~., data=pbcTrain, surv=TRUE, x = TRUE, y=TRUE)
-#' surve_cph <- explain(model = cph_model, data = pbcTest[,-c(1,5)], 
+#' surve_cph <- explain(model = cph_model, data = pbcTest[,-c(1,5)],
 #'              y = Surv(pbcTest$years, pbcTest$status), predict_function = predict_times)
 #' svr_cph <- variable_response(surve_cph, "sex")
 #' plot(svr_cph)

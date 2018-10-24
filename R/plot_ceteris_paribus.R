@@ -3,7 +3,7 @@
 #' @description Function plot for ceteris_paribus object visualise estimated survival curve of mean probabilities in chosen time points. Black lines on each plot correspond to survival curve for our new observation specified in the \code{ceteris_paribus} function.
 #'
 #' @param x object of class "surv_ceteris_paribus_explainer"
-#' @param ... arguments to be passed to methods, such as graphical parameters
+#' @param ... arguments to be passed to methods, such as graphical parameters for function \code{\link[ggplot2]{geom_step}}.
 #' @param selected_variable name of variable we want to draw ceteris paribus plot
 #' @param scale_type type of scale of colors, either "discrete" or "gradient"
 #' @param scale_col vector containing values of low and high ends of the gradient, when "gradient" type of scale was chosen
@@ -22,7 +22,7 @@
 #'                   return(prob)
 #'                   }
 #' cph_model <- cph(Surv(years, status)~., data=pbcTrain, surv=TRUE, x = TRUE, y=TRUE)
-#' surve_cph <- explain(model = cph_model, data = pbcTest[,-c(1,5)], 
+#' surve_cph <- explain(model = cph_model, data = pbcTest[,-c(1,5)],
 #'              y = Surv(pbcTest$years, pbcTest$status), predict_function = predict_times)
 #' cp_cph <- ceteris_paribus(surve_cph, pbcTest[1,-c(1,5)])
 #' plot(cp_cph)
@@ -30,27 +30,27 @@
 #' @method plot surv_ceteris_paribus_explainer
 #' @export
 
-plot.surv_ceteris_paribus_explainer <- function(x, ..., selected_variable = NULL, scale_type = "factor", 
+plot.surv_ceteris_paribus_explainer <- function(x, ..., selected_variable = NULL, scale_type = "factor",
                                                 scale_col = NULL, ncol = 1) {
-  
+
   if(!is.null(selected_variable) && !(selected_variable %in% factor(x$vname))){
     stop(paste0("Selected variable ", selected_variable, "not present in surv_ceteris_paribus object."))
   }
-  
+
   y_hat <- new_x <- time <- time_2 <- y_hat_2 <- NULL
   new_observation_legend <- create_legend(x=x)
   seq_length <- attributes(x)$grid_points
-  
+
   all_responses <- x
-  
+
   all_predictions <- create_predictions(x)
 
-  
+
   all_responses <- merge(all_responses, new_observation_legend, by="vname")
   if(!is.null(selected_variable)){
     all_responses <- all_responses[which(all_responses$vname == selected_variable),]
     legend <- unique(all_responses$val)
-    add_theme <- labs(col = legend)  
+    add_theme <- labs(col = legend)
     facet <- NULL
     title <- ggtitle(paste("Ceteris paribus plot for variable", selected_variable,"."))
   }else{
@@ -58,23 +58,23 @@ plot.surv_ceteris_paribus_explainer <- function(x, ..., selected_variable = NULL
     title <- ggtitle(paste("Ceteris paribus plot for", unique(x$label),"model."))
     facet <- facet_wrap(~val, ncol = ncol)
   }
-  
+
   #######################
   df <- all_responses[,c("vname","new_x")]
   df <- unique(df)
   df$legend <- 1:nrow(df)
   all_responses <- merge(all_responses, df, by=c("vname", "new_x"))
-  
+
   ############################
   scale <- create_scale(all_responses, scale_type, scale_col, selected_variable)
-  
+
   ggplot(all_responses, aes(x = time, y = y_hat, col = factor(legend))) +
     geom_step(...) +
     geom_step(data = all_predictions, aes(x = time_2, y = y_hat_2,...), col="black", lty = 2, size = 1) +
     scale_y_continuous(breaks = seq(0,1,0.1),
                        limits = c(0,1),
                        labels = paste(seq(0,100,10),"%"),
-                       name = "survival probability") + 
+                       name = "survival probability") +
     facet +
     theme_mi2() +
     add_theme +

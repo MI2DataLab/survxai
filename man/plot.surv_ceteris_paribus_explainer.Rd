@@ -11,7 +11,7 @@
 \arguments{
 \item{x}{object of class "surv_ceteris_paribus_explainer"}
 
-\item{...}{arguments to be passed to methods, such as graphical parameters}
+\item{...}{arguments to be passed to methods, such as graphical parameters for function \code{\link[ggplot2]{geom_step}}.}
 
 \item{selected_variable}{name of variable we want to draw ceteris paribus plot}
 
@@ -35,7 +35,7 @@ predict_times <- function(model, data, times){
                   return(prob)
                   }
 cph_model <- cph(Surv(years, status)~., data=pbcTrain, surv=TRUE, x = TRUE, y=TRUE)
-surve_cph <- explain(model = cph_model, data = pbcTest[,-c(1,5)], 
+surve_cph <- explain(model = cph_model, data = pbcTest[,-c(1,5)],
              y = Surv(pbcTest$years, pbcTest$status), predict_function = predict_times)
 cp_cph <- ceteris_paribus(surve_cph, pbcTest[1,-c(1,5)])
 plot(cp_cph)
