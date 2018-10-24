@@ -9,7 +9,7 @@
 \arguments{
 \item{x}{object of class "surv_model_performance"}
 
-\item{...}{other arguments}
+\item{...}{optional, additional object of class "surv_model_performance_explainer"}
 }
 \description{
 Function plot for surv_model_performance object.

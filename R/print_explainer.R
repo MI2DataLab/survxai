@@ -1,7 +1,7 @@
 #' Print Survival Explainer Summary
 #'
 #' @param x a model survival expaliner created with the `explain()` function
-#' @param ... other parameters
+#' @param ... further arguments passed to or from other methods
 #'
 #' @export
 

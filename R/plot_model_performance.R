@@ -3,7 +3,7 @@
 #' @description Function plot for surv_model_performance object.
 #'
 #' @param x object of class "surv_model_performance"
-#' @param ... other arguments
+#' @param ... optional, additional object of class "surv_model_performance_explainer"
 #'
 #' @import ggplot2
 #'

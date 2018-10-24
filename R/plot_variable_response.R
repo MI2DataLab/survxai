@@ -3,7 +3,7 @@
 #' @description Function plot for surv_variable_response object shows the expected output condition on a selected variable.
 #'
 #' @param x an object of class "surv_variable_response"
-#' @param ... other arguments
+#' @param ... optional, additional object of class "surv_variable_response_explainer"
 #' @param split a character, either "model" or "variable"; sets the variable for faceting
 #'
 #' @import ggplot2

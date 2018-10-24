@@ -4,15 +4,13 @@
 \alias{model_performance}
 \title{Model performance for survival models}
 \usage{
-model_performance(explainer, type = "BS", ...)
+model_performance(explainer, type = "BS")
 }
 \arguments{
 \item{explainer}{a model to be explained, preprocessed by the 'survxai::explain' function}
 
 \item{type}{character - type of the response to be calculated
 Currently following options are implemented: 'BS' for Expected Brier Score}
-
-\item{...}{other parameters}
 }
 \description{
 Function \code{model_performance} calculates the prediction error for chosen survival model.

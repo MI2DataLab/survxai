@@ -1,13 +1,13 @@
 #' @title BreakDown for survival models
 #'
-#' @description Function \code{surv_breakdown} is an extension of a broken function from breakDown package. It computes the contribution in prediction for the variables in the model.
+#' @description Function \code{prediction_breakdown} is an extension of a broken function from breakDown package. It computes the contribution in prediction for the variables in the model.
 #' The contribution is defined as the difference between survival probabilities for model with added specific value of variable and with the random levels of this variable.
 #'
 #' @param explainer an object of the class 'surv_explainer'
 #' @param observation a new observation to explain
 #' @param time a time point at which variable contributions are computed. If NULL median time is taken.
 #' @param prob a survival probability at which variable contributions are computed
-#' @param ... other parameters
+#' @param ... other parameters corresponding to arguments from \code{broken} function from \code{breakDown} package. See https://github.com/pbiecek/breakDown/blob/master/R/break_agnostic.R for details
 #'
 #' @return An object of class surv_prediction_breakdown_explainer
 #'
@@ -45,7 +45,8 @@ prediction_breakdown <- function(explainer, observation, time = NULL, prob = NUL
   res<- broken(model = explainer$model,
                   new_observation = observation,
                   data = explainer$data,
-                  predict.function = new_pred)
+                  predict.function = new_pred, 
+                  ...)
   options(warn = oldw)
 
   class(res) <- "data.frame"

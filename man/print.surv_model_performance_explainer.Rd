@@ -11,7 +11,7 @@
 
 \item{times}{a vector of integer times on which we want to check the value of prediction error}
 
-\item{...}{other parameters}
+\item{...}{further arguments passed to or from other methods}
 }
 \description{
 Print Survival Model Performance

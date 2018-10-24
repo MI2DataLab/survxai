@@ -9,7 +9,7 @@
 \arguments{
 \item{x}{a model survival expaliner created with the `explain()` function}
 
-\item{...}{other parameters}
+\item{...}{further arguments passed to or from other methods}
 }
 \description{
 Print Survival Explainer Summary

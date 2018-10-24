@@ -11,7 +11,7 @@
 \arguments{
 \item{x}{an object of class "surv_prediction_breakdown_explainer"}
 
-\item{...}{other arguments, for example additional object of class "surv_prediction_breakdown_explainer"}
+\item{...}{optional, additional object of class "surv_prediction_breakdown_explainer"}
 
 \item{numerate}{logical; indicating whether we want to number curves}
 

@@ -9,7 +9,7 @@
 \arguments{
 \item{x}{an object of class "surv_variable_response"}
 
-\item{...}{other arguments}
+\item{...}{optional, additional object of class "surv_variable_response_explainer"}
 
 \item{split}{a character, either "model" or "variable"; sets the variable for faceting}
 }

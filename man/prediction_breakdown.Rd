@@ -16,13 +16,13 @@ prediction_breakdown(explainer, observation, time = NULL, prob = NULL,
 
 \item{prob}{a survival probability at which variable contributions are computed}
 
-\item{...}{other parameters}
+\item{...}{other parameters corresponding to arguments from \code{broken} function from \code{breakDown} package. See https://github.com/pbiecek/breakDown/blob/master/R/break_agnostic.R for details}
 }
 \value{
 An object of class surv_prediction_breakdown_explainer
 }
 \description{
-Function \code{surv_breakdown} is an extension of a broken function from breakDown package. It computes the contribution in prediction for the variables in the model.
+Function \code{prediction_breakdown} is an extension of a broken function from breakDown package. It computes the contribution in prediction for the variables in the model.
 The contribution is defined as the difference between survival probabilities for model with added specific value of variable and with the random levels of this variable.
 }
 \examples{

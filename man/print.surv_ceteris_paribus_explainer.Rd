@@ -9,7 +9,7 @@
 \arguments{
 \item{x}{the model of 'surv_ceteris_paribus_explainer' class}
 
-\item{...}{other parameters}
+\item{...}{further arguments passed to or from other methods}
 }
 \value{
 a data frame

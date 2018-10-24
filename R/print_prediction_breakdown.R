@@ -1,7 +1,7 @@
 #' Prediction Breakdown Print
 #'
 #' @param x the model model of 'surv_prediction_breakdown_explainer' class
-#' @param ... other parameters
+#' @param ... further arguments passed to or from other methods
 #' @param digits number of decimal places (round) or significant digits (signif) to be used
 #' See the \code{rounding_function} argument
 #' @param rounding_function function that is to used for rounding numbers.

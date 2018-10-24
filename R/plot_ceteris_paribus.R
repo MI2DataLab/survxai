@@ -3,7 +3,7 @@
 #' @description Function plot for ceteris_paribus object visualise estimated survival curve of mean probabilities in chosen time points. Black lines on each plot correspond to survival curve for our new observation specified in the \code{ceteris_paribus} function.
 #'
 #' @param x object of class "surv_ceteris_paribus_explainer"
-#' @param ... other arguments
+#' @param ... arguments to be passed to methods, such as graphical parameters
 #' @param selected_variable name of variable we want to draw ceteris paribus plot
 #' @param scale_type type of scale of colors, either "discrete" or "gradient"
 #' @param scale_col vector containing values of low and high ends of the gradient, when "gradient" type of scale was chosen
@@ -69,8 +69,8 @@ plot.surv_ceteris_paribus_explainer <- function(x, ..., selected_variable = NULL
   scale <- create_scale(all_responses, scale_type, scale_col, selected_variable)
   
   ggplot(all_responses, aes(x = time, y = y_hat, col = factor(legend))) +
-    geom_step() +
-    geom_step(data = all_predictions, aes(x = time_2, y = y_hat_2), col="black", lty = 2, size = 1) +
+    geom_step(...) +
+    geom_step(data = all_predictions, aes(x = time_2, y = y_hat_2,...), col="black", lty = 2, size = 1) +
     scale_y_continuous(breaks = seq(0,1,0.1),
                        limits = c(0,1),
                        labels = paste(seq(0,100,10),"%"),

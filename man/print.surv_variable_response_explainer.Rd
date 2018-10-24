@@ -9,7 +9,7 @@
 \arguments{
 \item{x}{the model of 'surv_variable_response_explainer' class}
 
-\item{...}{other parameters}
+\item{...}{further arguments passed to or from other methods}
 }
 \value{
 a data frame

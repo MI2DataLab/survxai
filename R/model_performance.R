@@ -5,7 +5,6 @@
 #' @param explainer a model to be explained, preprocessed by the 'survxai::explain' function
 #' @param type character - type of the response to be calculated
 #' Currently following options are implemented: 'BS' for Expected Brier Score
-#' @param ... other parameters
 #' 
 #' @details 
 #' For \code{type = "BS"} prediction error is the time dependent estimates of the population average Brier score. 
@@ -32,7 +31,7 @@
 #'
 #' @export
 
-model_performance <- function(explainer, type = "BS",...){
+model_performance <- function(explainer, type = "BS"){
   if (!("surv_explainer" %in% class(explainer))) stop("The model_performance() function requires an object created with explain() function from survxai package.")
   reference_formula <- eval(explainer$model$call[[2]])
   reference_formula[3] <- 1

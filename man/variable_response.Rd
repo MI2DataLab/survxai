@@ -5,7 +5,7 @@
 \title{Variable response for survival models}
 \usage{
 variable_response(explainer, variable, type = "pdp",
-  link = explainer$link, ...)
+  link = explainer$link)
 }
 \arguments{
 \item{explainer}{an object of the class 'surv_explainer'.}
@@ -16,11 +16,9 @@ variable_response(explainer, variable, type = "pdp",
 Currently following options are implemented: 'pdp' for Partial Dependency.}
 
 \item{link}{a function - a link function that shall be applied to raw model predictions. This will be inherited from the explainer.}
-
-\item{...}{other parameters}
 }
 \description{
-Function \code{variable response} calculates the expected output condition on a selected variable.
+Function \code{variable_response} calculates the expected output condition on a selected variable.
 }
 \examples{
 \donttest{

@@ -11,7 +11,7 @@
 \arguments{
 \item{x}{object of class "surv_ceteris_paribus_explainer"}
 
-\item{...}{other arguments}
+\item{...}{arguments to be passed to methods, such as graphical parameters}
 
 \item{selected_variable}{name of variable we want to draw ceteris paribus plot}
 

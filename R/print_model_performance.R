@@ -2,7 +2,7 @@
 #'
 #' @param x a model to be explained, object of the class 'model_performance_explainer'
 #' @param times a vector of integer times on which we want to check the value of prediction error
-#' @param ... other parameters
+#' @param ... further arguments passed to or from other methods
 #'
 #' @export
 
