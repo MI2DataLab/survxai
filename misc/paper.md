@@ -4,13 +4,13 @@ authors:
 - affiliation: 1, 2
   name: Aleksandra Grudziaz
   orcid: 0000-0002-5963-6260
-- affiliation: 2
+- affiliation: 1
   name: Alicja Gosiewska
   orcid: 0000-0001-6563-5742
 - affiliation: 1, 2
   name: Przemyslaw Biecek
   orcid: 0000-0001-8423-1823
-date: "23 August 2018"
+date: "30 October 2018"
 output: pdf_document
 bibliography: paper.bib
 tags:
