@@ -3,6 +3,7 @@
 [![Total Downloads](http://cranlogs.r-pkg.org/badges/grand-total/survxai)](http://cranlogs.r-pkg.org/badges/grand-total/survxai)
 [![Build Status](https://travis-ci.org/MI2DataLab/survxai.svg?branch=master)](https://travis-ci.org/MI2DataLab/survxai)
 [![Coverage Status](https://img.shields.io/codecov/c/github/MI2DataLab/survxai/master.svg)](https://codecov.io/github/MI2DataLab/survxai?branch=master)
+[![status](http://joss.theoj.org/papers/dcc9d53e8a1b1f613d59b9658b113fff/status.svg)](http://joss.theoj.org/papers/dcc9d53e8a1b1f613d59b9658b113fff)
 [![CII Best Practices](https://bestpractices.coreinfrastructure.org/projects/2123/badge)](https://bestpractices.coreinfrastructure.org/projects/2123)
 [![DOI](https://zenodo.org/badge/137778994.svg)](https://zenodo.org/badge/latestdoi/137778994)
 
