@@ -56,21 +56,28 @@ The package `survxai` is available on CRAN. It can be install using the command 
 - **The Ceteris Paribus** profile presents model responses around a single point in the feature space [@ceterisParibus]. See Figure 1 for an example. Each panel is related to a single variable. Each single panel shows how a model prediction (survival curve) would change if only a single variable were changed. It is useful for *what-if* reasoning. Each curve in a panel is related to a different value of the selected variable.
 The Ceteris Paribus profile illustrates how the survival curve may change with the changing of values of variable.
 
-![Ceteris Paribus plot for survival random forest model with three variables. The black dashed survival curve corresponds to an observation of interest. The left panel shows the survival curves for different values of bilirubin. Colors correspond to mean survival curves of observations from quintiles. From red which is the first quintile to blue which is the last one. The middle panel shows that prediction for sex=0 is worse than for sex=1 for times less than 7.5. The right panel analogously shows survival curves for different levels of the variable stage.](img/ceteris_paribus.png)
+
+![ceteris paribus](img/ceteris_paribus.png)\
+**Figure 1:** Ceteris Paribus plot for survival random forest model with three variables. The black dashed survival curve corresponds to an observation of interest. The left panel shows the survival curves for different values of bilirubin. Colors correspond to mean survival curves of observations from quintiles. From red which is the first quintile to blue which is the last one. The middle panel shows that prediction for sex=0 is worse than for sex=1 for times less than 7.5. The right panel analogously shows survival curves for different levels of the variable stage.
 
 - **The Break Down** plot presents variable contributions to a model prediction [@2018arXiv180401955S]. See Figure 2 for an example. The Break Down of predictions for survival models help to understand which factors drive survival probabilities for a single observation.
 
-![Break Down plot for survival random forest model. Variables bili and stage have the highest impact on the final prediction.](img/breakdown.png)
+
+![breakdown](img/breakdown.png)\
+**Figure 2:** Break Down plot for survival random forest model. Variables bili and stage have the highest impact on the final prediction.
  
 **Global methods** are explanations for performance and model structure.
  
 - **The Variable Response** plot is designed to better understand the relation between a variable and a model output. See Figure 3 for an example. The variable response plot illustrates how the mean survival curve changes along with the changing values of the variable. It is inspired by Partial Dependence Plots [@RJ-2017-016].
 
-![Variable response plots for three models and variable sex. In survival random forest, the sex variable affects model predictions in a different way than in  other models.](img/variable_response.png)
+![variable response](img/variable_response.png)
+**Figure 3:** Variable response plots for three models and variable sex. In survival random forest, the sex variable affects model predictions in a different way than in  other models.
  
 - **The Model Performance** curves present prediction error for the chosen survival model, depending on time. See Figure 4 for an example. For computing prediction error, we use the expected Brier Score [@BSScore]. At a given time point t, the Brier score for a single observation is the squared difference between observed survival status and a model-based prediction of surviving time $t$.
 
-![Model performance plots for three models. In random forest model, predictions are less accurate after year 4.](img/model_performance.png)
+
+![model performance](img/model_performance.png)\
+**Figure 4:** Model performance plots for three models. In random forest model, predictions are less accurate after year 4.
 
 <!-- Mentions (if applicable) of any ongoing research projects using the software or recent scholarly publications enabled by it -->
 
@@ -85,4 +92,3 @@ The work was supported by NCN Opus grant 2016/21/B/ST6/02176.
 <!-- A list of key references including a link to the software archive -->
 
 # References
-
