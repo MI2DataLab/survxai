@@ -6,7 +6,6 @@
 [![status](http://joss.theoj.org/papers/dcc9d53e8a1b1f613d59b9658b113fff/status.svg)](http://joss.theoj.org/papers/dcc9d53e8a1b1f613d59b9658b113fff)
 [![CII Best Practices](https://bestpractices.coreinfrastructure.org/projects/2123/badge)](https://bestpractices.coreinfrastructure.org/projects/2123)
 [![DOI](https://zenodo.org/badge/137778994.svg)](https://zenodo.org/badge/latestdoi/137778994)
-[![DOI](http://joss.theoj.org/papers/10.21105/joss.00961/status.svg)](https://doi.org/10.21105/joss.00961)
 
 Survival analysis models are used primarily in medicine and churn analysis. Due to many applications, we are witnessing a fast development of a wide range of black-box survival models. Their lack of interpretability makes them unusable for analyzes that require an understanding of the model behavior. 
 
