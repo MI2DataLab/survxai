@@ -1,6 +1,6 @@
 Package: survxai
 Title: Visualization of the Local and Global Survival Model Explanations
-Version: 0.2.0
+Version: 0.2.1
 Authors@R: c(
   person("Aleksandra", "Grudziaz", email = "aleksandra.grudziaz@gmail.com", role = c("aut", "cre")),
   person("Alicja", "Gosiewska", email = "alicjagosiewska@gmail.com", role = c("aut")),
