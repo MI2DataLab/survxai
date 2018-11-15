@@ -1,3 +1,9 @@
+
+survxai 0.2.1
+----------------------------------------------------------------
+* improvment in documentation
+* CITATION,md was added
+
 survxai 0.2.0
 ----------------------------------------------------------------
 * CONTRIBUTING.md have been added
