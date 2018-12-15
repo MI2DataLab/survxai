@@ -11,7 +11,7 @@ Please follow these rules when reporting bugs:
 * If you're unable to find an open issue addressing the problem, [open a new one](https://github.com/MI2DataLab/survxai/issues/new). Be sure to include a **title and clear description**, and a **sample code** demonstrating the problem.
 
 
-#### **Did you fixed a bug?**
+#### **Did you fix a bug?**
 
 * Ensure that changes meet the requirements of [The tidyverse style guide](http://style.tidyverse.org) and relevant tests are added.
 
