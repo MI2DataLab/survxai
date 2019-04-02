@@ -1,14 +1,14 @@
 #' @title Model performance for survival models
 #'
-#' @description Function \code{model_performance} calculates the prediction error for chosen survival model. 
-#' 
+#' @description Function \code{model_performance} calculates the prediction error for chosen survival model.
+#'
 #' @param explainer a model to be explained, preprocessed by the 'survxai::explain' function
 #' @param type character - type of the response to be calculated
 #' Currently following options are implemented: 'BS' for Expected Brier Score
-#' 
-#' @details 
-#' For \code{type = "BS"} prediction error is the time dependent estimates of the population average Brier score. 
-#' At a given time point t, the Brier score for a single observation is the squared difference between observed survival status 
+#'
+#' @details
+#' For \code{type = "BS"} prediction error is the time dependent estimates of the population average Brier score.
+#' At a given time point t, the Brier score for a single observation is the squared difference between observed survival status
 #' and a model based prediction of surviving time t.
 #'
 #' @examples
@@ -18,7 +18,7 @@
 #'    data("pbcTrain")
 #'    data("pbcTest")
 #'    cph_model <- cph(Surv(years, status)~., data=pbcTrain, surv=TRUE, x = TRUE, y=TRUE)
-#'    surve_cph <- explain(model = cph_model, data = pbcTest[,-c(1,5)], 
+#'    surve_cph <- explain(model = cph_model, data = pbcTest[,-c(1,5)],
 #'                         y = Surv(pbcTest$years, pbcTest$status))
 #'    mp_cph <- model_performance(surve_cph)
 #' }
@@ -34,11 +34,15 @@
 model_performance <- function(explainer, type = "BS"){
   if (!("surv_explainer" %in% class(explainer))) stop("The model_performance() function requires an object created with explain() function from survxai package.")
   reference_formula <- eval(explainer$model$call[[2]])
+  # trick for mlr, to remove third param in Surv
+  if(length(reference_formula[[2]]) > 3){
+    reference_formula[[2]][4] <- NULL
+  }
   reference_formula[3] <- 1
   surv_vars <- all.vars(explainer$model$call[[2]][[2]])
   data <- cbind(explainer$y[,1], explainer$y[,2], explainer$data)
   colnames(data)[1:2] <- surv_vars
-  
+
   switch(type,
          BS = {
            p <- tryCatch({
