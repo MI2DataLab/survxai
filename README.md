@@ -11,6 +11,8 @@ Survival analysis models are used primarily in medicine and churn analysis. Due 
 
 An R package survxai is a tool for creating explanations of survival models. For both, complex and simple survival models. It also enables to compare them. Currently, four explanation methods are implemented. We can divide them into 2 groups: local and global.
 
+The read more about the `surxvai` package see paper [survxai: an R package for structure-agnostic explanations of survival models](https://joss.theoj.org/papers/dcc9d53e8a1b1f613d59b9658b113fff) in The Journal of Open Source Software.
+
 ## Install
 ```
 devtools::install_github("MI2DataLab/survxai")
