@@ -10,3 +10,4 @@ LICENSE
 ^_pkgdown\.yml$
 ^docs$
 CONTRIBUTING.md
+.github

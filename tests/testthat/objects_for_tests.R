@@ -1,7 +1,7 @@
 library(survxai)
 library(rms)
 library(randomForestSRC)
-library(prodlim) 
+library(prodlim)
 library(pec)
 library(tibble)
 
@@ -27,7 +27,7 @@ predict_times_rf<- function(object, newdata, times, ...){
 }
 
 rf_model <- rfsrc(Surv(years, status)~., data  = pbcTrain, ntree = 100)
-cph_model <- cph(Surv(years, status)~., data=pbcTrain, surv=TRUE, x = TRUE, y=TRUE)
+cph_model <- cph(Surv(years, status)~sex + bili+stage, data=pbcTrain, surv=TRUE, x = TRUE, y=TRUE)
 cph_model2 <- cph(Surv(years, status)~sex+bili, data=pbcTrain, surv=TRUE, x = TRUE, y=TRUE)
 
 cph_model_different_class <- cph_model
