@@ -58,7 +58,7 @@ library(survxai)
 pbc_smaller <- pbc[,c("days", "status", "treatment", "sex", "age", "bili", "stage")]
 head(pbc_smaller)
 
-cph_model <- cph(Surv(days/365, status)~. , data = pbc_smaller, surv = TRUE, x = TRUE, y=TRUE)
+cph_model <- cph(Surv(days/365, status) ~ treatment + sex + age + bili + stage , data = pbc_smaller, surv = TRUE, x = TRUE, y=TRUE)
 ```
 
 # Local explanations

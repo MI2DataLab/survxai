@@ -75,7 +75,7 @@ Cox proportional hazards model is based on five variables: `age`, `treatment`, `
 ```{r, models}
 library(rms)
 
-cph_model <- cph(Surv(years, status)~., data = train, surv = TRUE, x = TRUE, y=TRUE)
+cph_model <- cph(Surv(years, status) ~  sex + bili + stage, data = train, surv = TRUE, x = TRUE, y=TRUE)
 ```
 
 ### Random Forests for Survival

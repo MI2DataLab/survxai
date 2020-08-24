@@ -59,7 +59,7 @@ pbc_smaller <- pbc[,c("days", "status", "treatment", "sex", "age", "bili", "stag
 pbc_smaller$years <- pbc_smaller$days/356
 pbc_smaller <- pbc_smaller[,-1]
 head(pbc_smaller)
-cph_model <- cph(Surv(years, status)~., data = pbc_smaller, surv = TRUE, x = TRUE, y=TRUE)
+cph_model <- cph(Surv(years, status) ~ treatment + sex + age + bili + stage, data = pbc_smaller, surv = TRUE, x = TRUE, y=TRUE)
 ```
 
 # Global explanations

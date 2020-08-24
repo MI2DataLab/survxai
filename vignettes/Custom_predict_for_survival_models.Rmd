@@ -53,7 +53,7 @@ Currently implemented model classes. Objects listed below don't need specified p
 set.seed(1024)
 library(rms)
 library(survxai)
-cph_model <- cph(Surv(days/365, status)~., data = pbc, surv = TRUE, x = TRUE, y=TRUE)
+cph_model <- cph(Surv(days/365, status) ~ treatment + age + sex + ascites + hepatom + spiders + edema + bili + chol + albumin + copper + alk + sgot + trig + platelet + prothrombin + stage , data = pbc, surv = TRUE, x = TRUE, y=TRUE)
 
 surve_cph <- explain(model = cph_model,
                      data = pbc[,-c(1,2)], y = Surv(pbc$days/365, pbc$status))
