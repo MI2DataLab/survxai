@@ -4,8 +4,7 @@
 \alias{print.surv_prediction_breakdown_explainer}
 \title{Prediction Breakdown Print}
 \usage{
-\method{print}{surv_prediction_breakdown_explainer}(x, ..., digits = 3,
-  rounding_function = round)
+\method{print}{surv_prediction_breakdown_explainer}(x, ..., digits = 3, rounding_function = round)
 }
 \arguments{
 \item{x}{the model model of 'surv_prediction_breakdown_explainer' class}

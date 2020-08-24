@@ -5,12 +5,27 @@
 \alias{explain.default}
 \title{Create Survival Model Explainer}
 \usage{
-explain(model, data = NULL, y, times = NULL, predict_function = yhat,
-  link = I, label = tail(class(model), 1), ...)
+explain(
+  model,
+  data = NULL,
+  y,
+  times = NULL,
+  predict_function = yhat,
+  link = I,
+  label = tail(class(model), 1),
+  ...
+)
 
-\method{explain}{default}(model, data = NULL, y, times = NULL,
-  predict_function = yhat, link = I, label = tail(class(model), 1),
-  ...)
+\method{explain}{default}(
+  model,
+  data = NULL,
+  y,
+  times = NULL,
+  predict_function = yhat,
+  link = I,
+  label = tail(class(model), 1),
+  ...
+)
 }
 \arguments{
 \item{model}{object - a survival model to be explained}
@@ -64,7 +79,7 @@ predict_times <- function(model, data, times){
                   prob <- rms::survest(model, data, times = times)$surv
                   return(prob)
                   }
-cph_model <- cph(Surv(days/365, status)~., data=pbc, surv=TRUE, x = TRUE, y=TRUE)
+cph_model <- cph(Surv(days/365, status)~ sex + bili + stage, data=pbc, surv=TRUE, x = TRUE, y=TRUE)
 surve_cph <- explain(model = cph_model, data = pbc[,-c(1,2)], y = Surv(pbc$days/365, pbc$status),
              predict_function = predict_times)
 }

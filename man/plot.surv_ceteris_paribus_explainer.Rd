@@ -4,9 +4,14 @@
 \alias{plot.surv_ceteris_paribus_explainer}
 \title{Plot for ceteris_paribus object}
 \usage{
-\method{plot}{surv_ceteris_paribus_explainer}(x, ...,
-  selected_variable = NULL, scale_type = "factor", scale_col = NULL,
-  ncol = 1)
+\method{plot}{surv_ceteris_paribus_explainer}(
+  x,
+  ...,
+  selected_variable = NULL,
+  scale_type = "factor",
+  scale_col = NULL,
+  ncol = 1
+)
 }
 \arguments{
 \item{x}{object of class "surv_ceteris_paribus_explainer"}
@@ -34,7 +39,7 @@ predict_times <- function(model, data, times){
                   prob <- rms::survest(model, data, times = times)$surv
                   return(prob)
                   }
-cph_model <- cph(Surv(years, status)~., data=pbcTrain, surv=TRUE, x = TRUE, y=TRUE)
+cph_model <- cph(Surv(years, status)~sex + bili + stage, data=pbcTrain, surv=TRUE, x = TRUE, y=TRUE)
 surve_cph <- explain(model = cph_model, data = pbcTest[,-c(1,5)],
              y = Surv(pbcTest$years, pbcTest$status), predict_function = predict_times)
 cp_cph <- ceteris_paribus(surve_cph, pbcTest[1,-c(1,5)])

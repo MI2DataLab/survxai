@@ -4,8 +4,7 @@
 \alias{variable_response}
 \title{Variable response for survival models}
 \usage{
-variable_response(explainer, variable, type = "pdp",
-  link = explainer$link)
+variable_response(explainer, variable, type = "pdp", link = explainer$link)
 }
 \arguments{
 \item{explainer}{an object of the class 'surv_explainer'.}
@@ -30,8 +29,8 @@ predict_times <- function(model, data, times){
                   prob <- rms::survest(model, data, times = times)$surv
                   return(prob)
                   }
-cph_model <- cph(Surv(years, status)~., data=pbcTrain, surv=TRUE, x = TRUE, y=TRUE)
-surve_cph <- explain(model = cph_model, data = pbcTest[,-c(1,5)], 
+cph_model <- cph(Surv(years, status)~sex + bili + stage, data=pbcTrain, surv=TRUE, x = TRUE, y=TRUE)
+surve_cph <- explain(model = cph_model, data = pbcTest[,-c(1,5)],
              y = Surv(pbcTest$years, pbcTest$status), predict_function = predict_times)
 svr_cph <- variable_response(surve_cph, "sex")
 }

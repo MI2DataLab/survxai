@@ -4,9 +4,15 @@
 \alias{plot.surv_prediction_breakdown_explainer}
 \title{Plot for surv_breakdown object}
 \usage{
-\method{plot}{surv_prediction_breakdown_explainer}(x, ...,
-  numerate = TRUE, lines = TRUE, lines_type = 1,
-  lines_col = "black", scale_col = c("#010059", "#e0f6fb"))
+\method{plot}{surv_prediction_breakdown_explainer}(
+  x,
+  ...,
+  numerate = TRUE,
+  lines = TRUE,
+  lines_type = 1,
+  lines_col = "black",
+  scale_col = c("#010059", "#e0f6fb")
+)
 }
 \arguments{
 \item{x}{an object of class "surv_prediction_breakdown_explainer"}
@@ -36,7 +42,7 @@ predict_times <- function(model, data, times){
                   prob <- rms::survest(model, data, times = times)$surv
                   return(prob)
                   }
-cph_model <- cph(Surv(years, status)~., data=pbcTrain, surv=TRUE, x = TRUE, y=TRUE)
+cph_model <- cph(Surv(years, status)~sex + bili + stage, data=pbcTrain, surv=TRUE, x = TRUE, y=TRUE)
 surve_cph <- explain(model = cph_model, data = pbcTest[,-c(1,5)],
                     y = Surv(pbcTest$years, pbcTest$status), predict_function = predict_times)
 broken_prediction <- prediction_breakdown(surve_cph, pbcTest[1,-c(1,5)])
