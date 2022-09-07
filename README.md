@@ -1,3 +1,9 @@
+```diff
+! Please note that the `survxai` package is not actively maintained. 
++ Consider using the succeeding `survex` package.
+```
+`survex` is available at https://github.com/modeloriented/survex.
+
 # survxai
 [![CRAN_Status_Badge](http://www.r-pkg.org/badges/version/survxai)](https://CRAN.R-project.org/package=survxai)
 [![Total Downloads](http://cranlogs.r-pkg.org/badges/grand-total/survxai)](http://cranlogs.r-pkg.org/badges/grand-total/survxai)
